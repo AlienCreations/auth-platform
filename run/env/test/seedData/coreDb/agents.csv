@@ -1,0 +1,4 @@
+id,tenant_id,key,secret,name,status
+1,1,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
+2,2,ciw59rcxu0000uhp1ygpzzjpr,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Test Agent 1,1
+3,2,ciw59recy0001uhp1m7svifm9,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Test Agent 2,1

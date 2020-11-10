@@ -1,0 +1,9 @@
+id,tenant_id,tenant_organization_id,title,key,uri,method,status
+1,NULL,NULL,All Resources and Methods,all-resources,*,*,1
+2,NULL,NULL,Create Device Type,create-device-type,/api/v1/auth/deviceType,POST,1
+3,NULL,NULL,Delete Device Type,delete-device-type,/api/v1/auth/deviceType/id/:id,DELETE,1
+4,NULL,NULL,Update Device Type,update-device-type,/api/v1/auth/deviceType/id/:id,PUT,1
+5,NULL,NULL,Get All Device Types,get-all-device-types,/api/v1/auth/deviceTypes,GET,1
+6,2,NULL,CNN Login (All),cnn-login,/auth/login/cnn/*,POST,1
+7,2,1,CNN Login (Brentwood),cnn-brentwood-login,/auth/login/cnn/brentwood,POST,1
+8,2,2,CNN Login (Antioch),cnn-antioch-login,/auth/login/cnn/antioch,POST,1

@@ -1,0 +1,62 @@
+doctype html
+html(lang="en")
+  head
+    style(type="text/css")
+      | * {
+      |   font-family : Helvetica, Arial, sans-serif;
+      |   font-size   : 15px;
+      |   font-weight : 100;
+      | }
+      | .logo {
+      |   width : 200px;
+      | }
+      | .strong {
+      |   font-weight : bold;
+      | }
+      | html {
+      |   height : 100%;
+      | }
+      | body {
+      |   height  : 100%;
+      |   margin  : 0;
+      |   padding : 0;
+      | }
+      | img {
+      |   border          : 0 none;
+      |   height          : auto;
+      |   line-height     : 100%;
+      |   outline         : none;
+      |   text-decoration : none;
+      | }
+      | a {
+      |   color  : #5cb85c;
+      |   cursor : pointer;
+      | }
+      | a img {
+      |   border : 0 none;
+      | }
+      | table {
+      |   height     : 100%;
+      |   margin-top : 15px;
+      | }
+      | table, td {
+      |   border-collapse : collapse;
+      | }
+      | h1 {
+      |   font-size : 24px;
+      | }
+      | td.left {
+      |   width            : 60%;
+      |   padding          : 10px;
+      |   background-color : #FAFAFA;
+      | }
+      | td.right {
+      |   width                 : 40%;
+      |   background-image      : url(#{process.env.MAIL_TEMPLATE_BACKGROUND_RIGHT_URL.replace('STATIC_ASSET_ROOT', process.env.AWS_ENDPOINT)});
+      |   background-size       : cover;
+      |   background-position-x : -240px;
+      | }
+    block style
+  body
+    img.logo(src=`${process.env.MAIL_TEMPLATE_HEADER_LOGO_URL.replace('STATIC_ASSET_ROOT', process.env.AWS_ENDPOINT)}`)
+    block content

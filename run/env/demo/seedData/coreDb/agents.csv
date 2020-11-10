@@ -1,0 +1,8 @@
+id,tenant_id,key,secret,name,status
+1,1,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
+2,3,GLH-1-1,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Gutfit Hub 1,1
+3,3,GLH-1-2,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Gutfit Hub 2,1
+4,4,GLH-1-3,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 1,1
+5,4,GLH-1-4,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 2,1
+6,4,alienwebguy@gmail.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Sean Cannon,1
+7,4,chuck@norris.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Chuck Norris,1

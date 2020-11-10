@@ -1,0 +1,15 @@
+*.orig
+.DS_Store
+.idea
+/.env
+_assets
+node_modules
+junit
+coverage
+spec/support/logs/*
+dump.rdb
+tmp
+ssl.*
+yarn-error.log
+.nyc_output/
+*.code-workspace

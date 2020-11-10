@@ -1,0 +1,12 @@
+extends includes/layout.pug
+
+block content
+  table
+    tr
+      td.left(valign="top")
+        h1 #{firstName}! Welcome to Alien Creations!
+        p
+          a(href=link) Click here to verify your account
+        p.disclaimer
+          | If you feel this was an error, please contact <a href="mailto:support@aliencreations.com">support@aliencreations.com</a>
+      td.right

@@ -1,0 +1,5 @@
+id,domain,title,description,logo,email,phone,fax,address_1,address_2,city,state,string#!zip,country,status,url
+1,platform,Gymlens Platform,Tenancy for the gymlens platform API,logos/laurus-logo.png,platform@gymlens.com,,,,,,,,,1,//platform.gymlens.com
+2,punchfitness,Punch Fitness,PunchFit started as a blah blah..,logos/punch-fitness.png,info@punchfit.com,925-240-0000,,1118 Lone Tree Way,,Brentwood,CA,94513,US,1,//www.punchfit.com
+3,gutfit,GutFit,Fit your gut at Gutfit,logos/gutfit-logo.png,train@gutfit.com,925-240-3312,,2255 Shady Willow Lane,,Brentwood,CA,94513,US,1,//www.gutfit.biz
+4,ltf,Lifetime Fitness,A Healthy Way Of Life Company,logos/ltf-logo.png,ltf@gymlens.com,,,,,Plymouth,MN,55429,US,1,//www.lifetimefitness.com

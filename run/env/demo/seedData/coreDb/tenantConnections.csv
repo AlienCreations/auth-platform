@@ -1,0 +1,6 @@
+id,tenant_id,tenant_location_id,title,description,protocol,host,port,user,password,type,strategy,meta_json,status
+1,2,1,Punch Fitness Mongo connection for the Brentwood location,Just a test,mongodb,localhost,27018,,104d5431fd5bebd7f541c5a4a24fcb09,1,common/mongoDb,"{""schema"" : ""punchfit-brentwood"", ""collection"" : ""sometable""}",1
+2,2,2,Punch Fitness Mongo connection for the Antioch location,Just a test,mongodb,localhost,27018,,104d5431fd5bebd7f541c5a4a24fcb09,1,common/mongoDb,"{""schema"" : ""punchfit-antioch"", ""collection"" : ""sometable""}",1
+3,2,3,Punch Fitness Mongo connection for the Pittsburg location,Just a test,mongodb,localhost,27018,,104d5431fd5bebd7f541c5a4a24fcb09,1,common/mongoDb,"{""schema"" : ""punchfit-pittsburg"", ""collection"" : ""sometable""}",1
+4,3,4,Gutfit Mongo connection for the Brentwood location,For RFID scan data,mongodb,localhost,27018,,104d5431fd5bebd7f541c5a4a24fcb09,1,common/mongoDb,"{""schema"" : ""gutfit-brentwood"", ""collection"" : ""lensMetrics""}",1
+5,3,6,Gutfit Mongo connection for the Concord location,For RFID scan data,mongodb,localhost,27018,,104d5431fd5bebd7f541c5a4a24fcb09,1,common/mongoDb,"{""schema"" : ""gutfit-concord"", ""collection"" : ""lensMetrics""}",1
