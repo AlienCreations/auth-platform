@@ -4,9 +4,12 @@ const R      = require('ramda'),
       config = require('config'),
       http   = require('http');
 
-const fetchSecretsAndApplyToEnv = require('../scripts/fetchSecretsAndApplyToEnv'),
-      logger                    = require('./core/services/log/Log')({}),
-      DB                        = require('./core/utils/db');
+const fetchSecretsAndApplyToEnv        = require('../scripts/fetchSecretsAndApplyToEnv'),
+      startBatchProcessSearchHeartbeat = require('../scripts/startBatchProcessSearchHeartbeat'),
+      logger                           = require('./core/services/log/Log')({}),
+      DB                               = require('./core/utils/db');
+
+const Search = require('./core/services/search/Search')(config.search.strategy);
 
 const nodePorts = config.server.nodePorts;
 
@@ -36,21 +39,32 @@ const applyNewDbPasswordToCurrentConnectionPool = () => DB.dbPool.config.connect
 
 logger.info({ msg : '* Starting servers...' });
 
+const loadSearchServer = searchSvc => Promise.all(R.map(searchSvc.putMapping, config.search.mappings));
+
 try {
-  fetchSecretsAndApplyToEnv()
-    .then(() => {
-      const core = require('./core/core');
-      return startServers(core)(nodePorts);
-    })
-    .then(() => setInterval(() => {
-      return fetchSecretsAndApplyToEnv()
-        .then(applyNewDbPasswordToCurrentConnectionPool)
-        .catch(logger.err);
-    }, ONCE_PER_DAY))
-    .catch(err => {
-      logger.err(err);
-      process.exit(1);
-    });
+  loadSearchServer(Search)
+    .then(() => fetchSecretsAndApplyToEnv()
+      .then(() => startBatchProcessSearchHeartbeat())
+      .then(() => {
+        const core = require('./core/core');
+        return startServers(core)(nodePorts);
+      })
+      .then(() => setInterval(() => {
+        return fetchSecretsAndApplyToEnv()
+          .then(applyNewDbPasswordToCurrentConnectionPool)
+          .catch(logger.err);
+      }, ONCE_PER_DAY))
+      .catch(err => {
+        logger.err(err);
+        process.exit(1);
+      }));
+
+  setInterval(() => {
+    Promise.resolve()
+      .then(Search.batchProcess(Infinity))
+      .then(() => logger.info('search updated'))
+      .catch(logger.err);
+  }, 5000);
 
   if (process.env.ALLOW_DEBUG === 'true') {
     logger.info({ env : process.env });

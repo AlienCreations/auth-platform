@@ -21,7 +21,6 @@ const R                                                = require('ramda'),
       maybeMergeTenantWithReqFromDomain                = require('./middleware/maybeMergeTenantWithReqFromDomain'),
       maybeMergeTenantOrganizationWithReqFromSubdomain = require('./middleware/maybeMergeTenantOrganizationWithReqFromSubdomain'),
       maybeMergeReqHeadersWithLogger                   = require('./middleware/maybeMergeReqHeadersWithLogger'),
-      addMonitoringReference                           = require('./middleware/addMonitoringReference'),
       compression                                      = require('compression'),
       session                                          = require('express-session'),
       redisConfig                                      = R.prop(R.__, R.prop('redis', config)),
@@ -134,7 +133,6 @@ app.use(express.static('./tmp'));
 
 // CORS middleware must come before routes
 app.use(maybeMergeReqHeadersWithLogger);
-app.use(addMonitoringReference);
 app.use(allowCors);
 app.use(secureHeaders);
 app.use(compression());

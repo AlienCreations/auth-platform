@@ -26,8 +26,7 @@ const fakeClientError = {
   }
 };
 
-describe('elastic.search', () => {
-
+describe('elastic.putMapping', () => {
   it('creates a putMapping without error', done => {
     putMapping(fakeClientSuccess)(FAKE_MAPPING)
       .then(res => {

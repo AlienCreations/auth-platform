@@ -4,23 +4,18 @@ const express  = require('express'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const loginCtrl     = require('../../controllers/auth/login'),
-      refreshCtrl   = require('../../controllers/auth/refresh'),
-      logoutCtrl    = require('../../controllers/auth/logout'),
-      loginSamlCtrl = require('../../controllers/auth/loginSaml'),
-      loginOidcCtrl = require('../../controllers/auth/loginOidc');
+const loginCtrl   = require('../../controllers/auth/login'),
+      refreshCtrl = require('../../controllers/auth/refresh'),
+      logoutCtrl  = require('../../controllers/auth/logout');
 
-router.post('/login/oidc',        loginOidcCtrl);
-router.get('/login/oidc/:issuer', loginOidcCtrl);
-router.post('/login/saml',        loginSamlCtrl);
-router.post('/login',             loginCtrl);
-router.post('/refresh',           refreshCtrl);
-router.get('/logout',             logoutCtrl);
+router.post('/login', loginCtrl);
+router.post('/refresh', refreshCtrl);
+router.get('/logout', logoutCtrl);
 
 // https://platform.auth-platform.test.com:1337/api/v1/auth/legacyUser/preflight/postman@aliencreations.com
 router.get('/preflight/:strategy/:username', (req, res, next) => {
   const { username, strategy } = req.params;
-  const logger = req.logger.child({ username, strategy });
+  const logger                 = req.logger.child({ username, strategy });
 
   apiUtils.respondWithErrorHandling(
     req,

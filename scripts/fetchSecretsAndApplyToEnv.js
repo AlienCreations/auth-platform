@@ -11,13 +11,13 @@ const setEnv = k => v => {
   return v;
 };
 
-const fetchAndSetPrivateKeyOnEnv = () => Secret.getItem(`secret/services/${process.env.THIS_SERVICE_NAME}/privateKey`)
+const fetchAndSetPrivateKeyOnEnv = () => Secret.getItem(`secret/data/services/${process.env.THIS_SERVICE_NAME}/privateKey`)
   .then(v => setEnv('PRIVATE_KEY')(v));
 
-const fetchAndSetWhitelistOnEnv = () => Secret.getItem('secret/services/whitelist')
+const fetchAndSetWhitelistOnEnv = () => Secret.getItem('secret/data/services/whitelist')
   .then(v => setEnv('WHITELIST')(v));
 
-const fetchAndSetPublicKeysOnEnv = () => Secret.getItem('secret/services/publicKeys')
+const fetchAndSetPublicKeysOnEnv = () => Secret.getItem('secret/data/services/publicKeys')
   .then(v => setEnv('PUBLIC_KEYS')(v));
 
 module.exports = () => Promise.all([

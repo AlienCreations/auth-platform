@@ -6,8 +6,8 @@ const R        = require('ramda'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantAccessRoleAssignment                     = require('../../controllers/api/tenantAccessRoleAssignment/createTenantAccessRoleAssignment'),
       updateTenantAccessRoleAssignment                     = require('../../controllers/api/tenantAccessRoleAssignment/updateTenantAccessRoleAssignment'),
@@ -34,34 +34,28 @@ router.post('/', ensureAuthorized, (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/tenantAccessRoleAssignment/id/123
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getTenantAccessRoleAssignmentById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['tenantId'],
+    identityPath    : ['tenant', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getTenantAccessRoleAssignmentById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessRoleAssignment',
-        () => updateTenantAccessRoleAssignment(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessRoleAssignment',
-        () => {
-          throw err;
-        }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateTenantAccessRoleAssignment',
+      () => updateTenantAccessRoleAssignment(req.body, id)
+    );
+  }
+);
 
 // https://platform.aliencreations.com/api/v1/tenantAccessRoleAssignment/id/123
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {

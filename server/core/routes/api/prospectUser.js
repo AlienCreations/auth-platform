@@ -7,15 +7,12 @@ const config   = require('config'),
 
 const MailSvc = require('../../services/mail/Mail')(config.mail.strategy);
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath');
 
 const createProspectUser     = require('../../controllers/api/prospectUser/createProspectUser'),
       updateProspectUser     = require('../../controllers/api/prospectUser/updateProspectUser'),
       getProspectUserByEmail = require('../../controllers/api/prospectUser/getProspectUserByEmail'),
       getProspectUserById    = require('../../controllers/api/prospectUser/getProspectUserById');
-
-const _getProspectUserById   = require('../../models/prospectUser/methods/getProspectUserById');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -49,28 +46,14 @@ router.get('/email/:email', ensureAuthorized, (req, res, next) => {
 router.put('/id/:id', ensureAuthorized, (req, res, next) => {
   const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getProspectUserById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateProspectUser',
-        () => updateProspectUser(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateProspectUser',
-        () => { throw err; }
-      );
-    });
+  apiUtils.respondWithErrorHandling(
+    req,
+    res,
+    next,
+    req.logger.child({ id }),
+    'updateProspectUser',
+    () => updateProspectUser(req.body, id)
+  );
 });
 
 // https://platform.aliencreations.com/api/v1/prospectUser/id/3

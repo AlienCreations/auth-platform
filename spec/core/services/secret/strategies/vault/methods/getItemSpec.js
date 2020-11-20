@@ -3,7 +3,7 @@
 const getItem = require('../../../../../../../server/core/services/secret/strategies/vault/methods/getItem');
 
 const FAKE_VALUE  = 'some value',
-      FAKE_RES    = { data : { value : FAKE_VALUE } },
+      FAKE_RES    = { data : { data : FAKE_VALUE } },
       FAKE_ERROR  = 'some error';
 
 const FAKE_VAULT_SUCCESS = {
@@ -15,7 +15,6 @@ const FAKE_VAULT_ERROR = {
 };
 
 describe('secret.vault.getItem', () => {
-
   it('gets an item from vault', done => {
     getItem(FAKE_VAULT_SUCCESS)('foo')
       .then(res => {
@@ -31,5 +30,4 @@ describe('secret.vault.getItem', () => {
         done();
       });
   });
-
 });

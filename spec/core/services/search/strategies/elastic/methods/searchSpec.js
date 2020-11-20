@@ -6,16 +6,12 @@ const FAKE_ERROR = new Error('some error');
 
 const FAKE_RES_SUCCESS = { hits : [{ foo : 'bar' }] };
 
-const FAKE_REQUEST_SUCCESS = {
-  post : (options, cb) => {
-    cb(null, 200, FAKE_RES_SUCCESS);
-  }
+const mockAxiosSuccess = {
+  post : () => Promise.resolve({ data : FAKE_RES_SUCCESS })
 };
 
-const FAKE_REQUEST_ERROR = {
-  post : (options, cb) => {
-    cb(FAKE_ERROR, 500);
-  }
+const mockAxiosError = {
+  post : () => Promise.reject(FAKE_ERROR)
 };
 
 const KNOWN_TEST_TYPE  = 'clouduser',
@@ -26,9 +22,8 @@ const KNOWN_TEST_TYPE  = 'clouduser',
       FAKE_FROM        = 0;
 
 describe('elastic.search', () => {
-
   it('searches without error', done => {
-    search(FAKE_REQUEST_SUCCESS)({
+    search(mockAxiosSuccess)({
       type  : KNOWN_TEST_TYPE,
       index : FAKE_INDEX,
       field : KNOWN_TEST_FIELD,
@@ -39,11 +34,12 @@ describe('elastic.search', () => {
       .then(res => {
         expect(res).toBe(FAKE_RES_SUCCESS);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('handles errors', done => {
-    search(FAKE_REQUEST_ERROR)({
+    search(mockAxiosError)({
       type  : KNOWN_TEST_TYPE,
       index : FAKE_INDEX,
       field : KNOWN_TEST_FIELD,
@@ -51,6 +47,7 @@ describe('elastic.search', () => {
       from  : FAKE_FROM,
       query : FAKE_QUERY
     })
+      .then(done.fail)
       .catch(res => {
         expect(res).toBe(FAKE_ERROR);
         done();

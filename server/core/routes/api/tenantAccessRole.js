@@ -6,8 +6,8 @@ const R        = require('ramda'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantAccessRole                     = require('../../controllers/api/tenantAccessRole/createTenantAccessRole'),
       updateTenantAccessRole                     = require('../../controllers/api/tenantAccessRole/updateTenantAccessRole'),
@@ -33,34 +33,28 @@ router.post('/', ensureAuthorized, (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/tenantAccessRole/id/123
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getTenantAccessRoleById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['tenantId'],
+    identityPath    : ['tenant', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getTenantAccessRoleById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessRole',
-        () => updateTenantAccessRole(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessRole',
-        () => {
-          throw err;
-        }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateTenantAccessRole',
+      () => updateTenantAccessRole(req.body, id)
+    );
+  }
+);
 
 // https://platform.aliencreations.com/api/v1/tenantAccessRole/id/123
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {

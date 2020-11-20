@@ -30,11 +30,11 @@ const publicKeys = makePublicKeysDict(process.env.SHARED_PUBLIC_KEY)(services);
 const privateKey = process.env.PRIVATE_KEY;
 
 const storePrivateKeys = () => Promise.all(services.map(
-  service => Secret.setItem(`secret/services/${service}/privateKey`, privateKey)
+  service => Secret.setItem(`secret/data/services/${service}/privateKey`, privateKey)
 ));
 
-const storePublicKeys = () => Secret.setItem('secret/services/publicKeys', publicKeys);
-const storeWhitelist  = () => Secret.setItem('secret/services/whitelist',  whitelist);
+const storePublicKeys = () => Secret.setItem('secret/data/services/publicKeys', publicKeys);
+const storeWhitelist  = () => Secret.setItem('secret/data/services/whitelist',  whitelist);
 
 module.exports = () => Promise.all([
   storePrivateKeys(),

@@ -1,87 +1,93 @@
 'use strict';
 
-const R                                      = require('ramda'),
-      { V, prr, validatePayload : validate } = require('@aliencreations/node-validator');
+const R = require('ramda');
 
-const isBoolean = R.is(Boolean);
+const {
+  label,
+  isRequired,
+  isOptional,
+  isObjectOf,
+  prr
+} = require('@aliencreations/node-validator');
 
-const validateTemplateParams = validate('template')({
-  templateName    : prr.isString,
-  templateContent : prr.isArray
-});
 
-const validateHtml = validate('html')({
-  html : V.required(prr.isString)
-});
+const validateTemplateParams = label('template', isObjectOf({
+  templateName    : isOptional(prr.isString),
+  templateContent : isOptional(prr.isArray)
+}));
 
-const validateMessageParams = validate('message')({
-  html                      : prr.isString,
-  text                      : prr.isString,
-  subject                   : prr.isStringOfLengthAtMost(255),
-  from_email                : prr.isString,
-  from_name                 : prr.isString,
-  to                        : prr.isArrayOfLengthAtLeast(1),
-  headers                   : R.both(R.is(Object), R.has('Reply-To')),
-  important                 : isBoolean,
-  track_opens               : isBoolean,
-  track_clicks              : isBoolean,
-  auto_text                 : isBoolean,
-  auto_html                 : isBoolean,
-  inline_css                : isBoolean,
-  url_strip_qs              : isBoolean,
-  preserve_recipients       : isBoolean,
-  view_content_link         : isBoolean,
-  bcc_address               : prr.isString,
-  tracking_domain           : prr.isString,
-  signing_domain            : prr.isString,
-  return_path_domain        : prr.isString,
-  merge                     : isBoolean,
-  merge_language            : prr.isString,
-  global_merge_vars         : prr.isArray,
-  merge_vars                : prr.isArray,
-  tags                      : prr.isArray,
-  subaccount                : prr.isString,
-  google_analytics_domains  : prr.isArray,
-  google_analytics_campaign : prr.isString,
-  metadata                  : R.is(Object),
-  recipient_metadata        : prr.isArray,
-  attachments               : prr.isArray,
-  images                    : prr.isArray
-});
+const validateHtml = label('html', isObjectOf({
+  html : isRequired(prr.isString)
+}));
 
-const validateTo = validate('message.to')({
-  email : V.required(prr.isString),
-  name  : V.required(prr.isString),
-  type  : V.required(R.identical('to'))
-});
+const validateMessageParams = label('message', isObjectOf({
+  html                      : isOptional(prr.isString),
+  text                      : isOptional(prr.isString),
+  subject                   : isOptional(prr.isStringOfLengthAtMost(255)),
+  from_email                : isOptional(prr.isString),
+  from_name                 : isOptional(prr.isString),
+  to                        : isOptional(prr.isArrayOfLengthAtLeast(1)),
+  headers                   : isOptional(R.both(R.is(Object), R.has('Reply-To'))),
+  important                 : isOptional(prr.isBoolean),
+  track_opens               : isOptional(prr.isBoolean),
+  track_clicks              : isOptional(prr.isBoolean),
+  auto_text                 : isOptional(prr.isBoolean),
+  auto_html                 : isOptional(prr.isBoolean),
+  inline_css                : isOptional(prr.isBoolean),
+  url_strip_qs              : isOptional(prr.isBoolean),
+  preserve_recipients       : isOptional(prr.isBoolean),
+  view_content_link         : isOptional(prr.isBoolean),
+  bcc_address               : isOptional(prr.isString),
+  tracking_domain           : isOptional(prr.isString),
+  signing_domain            : isOptional(prr.isString),
+  return_path_domain        : isOptional(prr.isString),
+  merge                     : isOptional(prr.isBoolean),
+  merge_language            : isOptional(prr.isString),
+  global_merge_vars         : isOptional(prr.isArray),
+  merge_vars                : isOptional(prr.isArray),
+  tags                      : isOptional(prr.isArray),
+  subaccount                : isOptional(prr.isString),
+  google_analytics_domains  : isOptional(prr.isArray),
+  google_analytics_campaign : isOptional(prr.isString),
+  metadata                  : isOptional(prr.isObject),
+  recipient_metadata        : isOptional(prr.isArray),
+  attachments               : isOptional(prr.isArray),
+  images                    : isOptional(prr.isArray)
+}));
 
-const validateGlobalMergeVar = validate('message.global_merge_var')({
-  name    : prr.isString,
-  content : prr.isString
-});
+const validateTo = label('message.to', isObjectOf({
+  email : isRequired(prr.isString),
+  name  : isRequired(prr.isString),
+  type  : isRequired(R.identical('to'))
+}));
 
-const validateMergeVar = validate('message.merge_var')({
-  rcpt : prr.isString,
-  vars : prr.isArrayOfLengthAtLeast(1)
-});
+const validateGlobalMergeVar = label('message.global_merge_var', isObjectOf({
+  name    : isOptional(prr.isString),
+  content : isOptional(prr.isString)
+}));
+
+const validateMergeVar = label('message.merge_var', isObjectOf({
+  rcpt : isOptional(prr.isString),
+  vars : isOptional(prr.isArrayOfLengthAtLeast(1))
+}));
 
 // Might be inaccurate, `user_id` was used in Mandrill example.
-const validateRecipientMetaData = validate('message.recipient_metadata')({
-  rcpt   : prr.isString,
-  values : R.has('user_id')
-});
+const validateRecipientMetaData = label('message.recipient_metadata', isObjectOf({
+  rcpt   : isOptional(prr.isString),
+  values : isOptional(R.has('user_id'))
+}));
 
-const validateAttachment = validate('message.attachment')({
-  type    : R.test(/\w\/\w/gi),
-  name    : prr.isString,
-  content : prr.isString
-});
+const validateAttachment = label('message.attachment', isObjectOf({
+  type    : isOptional(R.test(/\w\/\w/gi)),
+  name    : isOptional(prr.isString),
+  content : isOptional(prr.isString)
+}));
 
-const validateImage = validate('message.image')({
-  type    : R.test(/image\/\w/gi),
-  name    : prr.isString,
-  content : prr.isString
-});
+const validateImage = label('message.image', isObjectOf({
+  type    : isOptional(R.test(/image\/\w/gi)),
+  name    : isOptional(prr.isString),
+  content : isOptional(prr.isString)
+}));
 
 module.exports = {
   validateMessageParams,

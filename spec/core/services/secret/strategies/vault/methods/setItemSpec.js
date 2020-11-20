@@ -13,7 +13,6 @@ const FAKE_VAULT_ERROR = {
 };
 
 describe('secret.vault.setItem', () => {
-
   it('sets a secret in vault', done => {
     setItem(FAKE_VAULT_SUCCESS)('foo', 'bar')
       .then(res => {
@@ -29,5 +28,4 @@ describe('secret.vault.setItem', () => {
         done();
       });
   });
-
 });

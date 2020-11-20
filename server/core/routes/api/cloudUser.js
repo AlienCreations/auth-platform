@@ -6,16 +6,16 @@ const express  = require('express'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createCloudUser     = require('../../controllers/api/cloudUser/createCloudUser'),
       updateCloudUser     = require('../../controllers/api/cloudUser/updateCloudUser'),
       getCloudUserByEmail = require('../../controllers/api/cloudUser/getCloudUserByEmail'),
       getCloudUserById    = require('../../controllers/api/cloudUser/getCloudUserById'),
-      getCloudUserByIds   = require('../../controllers/api/cloudUser/getCloudUserByIds');
+      getCloudUsersByIds  = require('../../controllers/api/cloudUser/getCloudUsersByIds');
 
-const _getCloudUserById   = require('../../models/cloudUser/methods/getCloudUserById');
+const _getCloudUserById = require('../../models/cloudUser/methods/getCloudUserById');
 
 const ensureServiceJwt = require('../../middleware/ensureServiceJwt');
 
@@ -48,32 +48,28 @@ router.get('/email/:email', ensureAuthorized, (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/cloudUser/id/666
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getCloudUserById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['id'],
+    identityPath    : ['user', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getCloudUserById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateCloudUser',
-        () => updateCloudUser(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateCloudUser',
-        () => { throw err; }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateCloudUser',
+      () => updateCloudUser(req.body, id)
+    );
+  }
+);
 
 // https://platform.aliencreations.com/api/v1/cloudUser/id/3
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {
@@ -102,8 +98,8 @@ router.get('/ids/:ids', ensureAuthorized, ensureServiceJwt, (req, res, next) => 
     res,
     next,
     req.logger.child({ cloudUserIds }),
-    'getCloudUserById',
-    () => getCloudUserByIds(cloudUserIds)
+    'getCloudUsersByIds',
+    () => getCloudUsersByIds(cloudUserIds)
   );
 });
 

@@ -5,8 +5,8 @@ const express  = require('express'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantConnection         = require('../../controllers/api/tenantConnection/createTenantConnection'),
       updateTenantConnection         = require('../../controllers/api/tenantConnection/updateTenantConnection'),
@@ -31,32 +31,28 @@ router.post('/', ensureAuthorized, (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/tenantConnection/id/123
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getTenantConnectionById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['tenantId'],
+    identityPath    : ['tenant', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getTenantConnectionById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantConnection',
-        () => updateTenantConnection(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantConnection',
-        () => { throw err; }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateTenantConnection',
+      () => updateTenantConnection(req.body, id)
+    );
+  }
+);
 
 // https://platform.aliencreations.com/api/v1/tenantConnection/id/123
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {

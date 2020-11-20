@@ -17,6 +17,7 @@
     "@aliencreations/node-logger": "*",
     "@aliencreations/node-mysql-connector": "*",
     "@aliencreations/node-validator": "*",
+    "@elastic/elasticsearch": "^7.10.0",
     "alien-node-api-utils": "^1.0.1",
     "alien-node-redis-utils": "^1.4.5",
     "atob": "^2.1.2",

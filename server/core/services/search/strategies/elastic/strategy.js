@@ -1,7 +1,7 @@
 'use strict';
 
-const elasticsearch = require('elasticsearch'),
-      request       = require('request'),
+const elasticsearch = require('@elastic/elasticsearch'),
+      axios         = require('axios'),
       config        = require('config');
 
 const cacheUtils = require('../../../../utils/cache');
@@ -9,8 +9,7 @@ const cacheUtils = require('../../../../utils/cache');
 const { protocol, host, port, user, password } = config.search;
 
 const client = new elasticsearch.Client({
-  host : `${protocol}://${user}:${password}@${host}:${port}`,
-  log  : ['trace']
+  node : `${protocol}://${user}:${password}@${host}:${port}`
 });
 
 module.exports = {
@@ -19,5 +18,5 @@ module.exports = {
   deleteItem   : require('./methods/deleteItem'),
   batchProcess : require('./methods/batchProcess')(cacheUtils)(client),
   putMapping   : require('./methods/putMapping')(client),
-  search       : require('./methods/search')(request)
+  search       : require('./methods/search')(axios)
 };

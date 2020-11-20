@@ -7,8 +7,8 @@ const R        = require('ramda'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantAccessPermission                       = require('../../controllers/api/tenantAccessPermission/createTenantAccessPermission'),
       updateTenantAccessPermission                       = require('../../controllers/api/tenantAccessPermission/updateTenantAccessPermission'),
@@ -36,34 +36,28 @@ router.post('/', ensureAuthorized, (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/tenantAccessPermission/id/123
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getTenantAccessPermissionById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['tenantId'],
+    identityPath    : ['tenant', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getTenantAccessPermissionById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessPermission',
-        () => updateTenantAccessPermission(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child({ id }),
-        'updateTenantAccessPermission',
-        () => {
-          throw err;
-        }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateTenantAccessPermission',
+      () => updateTenantAccessPermission(req.body, id)
+    );
+  }
+);
 
 // https://platform.aliencreations.com/api/v1/tenantAccessPermission
 router.get('/', ensureAuthorized, (req, res, next) => {

@@ -32,7 +32,6 @@ const mockCacheUtilsNoKeys = {
 const FAKE_NUM_ITEMS_TO_PROCESS = 5;
 
 describe('elastic.batchProcess', () => {
-
   beforeEach(() => {
     spyOn(mockSearchClient, 'bulk');
   });

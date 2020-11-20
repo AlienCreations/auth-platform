@@ -6,8 +6,8 @@ const R        = require('ramda'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanEdit         = require('../../controllers/api/_helpers/ensureCanEdit');
+const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
+      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenant      = require('../../controllers/api/tenant/createTenant'),
       updateTenant      = require('../../controllers/api/tenant/updateTenant'),
@@ -15,7 +15,7 @@ const createTenant      = require('../../controllers/api/tenant/createTenant'),
       getTenantByDomain = require('../../controllers/api/tenant/getTenantByDomain'),
       getTenantById     = require('../../controllers/api/tenant/getTenantById');
 
-const _getTenantById    = require('../../models/tenant/methods/getTenantById');
+const _getTenantById = require('../../models/tenant/methods/getTenantById');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -62,32 +62,28 @@ router.get('/public/domain/:domain', (req, res, next) => {
 });
 
 // https://platform.aliencreations.com/api/v1/tenant/id/666
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+router.put(
+  '/id/:id',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getTenantById,
+    dataIdPath      : ['params', 'id'],
+    dataOwnerIdPath : ['id'],
+    identityPath    : ['tenant', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['params', 'id'], req);
 
-  _getTenantById(id)
-    .then(ensureCanEdit(req))
-    .then(() => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child,
-        'updateTenant',
-        () => updateTenant(req.body, id)
-      );
-    })
-    .catch(err => {
-      apiUtils.respondWithErrorHandling(
-        req,
-        res,
-        next,
-        req.logger.child,
-        'updateTenant',
-        () => { throw err; }
-      );
-    });
-});
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child,
+      'updateTenant',
+      () => updateTenant(req.body, id)
+    );
+  }
+);
 
 router.get('/', ensureAuthorized, (req, res, next) => {
   apiUtils.respondWithErrorHandling(
