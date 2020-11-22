@@ -94,7 +94,6 @@ router.put(
     );
   }
 );
->>>>>>> Stashed changes
 
 // https://platform.aliencreations.com/api/v1/cloudUser/id/3
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {
