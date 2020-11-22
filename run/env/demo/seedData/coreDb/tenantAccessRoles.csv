@@ -1,4 +1,4 @@
 id,tenant_id,tenant_location_id,title,status
 1,1,NULL,Super Admin,1
-2,1,NULL,User,1
-3,3,NULL,Admin,1
+2,1,NULL,Admin,1
+3,3,NULL,User,1

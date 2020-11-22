@@ -47,3 +47,5 @@ id,tenant_id,tenant_location_id,title,key,uri,method,status
 46,NULL,NULL,Get All Prospect Tenants,get-all-prospect-tenants,/api/v1/prospectTenant/,GET,1
 47,NULL,NULL,Search (refined),search-refined,/api/v1/search/index/:index/type/:type/field/:field/q/:query,GET,1
 48,NULL,NULL,Search,search,/api/v1/search/index/:index/q/:query,GET,1
+49,NULL,NULL,Get Self Cloud User,get-self-cloud-use,/api/v1/cloudUser/,GET,1
+50,NULL,NULL,Update Self Cloud User,update-self-cloud-use,/api/v1/cloudUser/,PUT,1

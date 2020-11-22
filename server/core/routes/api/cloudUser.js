@@ -71,9 +71,48 @@ router.put(
   }
 );
 
+// https://platform.aliencreations.com/api/v1/cloudUser
+router.put(
+  '/',
+  ensureAuthorized,
+  ensureCanActOnBehalfOfOwner({
+    getDataById     : _getCloudUserById,
+    dataIdPath      : ['user', 'id'],
+    dataOwnerIdPath : ['id'],
+    identityPath    : ['user', 'id']
+  }),
+  (req, res, next) => {
+    const id = maybeParseIntFromPath(['user', 'id'], req);
+
+    apiUtils.respondWithErrorHandling(
+      req,
+      res,
+      next,
+      req.logger.child({ id }),
+      'updateCloudUser',
+      () => updateCloudUser(req.body, id)
+    );
+  }
+);
+>>>>>>> Stashed changes
+
 // https://platform.aliencreations.com/api/v1/cloudUser/id/3
 router.get('/id/:id', ensureAuthorized, (req, res, next) => {
   const id = maybeParseIntFromPath(['params', 'id'], req);
+
+  apiUtils.respondWithErrorHandling(
+    req,
+    res,
+    next,
+    req.logger.child({ id }),
+    'getCloudUserById',
+    () => getCloudUserById(id)
+  );
+});
+
+// https://platform.aliencreations.com/api/v1/cloudUser/id/3
+router.get('/', ensureAuthorized, (req, res, next) => {
+  const id = maybeParseIntFromPath(['user', 'id'], req);
 
   apiUtils.respondWithErrorHandling(
     req,

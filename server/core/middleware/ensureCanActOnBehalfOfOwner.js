@@ -10,7 +10,7 @@ const ensureCanActOnBehalfOfOwner = ({
   dataIdPath      = ['params', 'id'],
   dataOwnerIdPath = ['body', 'tenantId'],
   identityPath    = ['tenant', 'id']
-}) => (req, _res, next) => {
+}) => (req, res, next) => {
   const id = maybeParseIntFromPath(dataIdPath)(req);
 
   getDataById(id)
