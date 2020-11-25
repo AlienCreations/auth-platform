@@ -5,6 +5,9 @@ const R                 = require('ramda'),
 
 const maybeParseIntFromPath = require('../controllers/api/_helpers/maybeParseIntFromPath');
 
+const SUPER_ADMIN_ROLE_ID = 1;
+const isSuperAdmin        = R.includes(SUPER_ADMIN_ROLE_ID);
+
 const ensureCanActOnBehalfOfOwner = ({
   getDataById,
   dataIdPath      = ['params', 'id'],
@@ -13,7 +16,12 @@ const ensureCanActOnBehalfOfOwner = ({
 }) => (req, res, next) => {
   const id = maybeParseIntFromPath(dataIdPath)(req);
 
-  getDataById(id)
+  if (R.compose(isSuperAdmin, R.pathOr([], ['user', 'roles']))(req)) {
+    return next();
+  }
+
+  Promise.resolve(id)
+    .then(getDataById)
     .then(data => {
       if (R.compose(
         R.apply(R.equals),
@@ -32,13 +40,7 @@ const ensureCanActOnBehalfOfOwner = ({
       }
     })
     .catch(err => {
-      next(error(
-        errors.auth.FORBIDDEN_API_ACCESS({
-          debug : {
-            originalError : err
-          }
-        })
-      ));
+      next(err);
     });
 };
 

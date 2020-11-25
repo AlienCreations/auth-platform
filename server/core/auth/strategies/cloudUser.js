@@ -4,10 +4,19 @@ const R             = require('ramda'),
       config        = require('config'),
       LocalStrategy = require('passport-local').Strategy;
 
-const passwords           = require('../../utils/password');
-const getCloudUserByEmail = require('../../models/cloudUser/methods/getCloudUserByEmail');
+const passwords = require('../../utils/password');
+
+const getCloudUserByEmail                         = require('../../models/cloudUser/methods/getCloudUserByEmail'),
+      getTenantAccessRoleAssignmentsByCloudUserId = require('../../controllers/api/tenantAccessRoleAssignment/getTenantAccessRoleAssignmentsByCloudUserId');
 
 const CLOUD_USER_PROFILE_FIELDS = R.path(['auth', 'tokenProfileFields'], config);
+
+const associateAssignedTenantAccessRoles = cloudUser => Promise.resolve(cloudUser)
+  .then(R.prop('id'))
+  .then(getTenantAccessRoleAssignmentsByCloudUserId)
+  .then(R.pluck('tenantAccessRoleId'))
+  .then(R.objOf('roles'))
+  .then(R.mergeRight(cloudUser));
 
 const maybeReturnProfileToPassport = (req, done, password) => cloudUser => {
   if (passwords.passwordMatchesHash(password, cloudUser.password)) {
@@ -29,6 +38,7 @@ const maybeReturnProfileToPassport = (req, done, password) => cloudUser => {
 
 const login = (req, email, password, done) => Promise.resolve(R.toLower(email))
   .then(getCloudUserByEmail)
+  .then(associateAssignedTenantAccessRoles)
   .then(maybeReturnProfileToPassport(req, done, password))
   .catch(err => done(null, false, { strategyCallback : () => req.logger.err(err) }));
 

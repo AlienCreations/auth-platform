@@ -1,18 +1,12 @@
 'use strict';
 
-const ensureServiceJwt = require('../../../server/core/middleware/ensureServiceJwt');
+const ensureServiceJwt             = require('../../../server/core/middleware/ensureServiceJwt'),
+      { maybeRejectOrResolveWith } = require('../../../server/core/utils/promise');
 
-let FAKE_SERVICE_REQ = { user : { strategy : 'service' } },
-    FAKE_INVALID_REQ = { user : { strategy : 'invalid' } };
-
-const FAKE_RES  = {},
-      FAKE_NEXT = (resolve, reject) => err => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve();
-      };
+const FAKE_SERVICE_REQ = { user : { strategy : 'service' } },
+      FAKE_INVALID_REQ = { user : { strategy : 'invalid' } },
+      FAKE_RES         = {},
+      FAKE_NEXT        = maybeRejectOrResolveWith;
 
 describe('ensureServiceJwt', () => {
   it('allows req when given request is from a service', done => {
