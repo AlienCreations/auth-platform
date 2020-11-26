@@ -219,7 +219,11 @@ has been added to the `.gitignore` so it isn't inadvertently committed to the re
 injection.
 
 ### NodeJS
+<<<<<<< HEAD
 Make sure [Node is installed](https://nodejs.org/en/download/). This app requires at least version 12.x with latest yarn or npm.
+=======
+Make sure [Node is installed](https://nodejs.org/en/download/). This app requires at least version 10.x with latest yarn or npm.
+>>>>>>> Initial commit
 Make sure you are the owner of the folder in which NPM needs to install any global dependencies: ([article with more information](http://howtonode.org/introduction-to-npm)).
 On OSX/Unix, this command should work:
 ```

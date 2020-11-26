@@ -149,6 +149,10 @@ const ensureTrueNullInCsvData = R.map(R.when(R.identical('NULL'), R.always(null)
 module.exports = {
   APPLICATION_ERROR_CODE_DB_DUPLICATE_ENTRY,
   APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT,
+<<<<<<< HEAD
+=======
+  createFakeReferenceNumber,
+>>>>>>> Initial commit
   transformDbColsToJsProps,
   override,
   recursivelyOmitProps,
