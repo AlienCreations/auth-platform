@@ -1,5 +1,7 @@
 'use strict';
 
+const cuid = require('cuid');
+
 const createProspectTenant = require('../../../../server/core/models/prospectTenant/methods/createProspectTenant'),
       commonMocks          = require('../../../_helpers/commonMocks');
 
@@ -15,7 +17,7 @@ const A_NUMBER = 1337;
 const fakeFullProspectTenantDataForQuery = {
   firstName   : FAKE_FIRST_NAME,
   lastName    : FAKE_LAST_NAME,
-  email       : commonMocks.createFakeReferenceNumber(5) + '@test.com',
+  email       : `${cuid()}@test.com`,
   phone       : FAKE_PHONE,
   zip         : FAKE_ZIP,
   tenantTitle : FAKE_TENANT_TITLE

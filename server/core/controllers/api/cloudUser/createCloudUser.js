@@ -11,7 +11,7 @@ const _createCloudUser       = require('../../../models/cloudUser/methods/create
       getCloudUserById       = require('../../../models/cloudUser/methods/getCloudUserById'),
       maybeConvertJsonFields = require('../_helpers/maybeConvertJsonFields');
 
-const JSON_FIELDS = ['permissionsJson', 'strategyRefs', 'authConfig', 'metaJson'];
+const JSON_FIELDS = ['strategyRefs', 'authConfig', 'metaJson'];
 
 /**
  * Create a new cloudUser record

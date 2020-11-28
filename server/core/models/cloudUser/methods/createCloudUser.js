@@ -8,7 +8,6 @@ const DB                    = require('../../../utils/db'),
       validateCloudUserData = require('../helpers/validateCloudUserData').validateForInsert;
 
 const maybeAddMissingJsonFields = R.compose(
-  R.unless(R.has('permissionsJson'), R.assoc('permissionsJson', '{}')),
   R.unless(R.has('authConfig'), R.assoc('authConfig', '{}')),
   R.unless(R.has('strategyRefs'), R.assoc('strategyRefs', '{}')),
   R.unless(R.has('metaJson'), R.assoc('metaJson', '{}'))

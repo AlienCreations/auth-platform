@@ -24,6 +24,7 @@ const FAKE_CLOUD_USER_DATA            = {
         state          : 'CA',
         zip            : '90210',
         occupation     : '',
+        language       : 'en-US',
         portrait       : '',
         country        : 'US',
         strategyRefs   : JSON.stringify({ legacyUser : 1 }),
@@ -70,7 +71,7 @@ describe('cloudUserCtrl.createCloudUser', () => {
   it('returns FAKE_CLOUD_USER_DATA when creating a cloudUser with all correct params', done => {
     createCloudUser(FAKE_CLOUD_USER_DATA)
       .then(res => {
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'permissionsJson', 'birthday'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'birthday'], res))
           .toEqual(R.omit(privateFields, decorateFakeDataToMatchResponse(FAKE_CLOUD_USER_DATA)));
         done();
       })

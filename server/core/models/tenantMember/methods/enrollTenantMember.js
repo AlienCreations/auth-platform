@@ -70,10 +70,11 @@ const mergeCloudUserIdWithTransactionStep = partialTenantMemberData => ({ connec
  * @returns {Promise}
  */
 const enrollTenantMember = logger => mixedData => {
-
   const _cloudUserData = R.compose(
-    R.assoc('password',        cuid()),
-    R.assoc('permissionsJson', '{}'),
+    R.assoc('password', cuid()),
+    R.assoc('metaJson', '{}'),
+    R.assoc('strategyRefs', '{}'),
+    R.assoc('authConfig', '{}'),
     R.omit(UNVALIDATED_PROPS),
     R.omit(TENANT_MEMBER_PROPS)
   )(mixedData);

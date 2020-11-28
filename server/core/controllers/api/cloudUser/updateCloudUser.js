@@ -15,7 +15,7 @@ const privateFields = R.reject(
   R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS)
 );
 
-const JSON_FIELDS = ['permissionsJson', 'strategyRefs', 'authConfig', 'metaJson'];
+const JSON_FIELDS = ['strategyRefs', 'authConfig', 'metaJson'];
 
 /**
  * Update a cloudUser record

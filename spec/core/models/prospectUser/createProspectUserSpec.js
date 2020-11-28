@@ -18,7 +18,7 @@ const makeFakeProspectUserData = includeOptional => {
   const fakeRequiredProspectUserData = {
     firstName : FAKE_FIRST_NAME,
     lastName  : FAKE_LAST_NAME,
-    email     : commonMocks.createFakeReferenceNumber(5) + '@test.com',
+    email     : `${uuid()}@test.com`,
     zip       : FAKE_ZIP
   };
 

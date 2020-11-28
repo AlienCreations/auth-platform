@@ -6,7 +6,7 @@ const ensureServiceJwt             = require('../../../server/core/middleware/en
 const FAKE_SERVICE_REQ = { user : { strategy : 'service' } },
       FAKE_INVALID_REQ = { user : { strategy : 'invalid' } },
       FAKE_RES         = {},
-      FAKE_NEXT        = maybeRejectOrResolveWith;
+      FAKE_NEXT        = maybeRejectOrResolveWith();
 
 describe('ensureServiceJwt', () => {
   it('allows req when given request is from a service', done => {

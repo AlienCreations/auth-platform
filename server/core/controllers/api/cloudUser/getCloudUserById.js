@@ -9,7 +9,7 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config),
 const _getCloudUserById = require('../../../models/cloudUser/methods/getCloudUserById'),
       maybeJsonParse    = require('../_helpers/maybeConvertJsonFields').parse;
 
-const maybeParseJson = maybeJsonParse(['permissionsJson', 'strategyRefs', 'authConfig', 'metaJson']);
+const maybeParseJson = maybeJsonParse(['strategyRefs', 'authConfig', 'metaJson']);
 
 /**
  * Get a cloudUser by his/her id from the database

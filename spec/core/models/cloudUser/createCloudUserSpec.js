@@ -11,6 +11,7 @@ const FAKE_FIRST_NAME         = 'Testfirstname',
       FAKE_MALFORMED_EMAIL    = 'foo',
       FAKE_LAST_NAME          = 'Testlastname',
       FAKE_PLAINTEXT_PASSWORD = 'abcd',
+      FAKE_LANGUAGE           = 'fr',
       FAKE_GENDER             = 'M',
       FAKE_UNSUPPORTED_GENDER = 'J',
       FAKE_PORTRAIT           = 'http://cdn.foo.com/assets/images/photos/whatever/foo.jpg',
@@ -38,6 +39,7 @@ const makeFakeCloudUserData = includeOptional => {
     address2      : FAKE_ADDRESS_2,
     portrait      : FAKE_PORTRAIT,
     gender        : FAKE_GENDER,
+    language      : FAKE_LANGUAGE,
     address1      : FAKE_ADDRESS,
     city          : FAKE_CITY,
     state         : FAKE_STATE,
@@ -150,6 +152,12 @@ describe('createCloudUser', () => {
   it('throws an error when given an unsupported gender', () => {
     expect(() => {
       createCloudUser(fullCloudUserDataSwapIn('gender', FAKE_UNSUPPORTED_GENDER));
+    }).toThrowError(commonMocks.illegalParamErrRegex);
+  });
+
+  it('throws an error when given a language of type other than String', () => {
+    expect(() => {
+      createCloudUser(fullCloudUserDataSwapIn('language', A_NUMBER));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 

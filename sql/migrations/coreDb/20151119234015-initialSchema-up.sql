@@ -113,7 +113,6 @@ CREATE TABLE IF NOT EXISTS `__CORE_DB_NAME__`.`agents` (
 
 CREATE TABLE IF NOT EXISTS `__CORE_DB_NAME__`.`cloud_users` (
   `id`               INT(10) UNSIGNED          NOT NULL AUTO_INCREMENT,
-  `permissions_json` JSON                      NOT NULL,
   `strategy_refs`    JSON                      NOT NULL,
   `auth_config`      JSON                      NOT NULL,
   `first_name`       VARCHAR(40)               NOT NULL DEFAULT '',
@@ -131,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `__CORE_DB_NAME__`.`cloud_users` (
   `zip`              VARCHAR(10)               NOT NULL DEFAULT '0',
   `country`          CHAR(2)                   NOT NULL DEFAULT '',
   `occupation`       VARCHAR(40)               NOT NULL DEFAULT '',
+  `language`         VARCHAR(5)                NOT NULL DEFAULT 'en',
   `portrait`         VARCHAR(255)              NOT NULL DEFAULT '',
   `status`           TINYINT(3) UNSIGNED       NOT NULL DEFAULT '1',
   `birthday`         DATE                               DEFAULT NULL,
