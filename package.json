@@ -15,6 +15,7 @@
     "@aliencreations/node-authenticator": "*",
     "@aliencreations/node-error": "*",
     "@aliencreations/node-logger": "*",
+    "@aliencreations/node-monitor": "^1.0.0",
     "@aliencreations/node-mysql-connector": "*",
     "@aliencreations/node-validator": "*",
     "@elastic/elasticsearch": "^7.10.0",

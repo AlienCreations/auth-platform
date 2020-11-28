@@ -48,6 +48,14 @@
     pino-pretty "^3.6.0"
     serialize-error "^4.1.0"
 
+"@aliencreations/node-monitor@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@aliencreations/node-monitor/1.0.0/7276d71108eb4a585cb4143de9d278cd3dc960820b1c7a0c32349f817742e5a4#0c964cec3d5f88bf4b68323d9974e7da2edc727e"
+  integrity sha512-D8ZcICOhOiXzEOcAvCUhe9j55LGKdptpvNsh1UkuGfkG1Kr6Pk4oM5KvWlfyeZS8WDqu8WZmoc8YpUsljWXlMw==
+  dependencies:
+    "@aliencreations/node-validator" "*"
+    ramda "^0.27.1"
+
 "@aliencreations/node-mysql-connector@*":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@aliencreations/node-mysql-connector/1.0.0/5886149b4f1bb7602b0f40583402e9008e4195ebe93a6ad3596d0c26411a8a73#2e82ba669087a400d51872f5b01eb1b175cbe983"
@@ -4909,7 +4917,7 @@ ramda@^0.26.1:
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
   integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
 
-ramda@^0.27.0, ramda@^0.27.x, ramda@^0.x.x:
+ramda@^0.27.0, ramda@^0.27.1, ramda@^0.27.x, ramda@^0.x.x:
   version "0.27.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.1.tgz#66fc2df3ef873874ffc2da6aa8984658abacf5c9"
   integrity sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==

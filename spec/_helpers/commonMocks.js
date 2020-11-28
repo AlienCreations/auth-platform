@@ -10,23 +10,7 @@ const APPLICATION_ERROR_CODE_DB_DUPLICATE_ENTRY        = 6002,
 
 const COMMON_TIMESTAMP = new Date('2016-02-01T17:23:30.000Z');
 
-const _getRandomLetter = () => {
-  const NUM_LETTERS_IN_ALPHABET  = 26,
-        CHAR_CODE_LETTER_A_INDEX = 97;
-
-  const randomLetterIndex              = Math.floor(Math.random() * NUM_LETTERS_IN_ALPHABET);
-  const randomCharCodeIndexFromLetterA = randomLetterIndex + CHAR_CODE_LETTER_A_INDEX;
-
-  const toCharCode = index => '0' + index;
-
-  return String.fromCharCode(toCharCode(randomCharCodeIndexFromLetterA));
-};
-
 const transformDbColsToJsProps = dbUtils.transformQueryResponse;
-
-const createFakeReferenceNumber = (length) => {
-  return '*'.repeat(length).split('').map(_getRandomLetter).join('').toUpperCase();
-};
 
 const COMMON_REQUEST_BODY = {
   flash   : R.identity,
@@ -165,7 +149,6 @@ const ensureTrueNullInCsvData = R.map(R.when(R.identical('NULL'), R.always(null)
 module.exports = {
   APPLICATION_ERROR_CODE_DB_DUPLICATE_ENTRY,
   APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT,
-  createFakeReferenceNumber,
   transformDbColsToJsProps,
   override,
   recursivelyOmitProps,

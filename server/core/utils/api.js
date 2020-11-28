@@ -48,6 +48,9 @@ const respondWithErrorHandling = R.curry((req, res, next, logger, controllerName
     .then(fn)
     .then(v => {
       const logData = mergeEndTime(perfLogData, startTime);
+      const { elapsedTime : duration } = logData;
+      const size = parseInt(req.headers['content-length'], 10);
+      req.monitor.recordCustomEvent(`${process.env.THIS_SERVICE_NAME}${controllerName}`, { size, duration });
       logger.perfEndSuccess(logData);
       return v;
     })
@@ -60,6 +63,9 @@ const respondWithErrorHandling = R.curry((req, res, next, logger, controllerName
     .then(apiUtils.jsonResponseSuccess(req, res))
     .catch(err => {
       const logData = mergeEndTime(perfLogData, startTime);
+      const { elapsedTime : duration } = logData;
+      const size = parseInt(req.headers['content-length'], 10);
+      req.monitor.recordCustomEvent(`${process.env.THIS_SERVICE_NAME}${controllerName}`, { size, duration });
       logger.err(err);
       logger.perfEndFail(logData);
       return apiUtils.jsonResponseError(req, res, next, config.errors.decorateForJson(scrubErrorForBrowser(err, req)));
