@@ -241,7 +241,12 @@ const config             = {
       port   : R.pathOr(22, ['env', 'MAIL_PORT'], process),
       apiKey : R.pathOr('', ['env', 'MAIL_API_KEY'], process)
     }
+  },
+
+  monitor : {
+    strategy : R.pathOr('local', ['env', 'MONITOR_STRATEGY'], process)
   }
+
 };
 
 module.exports = config;
