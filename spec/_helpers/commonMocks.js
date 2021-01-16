@@ -144,7 +144,8 @@ const recursivelyOmitProps = R.curry((omittedPropsArr, v) => {
   return R.map(recursivelyOmitProps(omittedPropsArr), v);
 });
 
-const ensureTrueNullInCsvData = R.map(R.when(R.identical('NULL'), R.always(null)));
+const _ensureTrueNullInCsvData = R.map(R.when(R.identical('NULL'), R.always(null)));
+const ensureTrueNullInCsvData = R.ifElse(R.is(Array), R.map(_ensureTrueNullInCsvData), _ensureTrueNullInCsvData);
 
 module.exports = {
   APPLICATION_ERROR_CODE_DB_DUPLICATE_ENTRY,

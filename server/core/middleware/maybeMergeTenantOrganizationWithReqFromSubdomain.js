@@ -20,13 +20,6 @@ const appendTenantToReqAndJump = R.curry((req, next, tenantOrganization) => {
   next();
 });
 
-/**
- * Extracts the tenantOrganization subdomain from the hostname and looks up the
- * respective tenantOrganization from the database so it can be appended to the request object.
- * @param {Object} req
- * @param {Object} res
- * @param {Function} next
- */
 const maybeMergeTenantOrganizationWithReqFromSubdomain = (req, res, next) => {
   const tenantId = R.path(['tenant', 'id'], req);
 

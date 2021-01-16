@@ -12,7 +12,7 @@ const EXPOSE_HEADERS = [
   'X-Auth-Token',
   'X-Refresh-Token',
   'X-profile',
-  'X-RequestID',
+  'x-request-id',
   'X-Content-Type-Options',
   'x-cookies'
 ].join(',');

@@ -20,13 +20,6 @@ const appendTenantToReqAndJump = R.curry((req, next, tenant) => {
   next();
 });
 
-/**
- * Extracts the tenant domain from the hostname and looks up the
- * respective tenant from the database so it can be appended to the request object.
- * @param {Object} req
- * @param {Object} res
- * @param {Function} next
- */
 const maybeMergeTenantWithReqFromDomain = (req, res, next) => Promise.resolve(req)
   .then(extractDomainFromRequest)
   .then(getTenantByDomain)

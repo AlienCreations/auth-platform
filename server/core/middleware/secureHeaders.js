@@ -20,7 +20,7 @@ const secureHeaders = (req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('X-Permitted-Cross-Domain-Policies', 'none');
 
-  res.set('X-RequestID', req.get('X-RequestID'));
+  res.set('x-request-id', req.get('x-request-id'));
 
   next();
 };

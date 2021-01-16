@@ -78,7 +78,7 @@ router.put(
       req,
       res,
       next,
-      req.logger.child,
+      req.logger.child({ id }),
       'updateTenant',
       () => updateTenant(req.body, id)
     );
@@ -90,7 +90,7 @@ router.get('/', ensureAuthorized, (req, res, next) => {
     req,
     res,
     next,
-    req.logger.child,
+    req.logger.child({}),
     'getAllTenants',
     getAllTenants
   );
@@ -104,7 +104,7 @@ router.get('/id/:id', ensureAuthorized, (req, res, next) => {
     req,
     res,
     next,
-    req.logger.child,
+    req.logger.child({ id }),
     'getTenantById',
     () => getTenantById(id)
   );

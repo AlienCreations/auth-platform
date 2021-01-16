@@ -135,14 +135,12 @@ const config             = {
       'id',
       'firstName',
       'lastName',
-      'originalUserId',
       'email',
       'phone',
       'portrait',
       'strategy',
       'alg',
       'roles',
-      'refreshToken',
       'language',
       'timezone',
       'city',
@@ -152,7 +150,9 @@ const config             = {
       'aud',
       'key',
       'ipWhitelist',
-      'metaJson'
+      'metaJson',
+      'tenant',
+      'tenantOrganization'
     ],
     requireMfaFields : [
       'id',
