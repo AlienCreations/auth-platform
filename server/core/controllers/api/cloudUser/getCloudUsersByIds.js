@@ -10,7 +10,7 @@ const _getCloudUsersByIds    = require('../../../models/cloudUser/methods/getClo
       maybeConvertJsonFields = require('../_helpers/maybeConvertJsonFields');
 
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS),
-      JSON_FIELDS   = ['permissionsJson', 'strategyRefs', 'authConfig', 'metaJson'];
+      JSON_FIELDS   = ['strategyRefs', 'authConfig', 'metaJson'];
 
 /**
  * Get an array of cloudUser by ids from the database

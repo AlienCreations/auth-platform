@@ -11,7 +11,7 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, CLOUD_USER_PRIVATE_FIELDS)
 const _getAllCloudUsers = require('../../../models/cloudUser/methods/getAllCloudUsers'),
       maybeJsonParse    = require('../_helpers/maybeConvertJsonFields').parse;
 
-const maybeParseJson = maybeJsonParse(['permissionsJson', 'strategyRefs', 'authConfig', 'metaJson']);
+const maybeParseJson = maybeJsonParse(['strategyRefs', 'authConfig', 'metaJson']);
 
 /**
  * Get all cloudUsers from the database

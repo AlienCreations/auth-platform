@@ -18,7 +18,7 @@ const FAKE_RECORD_ID       = 1234,
       FAKE_NEXT            = maybeRejectOrResolveWith(),
       FAKE_GET             = id => Promise.resolve({ id, tenantId : FAKE_TENANT_ID_FOO });
 
-fdescribe('ensureCanActOnBehalfOfOwner', () => {
+describe('ensureCanActOnBehalfOfOwner', () => {
   it('allows permission if ownership identity verified', done => {
     new Promise((resolve, reject) => {
       ensureCanActOnBehalfOfOwner({

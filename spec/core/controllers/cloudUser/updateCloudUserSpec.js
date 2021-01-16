@@ -71,5 +71,4 @@ describe('cloudUserCtrl.updateCloudUser', () => {
         done();
       });
   });
-
 });

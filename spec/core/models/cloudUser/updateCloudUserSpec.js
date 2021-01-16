@@ -8,12 +8,15 @@ const updateCloudUser  = require('../../../../server/core/models/cloudUser/metho
 
 const KNOWN_TEST_ID                  = 1,
       FAKE_UNKNOWN_ID                = 1337,
-      FAKE_UPDATE_PERMISSIONS_JSON   = JSON.stringify({ foo : 'bar' }),
+      FAKE_UPDATE_META_JSON          = JSON.stringify({ foo : 'bar' }),
+      FAKE_UPDATE_AUTH_CONFIG        = JSON.stringify({ baz : 'bat' }),
+      FAKE_UPDATE_STRATEGY_REFS      = JSON.stringify({ fuz : 'buz' }),
       FAKE_MALFORMED_JSON            = 'foo',
       FAKE_UPDATE_FIRST_NAME         = 'newfoo',
       FAKE_UPDATE_MIDDLE_INITIAL     = 'N',
       FAKE_UPDATE_LAST_NAME          = 'newbar',
       FAKE_UPDATE_GENDER             = 'F',
+      FAKE_UPDATE_LANGUAGE           = 'en-UK',
       FAKE_UNSUPPORTED_GENDER        = 'J',
       FAKE_UPDATE_PORTRAIT           = 'http://cdn.fooz.com/assets/images/photos/whatever/fooz.jpg',
       FAKE_UPDATE_EMAIL              = 'newfoo@newbar.com',
@@ -47,7 +50,6 @@ const assertUpdatesIfValid = (field, value) => {
 };
 
 describe('updateCloudUser', () => {
-
   it('fails gracefully when given an unknown cloudUser id to update', done => {
     updateCloudUser(FAKE_UNKNOWN_ID, {
       firstName : FAKE_UPDATE_FIRST_NAME
@@ -88,22 +90,64 @@ describe('updateCloudUser', () => {
     }).toThrowError(commonMocks.unsupportedParamErrRegex);
   });
 
-  it('throws an error when given malformed JSON for permissionsJson', () => {
+  it('throws an error when given malformed JSON for metaJson', () => {
     expect(() => {
       updateCloudUser(KNOWN_TEST_ID, {
-        permissionsJson : FAKE_MALFORMED_JSON
+        metaJson : FAKE_MALFORMED_JSON
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('updates a cloudUser when given a valid permissionsJson', done => {
+  it('updates a cloudUser when given a valid metaJson', done => {
     updateCloudUser(KNOWN_TEST_ID, {
-      permissionsJson : FAKE_UPDATE_PERMISSIONS_JSON
+      metaJson : FAKE_UPDATE_META_JSON
     }).then(data => {
       expect(data.affectedRows).toBe(1);
       getCloudUserById(KNOWN_TEST_ID)
         .then(res => {
-          expect(JSON.parse(res.permissionsJson)).toEqual(JSON.parse(FAKE_UPDATE_PERMISSIONS_JSON));
+          expect(JSON.parse(res.metaJson)).toEqual(JSON.parse(FAKE_UPDATE_META_JSON));
+          done();
+        });
+    });
+  });
+
+  it('throws an error when given malformed JSON for authConfig', () => {
+    expect(() => {
+      updateCloudUser(KNOWN_TEST_ID, {
+        authConfig : FAKE_MALFORMED_JSON
+      });
+    }).toThrowError(commonMocks.illegalParamErrRegex);
+  });
+
+  it('updates a cloudUser when given a valid authConfig', done => {
+    updateCloudUser(KNOWN_TEST_ID, {
+      authConfig : FAKE_UPDATE_AUTH_CONFIG
+    }).then(data => {
+      expect(data.affectedRows).toBe(1);
+      getCloudUserById(KNOWN_TEST_ID)
+        .then(res => {
+          expect(JSON.parse(res.authConfig)).toEqual(JSON.parse(FAKE_UPDATE_AUTH_CONFIG));
+          done();
+        });
+    });
+  });
+
+  it('throws an error when given malformed JSON for strategyRefs', () => {
+    expect(() => {
+      updateCloudUser(KNOWN_TEST_ID, {
+        strategyRefs : FAKE_MALFORMED_JSON
+      });
+    }).toThrowError(commonMocks.illegalParamErrRegex);
+  });
+
+  it('updates a cloudUser when given a valid strategyRefs', done => {
+    updateCloudUser(KNOWN_TEST_ID, {
+      strategyRefs : FAKE_UPDATE_STRATEGY_REFS
+    }).then(data => {
+      expect(data.affectedRows).toBe(1);
+      getCloudUserById(KNOWN_TEST_ID)
+        .then(res => {
+          expect(JSON.parse(res.strategyRefs)).toEqual(JSON.parse(FAKE_UPDATE_STRATEGY_REFS));
           done();
         });
     });
@@ -187,6 +231,16 @@ describe('updateCloudUser', () => {
   });
 
   assertUpdatesIfValid('email', FAKE_UPDATE_EMAIL);
+
+  it('throws an error when given a language of type other than String', () => {
+    expect(() => {
+      updateCloudUser(KNOWN_TEST_ID, {
+        language : A_POSITIVE_NUMBER
+      });
+    }).toThrowError(commonMocks.illegalParamErrRegex);
+  });
+
+  assertUpdatesIfValid('language', FAKE_UPDATE_LANGUAGE);
 
   it('throws an error when given a phone of type other than String', () => {
     expect(() => {
