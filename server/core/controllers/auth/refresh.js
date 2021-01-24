@@ -18,8 +18,7 @@ const cache                 = require('../../utils/cache'),
 const refresh = (req, res, next) => {
   const MASTER_PRIVATE_KEY = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
 
-  const errorResponse                   = _error => apiUtils.jsonResponseError(req, res, next, config.errors.decorateForJson(_error));
-  const passivelyDeleteUsedRefreshToken = () => authenticator.deleteRefreshToken(cache)(req.body.refreshToken);
+  const errorResponse = _error => apiUtils.jsonResponseError(req, res, next, config.errors.decorateForJson(_error));
 
   return Promise.resolve(req.body.refreshToken)
     .then(authenticator.lookupRefreshToken(cache))
@@ -33,7 +32,6 @@ const refresh = (req, res, next) => {
           refreshToken : req.body.refreshToken,
           debug        : { originalError : config.errors.auth.REFRESH_TOKEN_INVALID() }
         });
-        passivelyDeleteUsedRefreshToken();
         return errorResponse(config.errors.auth.REFRESH_TOKEN_INVALID());
       }
 
@@ -42,12 +40,10 @@ const refresh = (req, res, next) => {
           payload,
           debug : { originalError : config.errors.auth.UNAUTHORIZED_IP_ADDRESS() }
         });
-        passivelyDeleteUsedRefreshToken();
         return errorResponse(config.errors.auth.UNAUTHORIZED_IP_ADDRESS());
       }
 
       return authenticator.sign(payload, MASTER_PRIVATE_KEY, jwtOptions)
-        .then(R.tap(passivelyDeleteUsedRefreshToken))
         .then(token => {
           const expires      = config.auth.refreshTokenOptions.expiresInSeconds;
           const refreshToken = authenticator.generateAndCacheRefreshToken(cache)({ payload, secret, expires });
