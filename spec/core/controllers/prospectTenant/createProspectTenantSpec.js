@@ -32,7 +32,6 @@ let FAKE_PROSPECT_TENANT_DATA_WITH_KNOWN_TEST_PROSPECT_TENANT_EMAIL,
     FakeMailSvc;
 
 describe('prospectTenantCtrl.createProspectTenant', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
 
@@ -65,6 +64,7 @@ describe('prospectTenantCtrl.createProspectTenant', () => {
 
   it('throws an error when creating a prospectTenant with incomplete params', done => {
     createProspectTenant(FakeMailSvc)(FAKE_PROSPECT_TENANT_DATA_INCOMPLETE)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -73,6 +73,7 @@ describe('prospectTenantCtrl.createProspectTenant', () => {
 
   it('throws an error when creating a duplicate prospectTenant (email should be unique)', done => {
     createProspectTenant(FakeMailSvc)(FAKE_PROSPECT_TENANT_DATA_WITH_KNOWN_TEST_PROSPECT_TENANT_EMAIL)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();

@@ -21,7 +21,6 @@ let KNOWN_TEST_PROSPECT_USER_DATA,
     KNOWN_TEST_ID;
 
 describe('prospectUserCtrl.getProspectUserById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectUsers.csv'), (err, data) => {
       KNOWN_TEST_PROSPECT_USER_DATA = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -36,11 +35,13 @@ describe('prospectUserCtrl.getProspectUserById', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(R.omit(privateFields, KNOWN_TEST_PROSPECT_USER_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for an prospectUser that does not exist', done => {
     getProspectUserById(FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -49,6 +50,7 @@ describe('prospectUserCtrl.getProspectUserById', () => {
 
   it('throws an error when given a malformed id', done => {
     getProspectUserById(FAKE_MALFORMED_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -57,6 +59,7 @@ describe('prospectUserCtrl.getProspectUserById', () => {
 
   it('throws an error when looking for an prospectUser without an id', done => {
     getProspectUserById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -65,6 +68,7 @@ describe('prospectUserCtrl.getProspectUserById', () => {
 
   it('throws an error when given a null id', done => {
     getProspectUserById(null)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();

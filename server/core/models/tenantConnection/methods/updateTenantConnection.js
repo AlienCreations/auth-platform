@@ -8,28 +8,26 @@ const DB                           = require('../../../utils/db'),
 
 const decorateDataForDbInsertion = connectionData => {
   const TENANT_CONNECTION_ENCRYPTION_KEY = R.path(['env', 'TENANT_CONNECTION_ENCRYPTION_KEY'], process),
-        dataCopy                         = R.clone(connectionData),
-        plainTextPassword                = dataCopy.password;
+        plainTextPassword                = connectionData.password || '';
 
-  if (plainTextPassword) {
-    dataCopy.password = passwords.encrypt(plainTextPassword, TENANT_CONNECTION_ENCRYPTION_KEY);
-  }
-
-  return dataCopy;
+  return R.compose(
+    R.when(
+      R.prop('password'),
+      R.assoc('password', passwords.encrypt(plainTextPassword, TENANT_CONNECTION_ENCRYPTION_KEY))
+    )
+  )(connectionData);
 };
 
 const createAndExecuteQuery = (id, _connectionData) => {
   const connectionData = decorateDataForDbInsertion(_connectionData);
 
-  const fields = R.keys(connectionData);
+  const query = `UPDATE ${DB.coreDbName}.tenant_connections
+                 SET ${DB.prepareProvidedFieldsForSet(connectionData)}
+                 WHERE id = ?`;
 
-  const query = 'UPDATE ' + DB.coreDbName + '.tenant_connections SET ' +
-                DB.prepareProvidedFieldsForSet(fields) + ' ' +
-                'WHERE id = ?';
-
-  const values = R.append(id, DB.prepareValues(connectionData));
-
+  const values         = R.append(id, DB.prepareValues(connectionData));
   const queryStatement = [query, values];
+
   return DB.query(queryStatement);
 };
 
@@ -41,7 +39,6 @@ const createAndExecuteQuery = (id, _connectionData) => {
  * @returns {Promise}
  */
 const updateTenantConnection = (id, connectionData) => {
-
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(connectionData)) {
     return Promise.resolve(false);
   }

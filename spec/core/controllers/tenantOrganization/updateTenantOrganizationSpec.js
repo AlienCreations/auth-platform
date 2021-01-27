@@ -26,7 +26,6 @@ let KNOWN_TEST_TENANT_DATA,
 const metaJsonLens = R.lensPath(['metaJson']);
 
 describe('tenantOrganizationCtrl.updateTenantOrganization', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantOrganizations.csv'), (err, data) => {
 

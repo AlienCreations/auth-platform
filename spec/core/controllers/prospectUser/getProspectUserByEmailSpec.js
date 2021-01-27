@@ -21,7 +21,6 @@ let KNOWN_TEST_PROSPECT_USER_DATA,
     KNOWN_TEST_EMAIL;
 
 describe('prospectUserCtrl.getProspectUserByEmail', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectUsers.csv'), (err, data) => {
       KNOWN_TEST_PROSPECT_USER_DATA = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -36,11 +35,13 @@ describe('prospectUserCtrl.getProspectUserByEmail', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(R.omit(privateFields, KNOWN_TEST_PROSPECT_USER_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for an prospectUser that does not exist', done => {
     getProspectUserByEmail(FAKE_UNKNOWN_EMAIL)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -49,6 +50,7 @@ describe('prospectUserCtrl.getProspectUserByEmail', () => {
 
   it('throws an error when given a malformed email', done => {
     getProspectUserByEmail(FAKE_MALFORMED_EMAIL)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -57,6 +59,7 @@ describe('prospectUserCtrl.getProspectUserByEmail', () => {
 
   it('throws an error when looking for an prospectUser without an email', done => {
     getProspectUserByEmail()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -65,6 +68,7 @@ describe('prospectUserCtrl.getProspectUserByEmail', () => {
 
   it('throws an error when given a null email', done => {
     getProspectUserByEmail(null)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();

@@ -5,23 +5,18 @@ const R = require('ramda');
 const DB                 = require('../../../utils/db'),
       validateTenantData = require('../helpers/validateTenantData');
 
-const decorateDataForDbInsertion = tenantData => {
-  const dataCopy = R.clone(tenantData);
-  return dataCopy;
-};
+const decorateDataForDbInsertion = R.identity;
 
 const createAndExecuteQuery = (id, _tenantData) => {
   const tenantData = decorateDataForDbInsertion(_tenantData);
 
-  const fields = R.keys(tenantData);
+  const query = `UPDATE ${DB.coreDbName}.tenants
+                 SET ${DB.prepareProvidedFieldsForSet(tenantData)}
+                 WHERE id = ?`;
 
-  const query = 'UPDATE ' + DB.coreDbName + '.tenants SET ' +
-                DB.prepareProvidedFieldsForSet(fields) + ' ' +
-                'WHERE id = ?';
-
-  const values = R.append(id, DB.prepareValues(tenantData));
-
+  const values         = R.append(id, DB.prepareValues(tenantData));
   const queryStatement = [query, values];
+
   return DB.query(queryStatement);
 };
 
@@ -33,7 +28,6 @@ const createAndExecuteQuery = (id, _tenantData) => {
  * @returns {Promise}
  */
 const updateTenant = (id, tenantData) => {
-
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(tenantData)) {
     return Promise.resolve(false);
   }

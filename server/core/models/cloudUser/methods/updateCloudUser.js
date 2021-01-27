@@ -25,26 +25,25 @@ const maybeClearStalePasswordReset = R.curry((id, cloudUserData) => {
 });
 
 const decorateDataForDbInsertion = cloudUserData => {
-  const dataCopy           = R.clone(cloudUserData),
-        plainTextPassword  = dataCopy.password,
+  const plainTextPassword  = cloudUserData.password || '',
         saltRoundsExponent = R.path(['auth', 'SALT_ROUNDS_EXPONENT'], config);
 
-  if (plainTextPassword) {
-    dataCopy.password = passwords.makePasswordHash(plainTextPassword, saltRoundsExponent);
-  }
-
-  return dataCopy;
+  return R.compose(
+    R.when(
+      R.prop('password'),
+      R.assoc('password', passwords.makePasswordHash(plainTextPassword, saltRoundsExponent))
+    )
+  )(cloudUserData);
 };
 
-const createAndExecuteQuery = R.curry((id, cloudUserData) => {
-  cloudUserData = decorateDataForDbInsertion(cloudUserData);
+const createAndExecuteQuery = R.curry((id, _cloudUserData) => {
+  const cloudUserData = decorateDataForDbInsertion(_cloudUserData);
 
-  const fields = R.keys(cloudUserData);
-  const query  = 'UPDATE ' + DB.coreDbName + '.cloud_users SET ' +
-                 DB.prepareProvidedFieldsForSet(fields) + ' ' +
-                 'WHERE id = ?';
-  const values = R.append(id, DB.prepareValues(cloudUserData));
+  const query = `UPDATE ${DB.coreDbName}.cloud_users
+                 SET ${DB.prepareProvidedFieldsForSet(cloudUserData)}
+                 WHERE id = ?`;
 
+  const values         = R.append(id, DB.prepareValues(cloudUserData));
   const queryStatement = [query, values];
 
   return DB.query(queryStatement);
@@ -57,7 +56,6 @@ const createAndExecuteQuery = R.curry((id, cloudUserData) => {
  * @returns {Promise}
  */
 const updateCloudUser = R.curry((id, cloudUserData) => {
-
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(cloudUserData)) {
     return Promise.resolve(false);
   }

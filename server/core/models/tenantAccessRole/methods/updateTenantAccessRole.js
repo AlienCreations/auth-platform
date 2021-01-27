@@ -5,23 +5,18 @@ const R = require('ramda');
 const DB                           = require('../../../utils/db'),
       validateTenantAccessRoleData = require('../helpers/validateTenantAccessRoleData');
 
-const decorateDataForDbInsertion = tenantAccessRoleData => {
-  const dataCopy = R.clone(tenantAccessRoleData);
-  return dataCopy;
-};
+const decorateDataForDbInsertion = R.identity;
 
 const createAndExecuteQuery = (id, _tenantAccessRoleData) => {
   const tenantAccessRoleData = decorateDataForDbInsertion(_tenantAccessRoleData);
 
-  const fields = R.keys(tenantAccessRoleData);
+  const query = `UPDATE ${DB.coreDbName}.tenant_access_roles
+                 SET ${DB.prepareProvidedFieldsForSet(tenantAccessRoleData)}
+                 WHERE id = ?`;
 
-  const query = 'UPDATE ' + DB.coreDbName + '.tenant_access_roles SET ' +
-                DB.prepareProvidedFieldsForSet(fields) + ' ' +
-                'WHERE id = ?';
-
-  const values = R.append(id, DB.prepareValues(tenantAccessRoleData));
-
+  const values         = R.append(id, DB.prepareValues(tenantAccessRoleData));
   const queryStatement = [query, values];
+
   return DB.query(queryStatement);
 };
 
@@ -33,7 +28,6 @@ const createAndExecuteQuery = (id, _tenantAccessRoleData) => {
  * @returns {Promise}
  */
 const updateTenantAccessRole = (id, tenantAccessRoleData) => {
-
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(tenantAccessRoleData)) {
     return Promise.resolve(false);
   }

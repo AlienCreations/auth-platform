@@ -8,19 +8,17 @@ const DB                           = require('../../../utils/db'),
 
 const decorateDataForDbInsertion = connectionData => {
   const TENANT_CONNECTION_ENCRYPTION_KEY = R.path(['env', 'TENANT_CONNECTION_ENCRYPTION_KEY'], process);
-  const dataCopy                         = R.clone(connectionData);
 
-  dataCopy.password = passwords.encrypt(dataCopy.password, TENANT_CONNECTION_ENCRYPTION_KEY);
-
-  return dataCopy;
+  return R.compose(
+    R.assoc('password', passwords.encrypt(connectionData.password, TENANT_CONNECTION_ENCRYPTION_KEY))
+  )(connectionData);
 };
 
 const createAndExecuteQuery = _connectionData => {
   const connectionData = decorateDataForDbInsertion(_connectionData);
 
-  const fields = R.keys(connectionData);
-  const query  = 'INSERT INTO ' + DB.coreDbName + '.tenant_connections SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `INSERT INTO ${DB.coreDbName}.tenant_connections
+                 SET ${DB.prepareProvidedFieldsForSet(connectionData)}`;
 
   const queryStatement = [query, DB.prepareValues(connectionData)];
   return DB.query(queryStatement);

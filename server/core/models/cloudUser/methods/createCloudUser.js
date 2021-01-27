@@ -20,12 +20,11 @@ const decorateDataForDbInsertion = R.compose(
   maybeAddMissingJsonFields
 );
 
-const createAndExecuteQuery = cloudUserData => {
-  cloudUserData = decorateDataForDbInsertion(cloudUserData);
+const createAndExecuteQuery = _cloudUserData => {
+  const cloudUserData = decorateDataForDbInsertion(_cloudUserData);
 
-  const fields = R.keys(cloudUserData);
-  const query  = 'INSERT INTO ' + DB.coreDbName + '.cloud_users SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `INSERT INTO ${DB.coreDbName}.cloud_users
+                 SET ${DB.prepareProvidedFieldsForSet(cloudUserData)}`;
 
   const queryStatement = [query, DB.prepareValues(cloudUserData)];
   return DB.query(queryStatement);

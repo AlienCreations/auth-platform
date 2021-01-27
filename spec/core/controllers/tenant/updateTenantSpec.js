@@ -27,7 +27,6 @@ let KNOWN_TEST_TENANT_DATA,
     updatedTenantData;
 
 describe('tenantCtrl.updateTenant', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
 
@@ -48,11 +47,13 @@ describe('tenantCtrl.updateTenant', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(updatedTenantData);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when updating an tenant that does not exist', done => {
     updateTenant(FAKE_TENANT_UPDATE_DATA, FAKE_UNKNOWN_TENANT_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -61,6 +62,7 @@ describe('tenantCtrl.updateTenant', () => {
 
   it('throws an error when updating with an existing domain', done => {
     updateTenant(FAKE_TENANT_UPDATE_DATA_EXISTING_DOMAIN, KNOWN_TEST_TENANT_ID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();

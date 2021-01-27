@@ -29,7 +29,6 @@ let KNOWN_TEST_PROSPECT_TENANT_DATA,
 const emailLens = R.lensPath(['email']);
 
 describe('prospectTenantCtrl.updateProspectTenant', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
 
@@ -51,11 +50,13 @@ describe('prospectTenantCtrl.updateProspectTenant', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(updatedProspectTenantData);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when updating a prospectTenant that does not exist', done => {
     updateProspectTenant(FAKE_PROSPECT_TENANT_UPDATE_DATA, FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -64,6 +65,7 @@ describe('prospectTenantCtrl.updateProspectTenant', () => {
 
   it('throws an error when updating with an existing email', done => {
     updateProspectTenant(FAKE_PROSPECT_TENANT_UPDATE_DATA_EXISTING_EMAIL, KNOWN_TEST_ID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();

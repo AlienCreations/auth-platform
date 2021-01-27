@@ -53,11 +53,13 @@ describe('cloudUserCtrl.updateCloudUser', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(updatedCloudUserData);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when updating a cloudUser that does not exist', done => {
     updateCloudUser(FAKE_CLOUD_USER_UPDATE_DATA, FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -66,6 +68,7 @@ describe('cloudUserCtrl.updateCloudUser', () => {
 
   it('throws an error when updating with an existing email', done => {
     updateCloudUser(FAKE_CLOUD_USER_UPDATE_DATA_EXISTING_EMAIL, KNOWN_TEST_ID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();

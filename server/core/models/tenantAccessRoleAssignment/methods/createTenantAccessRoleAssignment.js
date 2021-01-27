@@ -5,17 +5,13 @@ const R = require('ramda');
 const DB                                     = require('../../../utils/db'),
       validateTenantAccessRoleAssignmentData = require('../helpers/validateTenantAccessRoleAssignmentData').validateForInsert;
 
-const decorateDataForDbInsertion = tenantAccessRoleAssignmentData => {
-  const dataCopy = R.clone(tenantAccessRoleAssignmentData);
-  return dataCopy;
-};
+const decorateDataForDbInsertion = R.identity;
 
 const createAndExecuteQuery = _tenantAccessRoleAssignmentData => {
   const tenantAccessRoleAssignmentData = decorateDataForDbInsertion(_tenantAccessRoleAssignmentData);
 
-  const fields = R.keys(tenantAccessRoleAssignmentData);
-  const query  = 'INSERT INTO ' + DB.coreDbName + '.tenant_access_role_assignments SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `INSERT INTO ${DB.coreDbName}.tenant_access_role_assignments
+                 SET ${DB.prepareProvidedFieldsForSet(tenantAccessRoleAssignmentData)}`;
 
   const queryStatement = [query, DB.prepareValues(tenantAccessRoleAssignmentData)];
   return DB.query(queryStatement);

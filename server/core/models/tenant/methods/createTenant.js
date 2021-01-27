@@ -5,17 +5,13 @@ const R = require('ramda');
 const DB                 = require('../../../utils/db'),
       validateTenantData = require('../helpers/validateTenantData').validateForInsert;
 
-const decorateDataForDbInsertion = tenantData => {
-  const dataCopy     = R.clone(tenantData);
-  return dataCopy;
-};
+const decorateDataForDbInsertion = R.identity;
 
 const createAndExecuteQuery = _tenantData => {
   const tenantData = decorateDataForDbInsertion(_tenantData);
 
-  const fields = R.keys(tenantData);
-  const query  = 'INSERT INTO ' + DB.coreDbName + '.tenants SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `INSERT INTO ${DB.coreDbName}.tenants
+                 SET ${DB.prepareProvidedFieldsForSet(tenantData)}`;
 
   const queryStatement = [query, DB.prepareValues(tenantData)];
   return DB.query(queryStatement);

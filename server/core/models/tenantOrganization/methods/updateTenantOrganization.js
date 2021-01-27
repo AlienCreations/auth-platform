@@ -8,29 +8,27 @@ const DB                             = require('../../../utils/db'),
       validateTenantOrganizationData = require('../helpers/validateTenantOrganizationData');
 
 const decorateDataForDbInsertion = organizationData => {
-  const dataCopy           = R.clone(organizationData),
-        plainTextPassword  = dataCopy.password,
+  const plainTextPassword  = organizationData.password || '',
         saltRoundsExponent = R.path(['auth', 'SALT_ROUNDS_EXPONENT'], config);
 
-  if (plainTextPassword) {
-    dataCopy.password = passwords.makePasswordHash(plainTextPassword, saltRoundsExponent);
-  }
-
-  return dataCopy;
+  return R.compose(
+    R.when(
+      R.prop('password'),
+      R.assoc('password', passwords.makePasswordHash(plainTextPassword, saltRoundsExponent))
+    )
+  )(organizationData);
 };
 
 const createAndExecuteQuery = (id, _organizationData) => {
   const organizationData = decorateDataForDbInsertion(_organizationData);
 
-  const fields = R.keys(organizationData);
+  const query = `UPDATE ${DB.coreDbName}.tenant_organizations
+                 SET ${DB.prepareProvidedFieldsForSet(organizationData)}
+                 WHERE id = ?`;
 
-  const query = 'UPDATE ' + DB.coreDbName + '.tenant_organizations SET ' +
-    DB.prepareProvidedFieldsForSet(fields) + ' ' +
-    'WHERE id = ?';
-
-  const values = R.append(id, DB.prepareValues(organizationData));
-
+  const values         = R.append(id, DB.prepareValues(organizationData));
   const queryStatement = [query, values];
+
   return DB.query(queryStatement);
 };
 
@@ -42,7 +40,6 @@ const createAndExecuteQuery = (id, _organizationData) => {
  * @returns {Promise}
  */
 const updateTenantOrganization = (id, organizationData) => {
-
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(organizationData)) {
     return Promise.resolve(false);
   }

@@ -7,17 +7,16 @@ const DB                       = require('../../../utils/db'),
       validateProspectUserData = require('../helpers/validateProspectUserData').validateForInsert;
 
 const decorateDataForDbInsertion = prospectUserData => {
-  const dataCopy = R.clone(prospectUserData);
-  dataCopy.token = prospectUserData.token || uuid();
-  return dataCopy;
+  return R.compose(
+    R.unless(R.prop('token'), R.assoc('token', uuid()))
+  )(prospectUserData);
 };
 
 const createAndExecuteQuery = _prospectUserData => {
   const prospectUserData = decorateDataForDbInsertion(_prospectUserData);
 
-  const fields = R.keys(prospectUserData);
-  const query  = 'INSERT INTO ' + DB.coreDbName + '.prospect_users SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `INSERT INTO ${DB.coreDbName}.prospect_users
+                 SET ${DB.prepareProvidedFieldsForSet(prospectUserData)}`;
 
   const queryStatement = [query, DB.prepareValues(prospectUserData)];
   return DB.query(queryStatement);

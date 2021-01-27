@@ -21,7 +21,6 @@ let KNOWN_TEST_PROSPECT_TENANT_DATA,
     KNOWN_TEST_ID;
 
 describe('prospectTenantCtrl.getProspectTenantById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
       KNOWN_TEST_PROSPECT_TENANT_DATA = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -36,11 +35,13 @@ describe('prospectTenantCtrl.getProspectTenantById', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(R.omit(privateFields, KNOWN_TEST_PROSPECT_TENANT_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for an prospectTenant that does not exist', done => {
     getProspectTenantById(FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -49,6 +50,7 @@ describe('prospectTenantCtrl.getProspectTenantById', () => {
 
   it('throws an error when given a malformed id', done => {
     getProspectTenantById(FAKE_MALFORMED_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -57,6 +59,7 @@ describe('prospectTenantCtrl.getProspectTenantById', () => {
 
   it('throws an error when looking for an prospectTenant without an id', done => {
     getProspectTenantById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -65,6 +68,7 @@ describe('prospectTenantCtrl.getProspectTenantById', () => {
 
   it('throws an error when given a null id', done => {
     getProspectTenantById(null)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();

@@ -11,7 +11,6 @@ const getAllTenants = require('../../../../server/core/controllers/api/tenant/ge
 let KNOWN_TEST_TENANTS;
 
 describe('tenantCtrl.getAllTenants', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
       KNOWN_TEST_TENANTS = R.sortBy(R.prop('domain'), commonMocks.transformDbColsToJsProps(data));
@@ -25,7 +24,8 @@ describe('tenantCtrl.getAllTenants', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(KNOWN_TEST_TENANTS);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
 });

@@ -5,19 +5,14 @@ const R = require('ramda');
 const DB                = require('../../../utils/db'),
       validateAgentData = require('../helpers/validateAgentData');
 
-const decorateDataForDbInsertion = agentData => {
-  const dataCopy = R.clone(agentData);
-  return dataCopy;
-};
+const decorateDataForDbInsertion = R.identity;
 
-const createAndExecuteQuery = (key, agentData) => {
-  agentData = decorateDataForDbInsertion(agentData);
+const createAndExecuteQuery = (key, _agentData) => {
+  const agentData = decorateDataForDbInsertion(_agentData);
 
-  const fields = R.keys(agentData);
-
-  const query = 'UPDATE ' + DB.coreDbName + '.agents SET ' +
-                DB.prepareProvidedFieldsForSet(fields) + ' ' +
-                'WHERE `key` = ?';
+  const query = `UPDATE ${DB.coreDbName}.agents
+                 SET ${DB.prepareProvidedFieldsForSet(agentData)}
+                 WHERE \`key\` = ?`;
 
   const values = R.append(key, DB.prepareValues(agentData));
 

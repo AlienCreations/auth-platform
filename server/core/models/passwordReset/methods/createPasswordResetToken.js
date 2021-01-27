@@ -8,17 +8,16 @@ const DB                        = require('../../../utils/db'),
       validatePasswordResetData = require('../helpers/validatePasswordResetData').validateForReplace;
 
 const decorateDataForDbInsertion = passwordResetData => {
-  let dataCopy = R.clone(passwordResetData);
-  dataCopy.token = passwordUtils.makePasswordHash(uuid(), 10);
-  return dataCopy;
+  return R.compose(
+    R.assoc('token', passwordUtils.makePasswordHash(uuid(), 10))
+  )(passwordResetData);
 };
 
-const createAndExecuteQuery = passwordResetData => {
-  passwordResetData = decorateDataForDbInsertion(passwordResetData);
+const createAndExecuteQuery = _passwordResetData => {
+  const passwordResetData = decorateDataForDbInsertion(_passwordResetData);
 
-  const fields = R.keys(passwordResetData);
-  const query  = 'REPLACE INTO ' + DB.coreDbName + '.password_resets SET ' +
-                 DB.prepareProvidedFieldsForSet(fields);
+  const query = `REPLACE INTO ${DB.coreDbName}.password_resets
+                 SET ${DB.prepareProvidedFieldsForSet(passwordResetData)}`;
 
   const queryStatement = [query, DB.prepareValues(passwordResetData)];
 

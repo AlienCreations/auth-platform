@@ -31,7 +31,6 @@ const FAKE_TENANT_DATA                               = {
 let mergeInsertId;
 
 describe('tenantCtrl.createTenant', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
       mergeInsertId = R.mergeDeepRight(R.compose(R.objOf('id'), R.inc, R.prop('id'), R.last)(data));
@@ -45,11 +44,13 @@ describe('tenantCtrl.createTenant', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(mergeInsertId(FAKE_TENANT_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when creating an tenant with incomplete params', done => {
     createTenant(FAKE_TENANT_DATA_INCOMPLETE)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -58,6 +59,7 @@ describe('tenantCtrl.createTenant', () => {
 
   it('throws an error when creating a duplicate tenant (domain should be unique)', done => {
     createTenant(FAKE_TENANT_DATA_WITH_KNOWN_TEST_TENANT_DOMAIN)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();

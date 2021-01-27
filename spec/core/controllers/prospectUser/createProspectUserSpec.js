@@ -30,7 +30,6 @@ let FAKE_PROSPECT_USER_DATA_WITH_KNOWN_TEST_PROSPECT_USER_EMAIL,
     FakeMailSvc;
 
 describe('prospectUserCtrl.createProspectUser', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectUsers.csv'), (err, data) => {
 
@@ -61,11 +60,13 @@ describe('prospectUserCtrl.createProspectUser', () => {
             mergeInsertId
           )(FAKE_PROSPECT_USER_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when creating a prospectUser with incomplete params', done => {
     createProspectUser(FakeMailSvc)(FAKE_PROSPECT_USER_DATA_INCOMPLETE)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -74,6 +75,7 @@ describe('prospectUserCtrl.createProspectUser', () => {
 
   it('throws an error when creating a duplicate prospectUser (email should be unique)', done => {
     createProspectUser(FakeMailSvc)(FAKE_PROSPECT_USER_DATA_WITH_KNOWN_TEST_PROSPECT_USER_EMAIL)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();
