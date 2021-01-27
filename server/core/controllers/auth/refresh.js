@@ -46,7 +46,7 @@ const refresh = (req, res, next) => {
       return authenticator.sign(payload, MASTER_PRIVATE_KEY, jwtOptions)
         .then(token => {
           const expires      = config.auth.refreshTokenOptions.expiresInSeconds;
-          const refreshToken = authenticator.generateAndCacheRefreshToken(cache)({ payload, secret, expires });
+          const refreshToken = authenticator.generateAndCacheRefreshToken(cache)({ payload, secret, expires, oldRefreshToken : req.body.refreshToken });
 
           res.set('x-auth-token',    token);
           res.set('x-refresh-token', refreshToken);
