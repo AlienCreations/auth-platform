@@ -44,8 +44,10 @@ const assertUpdatesIfValid = (field, value) => {
         .then(res => {
           expect(R.prop(field, res)).toBe(value);
           done();
-        });
-    });
+        })
+        .catch(done.fail);
+    })
+      .catch(done.fail);
   });
 };
 

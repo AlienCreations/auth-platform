@@ -38,8 +38,10 @@ const assertUpdatesIfValid = (field, value) => {
         .then(tenant => {
           expect(R.prop(field, tenant)).toBe(value);
           done();
-        });
-    });
+        })
+        .catch(done.fail);
+    })
+      .catch(done.fail);
   });
 };
 

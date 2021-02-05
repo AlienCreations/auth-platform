@@ -34,8 +34,10 @@ const assertUpdatesIfValid = (field, value) => {
         .then((tenantAccessRole) => {
           expect(R.prop(field, tenantAccessRole)).toBe(value);
           done();
-        });
-    });
+        })
+        .catch(done.fail);
+    })
+      .catch(done.fail);
   });
 };
 
