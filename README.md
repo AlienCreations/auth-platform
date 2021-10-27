@@ -80,10 +80,10 @@ variable | description | values/format | example/suggested value
 NODE_ENV | mode the API should run in | test, demo, production |  
 BUILD_NUM | Hash or something to represent the deployed build, can be viewed in the health check page | string | uuid
 CORE_DB_NAME | MySQL schema name | string | auth_platform_core
-SERVICES | List of known services capable of authenticating | JSON array (string) | 
+PLATFORMS | List of known services capable of authenticating | JSON array (string) | 
 PRIVATE_KEY | RSA private key from JWT signing key pair | PEM format string | 
-PUBLIC_KEYS | RSA public keys for validation of JWTs signed by this and other services | JSON map related services names (from SERVICES env. var.) to PEM format public keys | 
-WHITELIST | Subset of SERVICES permitted to make calls to the Auth API | JSON map of service to list of services from which it will accept calls. All services must match names on SERVICES list | 
+PUBLIC_KEYS | RSA public keys for validation of JWTs signed by this and other services | JSON map related services names (from PLATFORMS env. var.) to PEM format public keys | 
+WHITELIST | Subset of PLATFORMS permitted to make calls to the Auth API | JSON map of service to list of services from which it will accept calls. All services must match names on SERVICES list | 
 NODE_AUTHENTICATOR_RELATIVE_CHECK_PERMISSION_PATH | Relative path from project root to the `checkTenantAccessPermission` controller. This should be set for the auth platform only to avoid making API calls to itself to check permission on requests | file path | '../../../server/core/controllers/api/tenantAccessPermission/checkTenantAccessPermission'
 NODE_AUTHENTICATOR_RELATIVE_CACHE_PATH | Relative path to a folder where we should store `flat-cache` containing refresh token references | file path | './cache'
 
