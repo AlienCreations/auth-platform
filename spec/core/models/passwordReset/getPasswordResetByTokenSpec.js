@@ -14,19 +14,22 @@ const KNOWN_TEST_TOKEN                 = '$2a$10$JKPLCeIZ8jCF36Q/vRWth.NVO.wnpPN
       A_STRING                         = 'foo';
 
 describe('getPasswordResetByToken', () => {
-
   it('gets a passwordReset when given a known token', done => {
-    getPasswordResetByToken(KNOWN_TEST_TOKEN).then(data => {
-      expect(R.omit(DYNAMICALLY_POPULATED_DB_COLUMNS, data)).toEqual({
-        cloudUserEmail : KNOWN_TEST_USER_EMAIL,
-        token          : KNOWN_TEST_TOKEN
-      });
-      done();
-    });
+    getPasswordResetByToken(KNOWN_TEST_TOKEN)
+      .then(data => {
+        expect(R.omit(DYNAMICALLY_POPULATED_DB_COLUMNS, data)).toEqual({
+          cloudUserEmail : KNOWN_TEST_USER_EMAIL,
+          token          : KNOWN_TEST_TOKEN,
+          status         : 1
+        });
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown token', done => {
     getPasswordResetByToken(FAKE_UNKNOWN_TOKEN)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -54,7 +57,6 @@ describe('getPasswordResetByToken', () => {
   it('throws an error when given a null token', () => {
     expect(() => {
       getPasswordResetByToken(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
-
 });

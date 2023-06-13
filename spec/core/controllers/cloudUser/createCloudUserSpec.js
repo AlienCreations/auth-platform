@@ -71,7 +71,7 @@ describe('cloudUserCtrl.createCloudUser', () => {
   it('returns FAKE_CLOUD_USER_DATA when creating a cloudUser with all correct params', done => {
     createCloudUser(FAKE_CLOUD_USER_DATA)
       .then(res => {
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'birthday'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'birthday', 'uuid'], res))
           .toEqual(R.omit(privateFields, decorateFakeDataToMatchResponse(FAKE_CLOUD_USER_DATA)));
         done();
       })

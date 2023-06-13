@@ -3,17 +3,19 @@
 const R = require('ramda');
 
 const getCloudUserByIds = require('../../../../server/core/models/cloudUser/methods/getCloudUsersByIds'),
-      commonMocks      = require('../../../_helpers/commonMocks');
+      commonMocks       = require('../../../_helpers/commonMocks');
 
 const FAKE_SEEDED_USER_IDS = [1, 2];
 
 describe('getCloudUserByIds', () => {
   it('gets cloudUsers when given an ids of type Array', done => {
-    getCloudUserByIds(FAKE_SEEDED_USER_IDS).then(data => {
-      expect(R.is(Array, data)).toBe(true);
-      expect(R.pluck('id', data)).toEqual(FAKE_SEEDED_USER_IDS);
-      done();
-    });
+    getCloudUserByIds(FAKE_SEEDED_USER_IDS)
+      .then(data => {
+        expect(R.is(Array, data)).toBe(true);
+        expect(R.pluck('id', data)).toEqual(FAKE_SEEDED_USER_IDS);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given no params', () => {
@@ -31,6 +33,6 @@ describe('getCloudUserByIds', () => {
   it('throws an error when given a null ids', () => {
     expect(() => {
       getCloudUserByIds(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

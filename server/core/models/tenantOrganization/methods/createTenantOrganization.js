@@ -1,7 +1,8 @@
 'use strict';
 
 const R      = require('ramda'),
-      config = require('config');
+      config = require('config'),
+      uuid   = require('uuid/v4');
 
 const DB                             = require('../../../utils/db'),
       passwordUtils                  = require('../../../utils/password'),
@@ -11,6 +12,7 @@ const decorateDataForDbInsertion = organizationData => {
   const saltRoundsExponent = R.path(['auth', 'SALT_ROUNDS_EXPONENT'], config);
 
   return R.compose(
+    R.assoc('uuid', uuid()),
     R.assoc('password', passwordUtils.makePasswordHash(organizationData.password, saltRoundsExponent))
   )(organizationData);
 };
@@ -25,11 +27,6 @@ const createAndExecuteQuery = _organizationData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create a tenant organization record.
- * @param {Object} organizationData
- * @returns {Promise}
- */
 const createTenantOrganization = organizationData => {
   validateTenantOrganizationData(R.defaultTo({}, organizationData));
   return createAndExecuteQuery(organizationData);

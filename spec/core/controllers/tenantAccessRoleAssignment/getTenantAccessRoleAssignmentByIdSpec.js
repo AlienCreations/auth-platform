@@ -18,11 +18,10 @@ let KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_DATA,
     KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_ID;
 
 describe('tenantAccessRoleAssignmentCtrl.getTenantAccessRoleAssignmentById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessRoleAssignments.csv'), (err, data) => {
       KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_DATA = R.compose(R.omit(COMMON_PRIVATE_FIELDS), R.head, commonMocks.transformDbColsToJsProps)(data);
-      KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_ID   = R.prop('id', KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_DATA);
+      KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_ID   = KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_DATA.id;
       done();
     });
   });
@@ -33,11 +32,13 @@ describe('tenantAccessRoleAssignmentCtrl.getTenantAccessRoleAssignmentById', () 
         expect(res.cloudUserId)
           .toEqual(KNOWN_TEST_TENANT_ACCESS_ROLE_ASSIGNMENT_DATA.cloudUserId);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for an tenantAccessRoleAssignment that does not exist', done => {
     getTenantAccessRoleAssignmentById(FAKE_UNKNOWN_TENANT_ACCESS_ROLE_ASSIGNMENT_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -46,6 +47,7 @@ describe('tenantAccessRoleAssignmentCtrl.getTenantAccessRoleAssignmentById', () 
 
   it('throws an error when given a malformed id', done => {
     getTenantAccessRoleAssignmentById(FAKE_MALFORMED_TENANT_ACCESS_ROLE_ASSIGNMENT_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -54,6 +56,7 @@ describe('tenantAccessRoleAssignmentCtrl.getTenantAccessRoleAssignmentById', () 
 
   it('throws an error when looking for an tenantAccessRoleAssignment without an id', done => {
     getTenantAccessRoleAssignmentById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -62,8 +65,9 @@ describe('tenantAccessRoleAssignmentCtrl.getTenantAccessRoleAssignmentById', () 
 
   it('throws an error when given null params', done => {
     getTenantAccessRoleAssignmentById(null)
+      .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

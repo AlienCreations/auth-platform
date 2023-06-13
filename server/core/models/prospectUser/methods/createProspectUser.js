@@ -3,11 +3,12 @@
 const R    = require('ramda'),
       uuid = require('uuid/v4');
 
-const DB                       = require('../../../utils/db'),
-      validateProspectUserData = require('../helpers/validateProspectUserData').validateForInsert;
+const DB                    = require('../../../utils/db'),
+      { validateForInsert } = require('../helpers/validateProspectUserData');
 
 const decorateDataForDbInsertion = prospectUserData => {
   return R.compose(
+    R.assoc('uuid', uuid()),
     R.unless(R.prop('token'), R.assoc('token', uuid()))
   )(prospectUserData);
 };
@@ -22,13 +23,8 @@ const createAndExecuteQuery = _prospectUserData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create a prospect user record.
- * @param {Object} prospectUserData
- * @returns {Promise}
- */
 const createProspectUser = prospectUserData => {
-  validateProspectUserData(R.defaultTo({}, prospectUserData));
+  validateForInsert(R.defaultTo({}, prospectUserData));
   return createAndExecuteQuery(prospectUserData);
 };
 

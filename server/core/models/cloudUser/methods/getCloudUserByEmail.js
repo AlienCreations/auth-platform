@@ -4,7 +4,10 @@ const DB                    = require('../../../utils/db'),
       validateCloudUserData = require('../helpers/validateCloudUserData').validateForGetByEmail;
 
 const createAndExecuteQuery = email => {
-  const query          = 'SELECT * FROM ' + DB.coreDbName + '.cloud_users WHERE email = ?',
+  const query          = `SELECT * 
+                          FROM ${DB.coreDbName}.cloud_users 
+                          WHERE email = ? 
+                          AND status > 0`,
         queryStatement = [query, [email]];
 
   return DB.lookupSafe(queryStatement);

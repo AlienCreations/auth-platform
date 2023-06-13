@@ -8,22 +8,21 @@ const R        = require('ramda'),
 
 const MailSvc = require('../../services/mail/Mail')(config.mail.strategy);
 
-const maybeParseIntFromPath     = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      maybeMergeTenantIdFromReq = require('../../controllers/api/_helpers/maybeMergeTenantIdFromReq');
+const maybeMergeTenantUuidFromReq = require('../../controllers/api/_helpers/maybeMergeTenantUuidFromReq');
 
-const createTenantMember                      = require('../../controllers/api/tenantMember/createTenantMember'),
-      enrollTenantMember                      = require('../../controllers/api/tenantMember/enrollTenantMember'),
-      updateTenantMember                      = require('../../controllers/api/tenantMember/updateTenantMember'),
-      deleteTenantMember                      = require('../../controllers/api/tenantMember/deleteTenantMember'),
-      getTenantMemberById                     = require('../../controllers/api/tenantMember/getTenantMemberById'),
-      getTenantMembersByTenantId              = require('../../controllers/api/tenantMember/getTenantMembersByTenantId'),
-      getTenantMemberByTenantIdAndReferenceId = require('../../controllers/api/tenantMember/getTenantMemberByTenantIdAndReferenceId');
+const createTenantMember                          = require('../../controllers/api/tenantMember/createTenantMember'),
+      enrollTenantMember                          = require('../../controllers/api/tenantMember/enrollTenantMember'),
+      updateTenantMember                          = require('../../controllers/api/tenantMember/updateTenantMember'),
+      deleteTenantMember                          = require('../../controllers/api/tenantMember/deleteTenantMember'),
+      getTenantMemberByUuid                       = require('../../controllers/api/tenantMember/getTenantMemberByUuid'),
+      getTenantMembersByTenantUuid                = require('../../controllers/api/tenantMember/getTenantMembersByTenantUuid'),
+      getTenantMemberByTenantUuidAndReferenceUuid = require('../../controllers/api/tenantMember/getTenantMemberByTenantUuidAndReferenceUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
 // https://sometenant.aliencreations.com/api/v1/tenantMember
 router.post('/', ensureAuthorized, (req, res, next) => {
-  const data                           = maybeMergeTenantIdFromReq(req, req.body),
+  const data                           = maybeMergeTenantUuidFromReq(req, req.body),
         { tenant, tenantOrganization } = req;
 
   apiUtils.respondWithErrorHandling(
@@ -32,13 +31,13 @@ router.post('/', ensureAuthorized, (req, res, next) => {
     next,
     req.logger.child({ tenant, tenantOrganization }),
     'createTenantMember',
-    () => createTenantMember({ tenant, tenantOrganization }, MailSvc, data)
+    () => createTenantMember({ MailSvc })({ tenant, tenantOrganization }, data)
   );
 });
 
 // https://sometenant.aliencreations.com/api/v1/tenantMember/enroll
 router.post('/enroll', ensureAuthorized, (req, res, next) => {
-  const data = maybeMergeTenantIdFromReq(req, req.body);
+  const data                                                 = maybeMergeTenantUuidFromReq(req, req.body);
   const { tenant, tenantOrganization, headers : { origin } } = req;
 
   apiUtils.respondWithErrorHandling(
@@ -54,75 +53,74 @@ router.post('/enroll', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://sometenant.aliencreations.com/api/v1/tenantMember/id/123
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const data = maybeMergeTenantIdFromReq(req, req.body),
-        id   = maybeParseIntFromPath(['params', 'id'], req);
+// https://sometenant.aliencreations.com/api/v1/tenantMember/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.put('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const data     = maybeMergeTenantUuidFromReq(req, req.body),
+        { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'updateTenantMember',
-    () => updateTenantMember(data, id)
+    () => updateTenantMember(data, uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantMember/id/123
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantMember/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantMemberById',
-    () => getTenantMemberById(id)
+    req.logger.child({ uuid }),
+    'getTenantMemberByUuid',
+    () => getTenantMemberByUuid(uuid)
   );
 });
 
 // https://gutfit.aliencreations.com/api/v1/tenantMembers
 router.get('/', ensureAuthorized, (req, res, next) => {
-  const tenantId = R.path(['tenant', 'id'], req);
+  const tenantUuid = R.path(['tenant', 'uuid'], req);
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantId }),
-    'getTenantMembersByTenantId',
-    () => getTenantMembersByTenantId(tenantId)
+    req.logger.child({ tenantUuid }),
+    'getTenantMembersByTenantUuid',
+    () => getTenantMembersByTenantUuid(tenantUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantMember/tenantId/123/referenceId/abc
-router.get('/tenantId/:tenantId/referenceId/:referenceId', ensureAuthorized, (req, res, next) => {
-  const referenceId = req.params.referenceId,
-        tenantId    = maybeParseIntFromPath(['params', 'tenantId'], req);
+// https://platform.aliencreations.com/api/v1/tenantMember/tenantUuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378/referenceId/abc
+router.get('/tenantUuid/:tenantUuid/referenceId/:referenceId', ensureAuthorized, (req, res, next) => {
+  const { tenantUuid, referenceId } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ referenceId, tenantId }),
-    'getTenantMemberByTenantIdAndReferenceId',
-    () => getTenantMemberByTenantIdAndReferenceId(tenantId, referenceId)
+    req.logger.child({ referenceId, tenantUuid }),
+    'getTenantMemberByTenantUuidAndReferenceUuid',
+    () => getTenantMemberByTenantUuidAndReferenceUuid(tenantUuid, referenceId)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantMember/id/123
-router.delete('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantMember/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.delete('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'deleteTenantMember',
-    () => deleteTenantMember(id)
+    () => deleteTenantMember(uuid)
   );
 });
 

@@ -5,8 +5,7 @@ const R                 = require('ramda'),
 
 const maybeParseIntFromPath = require('../controllers/api/_helpers/maybeParseIntFromPath');
 
-const SUPER_ADMIN_ROLE_ID = 1;
-const isSuperAdmin        = R.includes(SUPER_ADMIN_ROLE_ID);
+const isSuperAdmin = R.includes(process.env.SUPER_ADMIN_ROLE_UUID);
 
 const ensureCanActOnBehalfOfOwner = ({
   getDataById,

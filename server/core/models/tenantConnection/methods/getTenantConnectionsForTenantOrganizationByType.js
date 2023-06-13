@@ -3,28 +3,24 @@
 const R = require('ramda');
 
 const DB                           = require('../../../utils/db'),
-      validateTenantConnectionData = require('../helpers/validateTenantConnectionData').validateForGetByTenantOrganizationIdAndType;
+      validateTenantConnectionData = require('../helpers/validateTenantConnectionData').validateForGetByTenantOrganizationUuidAndType;
 
-const createAndExecuteQuery = (tenantOrganizationId, connectionType) => {
-  const query          = 'SELECT * FROM ' + DB.coreDbName + '.tenant_connections WHERE tenant_organization_id = ? AND type = ?',
-        queryStatement = [query, [tenantOrganizationId, connectionType]];
+const createAndExecuteQuery = (tenantOrganizationUuid, connectionType) => {
+  const query          = `SELECT * FROM ${DB.coreDbName}.tenant_connections 
+                          WHERE tenant_organization_uuid = ? 
+                            AND type = ?
+                            AND status > 0`,
+        queryStatement = [query, [tenantOrganizationUuid, connectionType]];
 
   return DB.querySafe(queryStatement);
 };
 
-/**
- * Select the appropriate connection from the
- * provided tenant organization id and connection type.
- * @param {Number} tenantOrganizationId
- * @param {Number} connectionType
- * @returns {Promise}
- */
-const getTenantConnectionsForTenantOrganizationByType = R.curry((tenantOrganizationId, connectionType) => {
+const getTenantConnectionsForTenantOrganizationByType = R.curry((tenantOrganizationUuid, connectionType) => {
   validateTenantConnectionData({
-    tenantOrganizationId,
+    tenantOrganizationUuid,
     connectionType
   });
-  return createAndExecuteQuery(tenantOrganizationId, connectionType);
+  return createAndExecuteQuery(tenantOrganizationUuid, connectionType);
 });
 
 module.exports = getTenantConnectionsForTenantOrganizationByType;

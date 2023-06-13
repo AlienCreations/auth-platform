@@ -5,12 +5,12 @@ const { errors } = require('@aliencreations/node-error');
 const ensureCanActOnBehalfOfOwner  = require('../../../server/core/middleware/ensureCanActOnBehalfOfOwner'),
       { maybeRejectOrResolveWith } = require('../../../server/core/utils/promise');
 
-const KNOWN_TEST_SUPER_ADMIN_ROLE_ID = 1;
+const KNOWN_TEST_SUPER_ADMIN_ROLE_UUID = process.env.SUPER_ADMIN_ROLE_UUID;
 
 const FAKE_RECORD_ID       = 1234,
       FAKE_TENANT_ID_FOO   = 1,
       FAKE_TENANT_ID_BAR   = 2,
-      FAKE_REQ_SUPER_ADMIN = { params : { id : FAKE_RECORD_ID }, user : { roles : [KNOWN_TEST_SUPER_ADMIN_ROLE_ID] } },
+      FAKE_REQ_SUPER_ADMIN = { params : { id : FAKE_RECORD_ID }, user : { roles : [KNOWN_TEST_SUPER_ADMIN_ROLE_UUID] } },
       FAKE_REQ_OWNER       = { params : { id : FAKE_RECORD_ID }, tenant : { id : FAKE_TENANT_ID_FOO } },
       FAKE_REQ_DEFAULT     = { body : { id : FAKE_RECORD_ID }, tenant : { id : FAKE_TENANT_ID_FOO } },
       FAKE_REQ_NOT_OWNER   = { params : { id : FAKE_RECORD_ID }, tenant : { id : FAKE_TENANT_ID_BAR } },

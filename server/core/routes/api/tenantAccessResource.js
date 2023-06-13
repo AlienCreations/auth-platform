@@ -13,12 +13,12 @@ const createTenantAccessResource             = require('../../controllers/api/te
       updateTenantAccessResource             = require('../../controllers/api/tenantAccessResource/updateTenantAccessResource'),
       deleteTenantAccessResource             = require('../../controllers/api/tenantAccessResource/deleteTenantAccessResource'),
       getAllowedTenantAccessResources        = require('../../controllers/api/tenantAccessResource/getAllowedTenantAccessResources'),
-      getTenantAccessResourceById            = require('../../controllers/api/tenantAccessResource/getTenantAccessResourceById'),
-      getTenantAccessResourcesByIds          = require('../../controllers/api/tenantAccessResource/getTenantAccessResourcesByIds'),
+      getTenantAccessResourceByUuid          = require('../../controllers/api/tenantAccessResource/getTenantAccessResourceByUuid'),
+      getTenantAccessResourcesByUuids        = require('../../controllers/api/tenantAccessResource/getTenantAccessResourcesByUuids'),
       getTenantAccessResourceByKey           = require('../../controllers/api/tenantAccessResource/getTenantAccessResourceByKey'),
       getTenantAccessResourcesByUriAndMethod = require('../../controllers/api/tenantAccessResource/getTenantAccessResourcesByUriAndMethod');
 
-const _getTenantAccessResourceById = require('../../models/tenantAccessResource/methods/getTenantAccessResourceById');
+const _getTenantAccessResourceByUuid = require('../../models/tenantAccessResource/methods/getTenantAccessResourceByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -34,55 +34,55 @@ router.post('/', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessResource/id/123
+// https://platform.aliencreations.com/api/v1/tenantAccessResource/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getTenantAccessResourceById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['tenantId'],
-    identityPath    : ['tenant', 'id']
+    getDataById     : _getTenantAccessResourceByUuid,
+    dataIdPath      : ['params', 'uuid'],
+    dataOwnerIdPath : ['tenantUuid'],
+    identityPath    : ['tenant', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateTenantAccessResource',
-      () => updateTenantAccessResource(req.body, id)
+      () => updateTenantAccessResource(req.body, uuid)
     );
   }
 );
 
-// https://platform.aliencreations.com/api/v1/tenantAccessResource/id/123
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessResource/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantAccessResourceById',
-    () => getTenantAccessResourceById(id)
+    req.logger.child({ uuid }),
+    'getTenantAccessResourceByUuid',
+    () => getTenantAccessResourceByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessResource/ids
-router.post('/ids', ensureAuthorized, (req, res, next) => {
-  const ids = req.body.ids;
+// https://platform.aliencreations.com/api/v1/tenantAccessResource/uuids
+router.post('/uuids', ensureAuthorized, (req, res, next) => {
+  const { uuids } = req.body;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ ids }),
-    'getTenantAccessResourcesByIds',
-    () => getTenantAccessResourcesByIds(ids)
+    req.logger.child({ uuids }),
+    'getTenantAccessResourcesByUuids',
+    () => getTenantAccessResourcesByUuids(uuids)
   );
 });
 
@@ -117,30 +117,30 @@ router.get('/uri/:uri/method/:method', ensureAuthorized, (req, res, next) => {
 
 // https://platform.aliencreations.com/api/v1/tenantAccessResource
 router.get('/', ensureAuthorized, (req, res, next) => {
-  const tenantOrganizationId = R.path(['tenantOrganization', 'id'], req),
-        tenantId             = R.path(['tenant', 'id'], req);
+  const tenantOrganizationUuid = R.path(['tenantOrganization', 'uuid'], req),
+        tenantUuid             = R.path(['tenant', 'uuid'], req);
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantOrganizationId, tenantId }),
+    req.logger.child({ tenantOrganizationUuid, tenantUuid }),
     'getAllowedTenantAccessResources',
-    () => getAllowedTenantAccessResources(tenantId, tenantOrganizationId)
+    () => getAllowedTenantAccessResources(tenantUuid, tenantOrganizationUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessResource/id/123
-router.delete('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessResource/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.delete('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'deleteTenantAccessResource',
-    () => deleteTenantAccessResource(id)
+    () => deleteTenantAccessResource(uuid)
   );
 });
 

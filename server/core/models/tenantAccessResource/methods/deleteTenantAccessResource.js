@@ -3,22 +3,16 @@
 const DB                               = require('../../../utils/db'),
       validateTenantAccessResourceData = require('../helpers/validateTenantAccessResourceData').validateForDelete;
 
-const createAndExecuteQuery = id => {
-  const query          = 'DELETE FROM ' + DB.coreDbName + '.tenant_access_resources WHERE id = ?',
-        queryStatement = [query, [id]];
+const createAndExecuteQuery = uuid => {
+  const query          = `DELETE FROM ${DB.coreDbName}.tenant_access_resources WHERE uuid = ?`,
+        queryStatement = [query, [uuid]];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Delete a tenantAccessResource record
- * @param {Number} id
- * @throws {Error}
- * @returns {Promise}
- */
-const deleteTenantAccessResource = id => {
-  validateTenantAccessResourceData({ id });
-  return createAndExecuteQuery(id);
+const deleteTenantAccessResource = uuid => {
+  validateTenantAccessResourceData({ uuid });
+  return createAndExecuteQuery(uuid);
 };
 
 module.exports = deleteTenantAccessResource;

@@ -3,7 +3,7 @@
 const R      = require('ramda'),
       config = require('config');
 
-const getTenantOrganizationByTenantIdAndSubdomain = require('../models/tenantOrganization/methods/getTenantOrganizationByTenantIdAndSubdomain');
+const getTenantOrganizationByTenantUuidAndSubdomain = require('../models/tenantOrganization/methods/getTenantOrganizationByTenantUuidAndSubdomain');
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
@@ -21,13 +21,13 @@ const appendTenantToReqAndJump = R.curry((req, next, tenantOrganization) => {
 });
 
 const maybeMergeTenantOrganizationWithReqFromSubdomain = (req, res, next) => {
-  const tenantId = R.path(['tenant', 'id'], req);
+  const tenantUuid = R.path(['tenant', 'uuid'], req);
 
   Promise.resolve(req)
     .then(extractSubdomainFromRequest)
     .then(R.ifElse(
       R.identity,
-      getTenantOrganizationByTenantIdAndSubdomain(tenantId),
+      getTenantOrganizationByTenantUuidAndSubdomain(tenantUuid),
       R.always({})
     ))
     .then(R.omit(COMMON_PRIVATE_FIELDS))

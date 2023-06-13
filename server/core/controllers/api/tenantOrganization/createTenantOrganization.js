@@ -11,11 +11,6 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_ORGANIZATION_PRIVAT
 const _createTenantOrganization = require('../../../models/tenantOrganization/methods/createTenantOrganization'),
       getTenantOrganizationById = require('./getTenantOrganizationById');
 
-// TODO After creating a organization we need to add records to the resources table for permissions (login and stuff)
-
-/**
- * Create a new tenantOrganization record
- */
 const createTenantOrganization = tenantOrganizationData => {
   return Promise.resolve(tenantOrganizationData)
     .then(_createTenantOrganization)

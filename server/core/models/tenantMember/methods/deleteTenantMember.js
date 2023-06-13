@@ -3,22 +3,17 @@
 const DB                       = require('../../../utils/db'),
       validateTenantMemberData = require('../helpers/validateTenantMemberData').validateForDelete;
 
-const createAndExecuteQuery = id => {
-  const query          = 'DELETE FROM ' + DB.coreDbName + '.tenant_members WHERE id = ?',
-        queryStatement = [query, [id]];
+const createAndExecuteQuery = uuid => {
+  const query          = `DELETE FROM ${DB.coreDbName}.tenant_members 
+                          WHERE uuid = ?`,
+        queryStatement = [query, [uuid]];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Delete a tenantMember record
- * @param {Number} id
- * @throws {Error}
- * @returns {Promise}
- */
-const deleteTenantMember = id => {
-  validateTenantMemberData({ id });
-  return createAndExecuteQuery(id);
+const deleteTenantMember = uuid => {
+  validateTenantMemberData({ uuid });
+  return createAndExecuteQuery(uuid);
 };
 
 module.exports = deleteTenantMember;

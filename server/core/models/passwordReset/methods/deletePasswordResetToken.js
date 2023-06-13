@@ -9,12 +9,6 @@ const createAndExecuteQuery = token => {
   return DB.query(queryStatement);
 };
 
-/**
- * Delete a password_reset record
- * @param {String} token
- * @throws {Error}
- * @returns {Promise}
- */
 const deletePasswordResetToken = token => {
   validatePasswordResetData({ token });
   return createAndExecuteQuery(token);

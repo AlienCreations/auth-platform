@@ -14,7 +14,6 @@ const FAKE_UNKNOWN_ID   = 99999,
 let KNOWN_TEST_ID;
 
 describe('getTenantMemberById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantMembers.csv'), (err, data) => {
       KNOWN_TEST_ID = R.compose(R.prop('id'), R.head)(data);
@@ -23,14 +22,17 @@ describe('getTenantMemberById', () => {
   });
 
   it('gets a tenantMember when given a known id', done => {
-    getTenantMemberById(KNOWN_TEST_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      done();
-    });
+    getTenantMemberById(KNOWN_TEST_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown id', done => {
     getTenantMemberById(FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -52,7 +54,6 @@ describe('getTenantMemberById', () => {
   it('throws an error when id is set to null', () => {
     expect(() => {
       getTenantMemberById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
-
 });

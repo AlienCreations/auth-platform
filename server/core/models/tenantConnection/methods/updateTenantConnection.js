@@ -2,9 +2,13 @@
 
 const R = require('ramda');
 
-const DB                           = require('../../../utils/db'),
-      passwords                    = require('../../../utils/password'),
-      validateTenantConnectionData = require('../helpers/validateTenantConnectionData');
+const DB        = require('../../../utils/db'),
+      passwords = require('../../../utils/password');
+
+const {
+  validateUuid,
+  validateForUpdate
+} = require('../helpers/validateTenantConnectionData');
 
 const decorateDataForDbInsertion = connectionData => {
   const TENANT_CONNECTION_ENCRYPTION_KEY = R.path(['env', 'TENANT_CONNECTION_ENCRYPTION_KEY'], process),
@@ -18,34 +22,27 @@ const decorateDataForDbInsertion = connectionData => {
   )(connectionData);
 };
 
-const createAndExecuteQuery = (id, _connectionData) => {
+const createAndExecuteQuery = (uuid, _connectionData) => {
   const connectionData = decorateDataForDbInsertion(_connectionData);
 
   const query = `UPDATE ${DB.coreDbName}.tenant_connections
                  SET ${DB.prepareProvidedFieldsForSet(connectionData)}
-                 WHERE id = ?`;
+                 WHERE uuid = ?`;
 
-  const values         = R.append(id, DB.prepareValues(connectionData));
+  const values         = R.append(uuid, DB.prepareValues(connectionData));
   const queryStatement = [query, values];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Update a tenant connection record.
- * @param {Number} id
- * @param {Object} connectionData
- * @throws {Error}
- * @returns {Promise}
- */
-const updateTenantConnection = (id, connectionData) => {
+const updateTenantConnection = (uuid, connectionData) => {
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(connectionData)) {
     return Promise.resolve(false);
   }
 
-  validateTenantConnectionData.validateId({ id });
-  validateTenantConnectionData.validateForUpdate(connectionData);
-  return createAndExecuteQuery(id, connectionData);
+  validateUuid({ uuid });
+  validateForUpdate(connectionData);
+  return createAndExecuteQuery(uuid, connectionData);
 };
 
 module.exports = R.curry(updateTenantConnection);

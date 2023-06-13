@@ -1,2 +1,8 @@
-id,tenant_access_role_id,tenant_access_resource_id,status
-1,1,1,1
+id,uuid,tenant_access_role_uuid,tenant_access_resource_uuid,status
+1,c1f24aa1-8816-4fba-b822-efe712a53a0e,39f2e047-2d23-4685-a66c-355b356c4ae6,e865ec30-f8d9-4a40-ae35-ada84fead043,1
+2,02403ed3-b6de-42a2-8a1e-3c135846a231,39f2e047-2d23-4685-a66c-355b356c4ae6,e20c66c0-fad6-4e96-b0ee-bf4fb7c3858b,1
+3,b324b9fb-16d2-4e04-bbfc-8a54b896723f,a30f6cd1-0609-4072-b131-7de37eda803e,e20c66c0-fad6-4e96-b0ee-bf4fb7c3858b,1
+4,de14cdc0-db83-4df7-aa44-3de02ca42488,e5aae6e1-cd2e-4ad2-9300-32586cced975,ccffb95e-cedb-4fbf-b884-dd78326d0285,1
+5,5d529515-fa66-474d-a679-5793f4803145,e5aae6e1-cd2e-4ad2-9300-32586cced975,e20c66c0-fad6-4e96-b0ee-bf4fb7c3858b,1
+6,f09a0398-bbbe-4c7e-98a8-95b86fc38b44,e5aae6e1-cd2e-4ad2-9300-32586cced975,5ba5ac0-cfeb-4cd8-9fb1-62a9d7fcf549,1
+7,4dc8032d-5867-440e-83e1-5ec5a9da1dc1,e5aae6e1-cd2e-4ad2-9300-32586cced975,5eb12dbb-ae7b-46b2-a5af-6a5d1073c242,1

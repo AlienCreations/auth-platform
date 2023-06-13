@@ -1,6 +1,7 @@
 'use strict';
 
 const R      = require('ramda'),
+      uuid   = require('uuid/v4'),
       config = require('config');
 
 const DB                    = require('../../../utils/db'),
@@ -15,10 +16,11 @@ const maybeAddMissingJsonFields = R.compose(
 
 const saltRoundsExponent = R.path(['auth', 'SALT_ROUNDS_EXPONENT'], config);
 
-const decorateDataForDbInsertion = R.compose(
+const decorateDataForDbInsertion = data => R.compose(
+  R.assoc('uuid', uuid()),
   R.over(R.lensProp('password'), R.partialRight(passwords.makePasswordHash, [saltRoundsExponent])),
   maybeAddMissingJsonFields
-);
+)(data);
 
 const createAndExecuteQuery = _cloudUserData => {
   const cloudUserData = decorateDataForDbInsertion(_cloudUserData);
@@ -30,11 +32,6 @@ const createAndExecuteQuery = _cloudUserData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create a cloud user record.
- * @param {Object} cloudUserData
- * @returns {Promise}
- */
 const createCloudUser = cloudUserData => {
   validateCloudUserData(R.defaultTo({}, cloudUserData));
   return createAndExecuteQuery(cloudUserData);

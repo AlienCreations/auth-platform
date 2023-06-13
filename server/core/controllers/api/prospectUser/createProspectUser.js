@@ -53,9 +53,6 @@ const sendConfirmationEmail = (MailSvc, rootUrl) => prospectTenantData => {
   });
 };
 
-/**
- * Create a new prospectUser record
- */
 const createProspectUser = (MailSvc, rootUrl) => prospectUserData => {
   return Promise.resolve(prospectUserData)
     .then(_createProspectUser)

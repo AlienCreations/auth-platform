@@ -9,21 +9,21 @@ const {
 } = require('@aliencreations/node-validator');
 
 const validateForInsert = label('createTenantMember', isObjectOf({
-  tenantId    : isRequired(prr.isPositiveNumber),
-  cloudUserId : isRequired(prr.isPositiveNumber),
-  referenceId : isRequired(prr.isStringOfLengthAtMost(60)),
-  status      : isOptional(prr.isAtLeastZero)
+  tenantUuid    : isRequired(prr.isUuid),
+  cloudUserUuid : isRequired(prr.isUuid),
+  referenceId   : isRequired(prr.isStringOfLengthAtMost(60)),
+  status        : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForUpdate = label('updateTenantMember', isObjectOf({
-  tenantId    : isOptional(prr.isPositiveNumber),
-  cloudUserId : isOptional(prr.isPositiveNumber),
-  referenceId : isOptional(prr.isStringOfLengthAtMost(60)),
-  status      : isOptional(prr.isAtLeastZero)
+  tenantUuid    : isOptional(prr.isUuid),
+  cloudUserUuid : isOptional(prr.isUuid),
+  referenceId   : isOptional(prr.isStringOfLengthAtMost(60)),
+  status        : isOptional(prr.isAtLeastZero)
 }));
 
-const validateForGetByTenantIdAndReferenceId = label('getTenantMemberByTenantIdAndReferenceId', isObjectOf({
-  tenantId    : isRequired(prr.isPositiveNumber),
+const validateForGetByTenantUuidAndReferenceId = label('getTenantMemberByTenantUuidAndReferenceId', isObjectOf({
+  tenantUuid  : isRequired(prr.isUuid),
   referenceId : isRequired(prr.isStringOfLengthAtMost(60))
 }));
 
@@ -31,16 +31,22 @@ const validateId = label('getTenantMemberById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
-const validateTenantId = label('getTenantMemberByTenantId', isObjectOf({
-  tenantId : isRequired(prr.isPositiveNumber)
+const validateUuid = label('getTenantMemberByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
+const validateTenantUuid = label('getTenantMemberByTenantUuid', isObjectOf({
+  tenantUuid : isRequired(prr.isUuid)
 }));
 
 module.exports = {
-  validateForGetById       : validateId,
-  validateForGetByTenantId : validateTenantId,
-  validateForDelete        : validateId,
+  validateForGetById         : validateId,
+  validateForGetByUuid       : validateUuid,
+  validateForGetByTenantUuid : validateTenantUuid,
+  validateForDelete          : validateUuid,
   validateId,
-  validateForGetByTenantIdAndReferenceId,
+  validateUuid,
+  validateForGetByTenantUuidAndReferenceId,
   validateForInsert,
   validateForUpdate
 };

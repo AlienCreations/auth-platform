@@ -7,7 +7,7 @@ const R             = require('ramda'),
 const passwords = require('../../utils/password');
 
 const getCloudUserByEmail                         = require('../../models/cloudUser/methods/getCloudUserByEmail'),
-      getTenantAccessRoleAssignmentsByCloudUserId = require('../../controllers/api/tenantAccessRoleAssignment/getTenantAccessRoleAssignmentsByCloudUserId');
+      getTenantAccessRoleAssignmentsByCloudUserId = require('../../controllers/api/tenantAccessRoleAssignment/getTenantAccessRoleAssignmentsByCloudUserUuid');
 
 const CLOUD_USER_PROFILE_FIELDS = R.path(['auth', 'tokenProfileFields'], config),
       TENANCY_PROFILE_FIELDS    = ['id', 'domain', 'title', 'logo'];

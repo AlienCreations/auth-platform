@@ -1,1 +1,1 @@
-id,first_name,last_name,email,string#!zip,token,status
+id,uuid,first_name,last_name,email,string#!zip,token,status

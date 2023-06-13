@@ -1,5 +1,5 @@
-id,domain,title,description,logo,email,phone,fax,address_1,address_2,city,state,string#!zip,country,status,url
-1,platform,Alien Creations,Tenancy for the master Alien Creations tenancy,,platform@aliencreations.com,,,,,,,,,1,//platform.aliencreations.com
-2,cnn,CNN,Cable News Network description here,c1.png,info@cnn.com,925-240-0000,,1118 Lone Tree Way,,Brentwood,CA,94513,US,1,//www.cnn.com
-3,yahoo,Yahoo,Search the Internet with Yahoo,c1.png,help@yahoo.com,925-240-3312,,2255 Shady Willow Lane,,Brentwood,CA,94513,US,1,//www.yahoo.com
-4,nyt,New York Times,Today's paper,c1.png,news@newyorktimes.com,,,,,Plymouth,MN,55429,US,1,//www.newyorktimes.com
+id,uuid,domain,title,description,logo,email,phone,fax,address_1,address_2,city,state,string#!zip,country,status,url
+1,8a38dc4b-1555-4e4f-8678-2233e57f6d53,platform,Alien Creations,Tenancy for the master Alien Creations tenancy,,platform@aliencreations.com,,,,,,,,,1,//platform.aliencreations.com
+2,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,cnn,CNN,Cable News Network description here,c1.png,info@cnn.com,925-240-0000,,1118 Lone Tree Way,,Brentwood,CA,94513,US,1,//www.cnn.com
+3,d2e34620-3b64-41ce-a987-0f499ed3bcda,yahoo,Yahoo,Search the Internet with Yahoo,c1.png,help@yahoo.com,925-240-3312,,2255 Shady Willow Lane,,Brentwood,CA,94513,US,1,//www.yahoo.com
+4,f193d073-d9db-495c-9dfb-28d897eabf12,nyt,New York Times,Today's paper,c1.png,news@newyorktimes.com,,,,,Plymouth,MN,55429,US,1,//www.newyorktimes.com

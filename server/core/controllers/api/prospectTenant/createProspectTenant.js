@@ -64,11 +64,6 @@ const sendLeadGenEmail = MailSvc => prospectTenantData => {
   });
 };
 
-/**
- * Create a new prospectTenant record
- * @param {Object} MailSvc
- * @param {Object} prospectTenantData
- */
 const createProspectTenant = MailSvc => prospectTenantData => {
   return Promise.resolve(prospectTenantData)
     .then(_createProspectTenant)

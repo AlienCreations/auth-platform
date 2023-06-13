@@ -58,17 +58,21 @@ const fullCloudUserDataSwapIn = commonMocks.override(fakeFullCloudUserDataForQue
 
 describe('createCloudUser', () => {
   it('creates a cloud user record when given expected data for all fields', done => {
-    createCloudUser(fakeFullCloudUserDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createCloudUser(fakeFullCloudUserDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('creates a cloud user record when given expected data for only required fields', done => {
-    createCloudUser(fakeRequiredCloudUserDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createCloudUser(fakeRequiredCloudUserDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {

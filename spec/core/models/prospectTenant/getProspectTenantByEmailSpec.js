@@ -11,7 +11,6 @@ const getProspectTenantByEmail = require('../../../../server/core/models/prospec
 let KNOWN_TEST_EMAIL;
 
 describe('getProspectTenantByEmail', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
       KNOWN_TEST_EMAIL = R.compose(R.prop('email'), R.head)(data);
@@ -20,14 +19,17 @@ describe('getProspectTenantByEmail', () => {
   });
 
   it('gets a prospect user when given a valid email', done => {
-    getProspectTenantByEmail(KNOWN_TEST_EMAIL).then(data => {
-      expect(R.type(R.prop('id', data))).toBe('Number');
-      done();
-    });
+    getProspectTenantByEmail(KNOWN_TEST_EMAIL)
+      .then(data => {
+        expect(R.type(R.prop('id', data))).toBe('Number');
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown email', done => {
     getProspectTenantByEmail('foo@bar.com')
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -55,6 +57,6 @@ describe('getProspectTenantByEmail', () => {
   it('throws an error when email is set to null', () => {
     expect(() => {
       getProspectTenantByEmail(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

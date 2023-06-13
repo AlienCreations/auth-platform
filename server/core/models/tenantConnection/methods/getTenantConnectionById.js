@@ -4,17 +4,14 @@ const DB                           = require('../../../utils/db'),
       validateTenantConnectionData = require('../helpers/validateTenantConnectionData').validateForGetById;
 
 const createAndExecuteQuery = id => {
-  const query          = 'SELECT * FROM ' + DB.coreDbName + '.tenant_connections WHERE id = ?',
+  const query          = `SELECT * FROM ${DB.coreDbName}.tenant_connections 
+                          WHERE id = ?
+                            AND status > 0`,
         queryStatement = [query, [id]];
 
   return DB.lookup(queryStatement);
 };
 
-/**
- * Select a tenant_connection from the provided id.
- * @param {Number} id
- * @returns {Promise}
- */
 const getTenantConnectionById = id => {
   validateTenantConnectionData({ id });
   return createAndExecuteQuery(id);

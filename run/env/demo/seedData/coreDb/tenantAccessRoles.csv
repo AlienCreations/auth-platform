@@ -1,4 +1,4 @@
-id,tenant_id,tenant_location_id,title,status
-1,1,NULL,Super Admin,1
-2,1,NULL,Admin,1
-3,3,NULL,User,1
+id,uuid,tenant_uuid,tenant_organization_uuid,title,status
+1,db6a1322-bec7-4cef-ab02-36efca3f8e24,6213706a-e5ee-40b1-b1ce-65e36190c7da,NULL,Super Admin,1
+2,0282f133-a178-4aa3-969e-12d1f11cba24,6213706a-e5ee-40b1-b1ce-65e36190c7da,NULL,Admin,1
+3,5a9aeaeb-0687-4610-8f5b-cc5e13952440,8a38dc4b-1555-4e4f-8678-2233e57f6d53,NULL,User,1

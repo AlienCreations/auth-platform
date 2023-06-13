@@ -56,7 +56,7 @@ describe('prospectTenantCtrl.createProspectTenant', () => {
     createProspectTenant(FakeMailSvc)(FAKE_PROSPECT_TENANT_DATA)
       .then(res => {
         expect(FakeMailSvc.send).toHaveBeenCalled();
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'uuid'], res))
           .toEqual(R.omit(privateFields, mergeInsertId(FAKE_PROSPECT_TENANT_DATA)));
         done();
       });

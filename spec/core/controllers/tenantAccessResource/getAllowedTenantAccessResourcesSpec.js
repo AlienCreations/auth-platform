@@ -8,20 +8,18 @@ const R            = require('ramda'),
 const getAllowedTenantAccessResources = require('../../../../server/core/controllers/api/tenantAccessResource/getAllowedTenantAccessResources'),
       commonMocks                     = require('../../../_helpers/commonMocks');
 
-const KNOWN_TEST_PLATFORM_TENANT_ID = 1,
-      A_STRING                      = 'foo';
+const KNOWN_TEST_PLATFORM_TENANT_UUID = process.env.PLATFORM_TENANT_UUID,
+      A_STRING                        = 'foo';
 
 let ALL_RESOURCES_COUNT,
     TENANT_RESOURCES_COUNT,
     TENANT_ORGANIZATION_RESOURCES_COUNT,
-    KNOWN_TEST_TENANT_ID,
-    KNOWN_TEST_TENANT_ORGANIZATION_ID;
+    KNOWN_TEST_TENANT_UUID,
+    KNOWN_TEST_TENANT_ORGANIZATION_UUID;
 
 describe('tenantAccessResourceCtrl.getAllowedTenantAccessResources', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessResources.csv'), (err, _data) => {
-
       const data                  = R.map(commonMocks.ensureTrueNullInCsvData, _data);
       const isNotNull             = k => o => o[k] !== null;
       const findFirstWithValue    = R.compose(R.find, isNotNull);
@@ -29,22 +27,22 @@ describe('tenantAccessResourceCtrl.getAllowedTenantAccessResources', () => {
 
       ALL_RESOURCES_COUNT = data.length;
 
-      KNOWN_TEST_TENANT_ID              = getFirstValueFromData('tenant_id');
-      KNOWN_TEST_TENANT_ORGANIZATION_ID = getFirstValueFromData('tenant_organization_id');
+      KNOWN_TEST_TENANT_UUID              = getFirstValueFromData('tenant_uuid');
+      KNOWN_TEST_TENANT_ORGANIZATION_UUID = getFirstValueFromData('tenant_organization_uuid');
 
       const isKnownOrNullTenant = R.either(
-        R.propEq('tenant_id', KNOWN_TEST_TENANT_ID),
-        R.propEq('tenant_id', null)
+        R.propEq(KNOWN_TEST_TENANT_UUID, 'tenant_uuid'),
+        R.propEq(null, 'tenant_uuid')
       );
 
       const isKnownOrNullTenantOrganization = R.either(
         R.both(
-          R.propEq('tenant_organization_id', KNOWN_TEST_TENANT_ORGANIZATION_ID),
-          R.propEq('tenant_id', KNOWN_TEST_TENANT_ID)
+          R.propEq(KNOWN_TEST_TENANT_ORGANIZATION_UUID, 'tenant_organization_uuid'),
+          R.propEq(KNOWN_TEST_TENANT_UUID, 'tenant_uuid')
         ),
         R.both(
-          R.propEq('tenant_organization_id', null),
-          R.propEq('tenant_id', null)
+          R.propEq(null, 'tenant_organization_uuid'),
+          R.propEq(null, 'tenant_uuid')
         )
       );
 
@@ -56,55 +54,69 @@ describe('tenantAccessResourceCtrl.getAllowedTenantAccessResources', () => {
   });
 
   it('gets all tenantAccessResources when given the platform tenant id', done => {
-    getAllowedTenantAccessResources(KNOWN_TEST_PLATFORM_TENANT_ID).then(data => {
-      expect(R.is(Array, data)).toBe(true);
-      expect(data.length).toBe(ALL_RESOURCES_COUNT);
-      done();
-    });
+    getAllowedTenantAccessResources(KNOWN_TEST_PLATFORM_TENANT_UUID)
+      .then(data => {
+        expect(R.is(Array, data)).toBe(true);
+        expect(data.length).toBe(ALL_RESOURCES_COUNT);
+        done();
+      })
+      .catch(done.fail);
   });
 
-  it('gets all tenantAccessResources for a tenant when given a tenantId', done => {
-    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_ID).then(data => {
-      expect(R.is(Array, data)).toBe(true);
-      expect(data.length).toBe(TENANT_RESOURCES_COUNT);
-      done();
-    });
+  it('gets all tenantAccessResources for a tenant when given a tenantUuid', done => {
+    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_UUID)
+      .then(data => {
+        expect(R.is(Array, data)).toBe(true);
+        expect(data.length).toBe(TENANT_RESOURCES_COUNT);
+        done();
+      })
+      .catch(done.fail);
   });
 
-  it('gets all tenantAccessResources for a tenant organization when given a tenantOrganizationId', done => {
+  it('gets all tenantAccessResources for a tenant organization when given a tenantOrganizationUuid', done => {
     // This mock works fine because we used the same tenant id for the organization record as well.
-    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_ID, KNOWN_TEST_TENANT_ORGANIZATION_ID).then(data => {
-      expect(R.is(Array, data)).toBe(true);
-      expect(data.length).toBe(TENANT_ORGANIZATION_RESOURCES_COUNT);
-      done();
-    });
+    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_UUID, KNOWN_TEST_TENANT_ORGANIZATION_UUID)
+      .then(data => {
+        expect(R.is(Array, data)).toBe(true);
+        expect(data.length).toBe(TENANT_ORGANIZATION_RESOURCES_COUNT);
+        done();
+      })
+      .catch(done.fail);
   });
 
-  it('throws an error when given a tenantId of type other than Number', () => {
-    getAllowedTenantAccessResources(A_STRING, KNOWN_TEST_TENANT_ORGANIZATION_ID)
+  it('throws an error when given a malformed tenantUuid', done => {
+    getAllowedTenantAccessResources(A_STRING, KNOWN_TEST_TENANT_ORGANIZATION_UUID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        done();
       });
   });
 
-  it('throws an error when given a tenantOrganizationId of type other than Number', () => {
-    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_ID, A_STRING)
+  it('throws an error when given a malformed tenantOrganizationUuid', done => {
+    getAllowedTenantAccessResources(KNOWN_TEST_TENANT_UUID, A_STRING)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        done();
       });
   });
 
-  it('throws an error when params are missing', () => {
+  it('throws an error when params are missing', done => {
     getAllowedTenantAccessResources()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
+        done();
       });
   });
 
-  it('throws an error when tenantId is null', () => {
-    getAllowedTenantAccessResources(null, KNOWN_TEST_TENANT_ORGANIZATION_ID)
+  it('throws an error when tenantUuid is null', done => {
+    getAllowedTenantAccessResources(null, KNOWN_TEST_TENANT_ORGANIZATION_UUID)
+      .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
+        done();
       });
   });
 

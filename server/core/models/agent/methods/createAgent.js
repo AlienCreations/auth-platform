@@ -1,11 +1,14 @@
 'use strict';
 
-const R = require('ramda');
+const R    = require('ramda'),
+      uuid = require('uuid/v4');
 
 const DB                = require('../../../utils/db'),
       validateAgentData = require('../helpers/validateAgentData').validateForInsert;
 
-const decorateDataForDbInsertion = R.identity;
+const decorateDataForDbInsertion = data => R.compose(
+  R.assoc('uuid', uuid())
+)(data);
 
 const createAndExecuteQuery = _agentData => {
   const agentData = decorateDataForDbInsertion(_agentData);
@@ -17,12 +20,6 @@ const createAndExecuteQuery = _agentData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create an agent record
- * @param {Object} agentData
- * @throws {Error}
- * @returns {Promise}
- */
 const createAgent = agentData => {
   validateAgentData(R.defaultTo({}, agentData));
   return createAndExecuteQuery(agentData);

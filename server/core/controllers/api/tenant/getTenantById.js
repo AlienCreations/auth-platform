@@ -10,10 +10,6 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_PRIVATE_FIELDS);
 
 const _getTenantById = require('../../../models/tenant/methods/getTenantById');
 
-/**
- * Get a tenant by id from the database
- * @param {Number} id
- */
 const getTenantById = id => Promise.resolve(id)
   .then(_getTenantById)
   .then(R.omit(privateFields));

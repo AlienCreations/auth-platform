@@ -11,28 +11,26 @@ const updateTenantMember = require('../../../../server/core/controllers/api/tena
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
-const FAKE_TENANT_MEMBER_UPDATE_DATA = {
+const FAKE_TENANT_MEMBER_UPDATE_DATA  = {
         referenceId : 'fakeid'
       },
-      FAKE_UNKNOWN_TENANT_MEMBER_ID  = 9999;
+      FAKE_UNKNOWN_TENANT_MEMBER_UUID = commonMocks.COMMON_UUID;
 
 let KNOWN_TEST_TENANT_MEMBER_DATA,
     KNOWN_TEST_EXISTING_REFERENCE_ID,
     FAKE_TENANT_MEMBER_UPDATE_DATA_EXISTING_REFERENCE_ID,
-    KNOWN_TEST_TENANT_MEMBER_ID,
+    KNOWN_TEST_TENANT_MEMBER_UUID,
     updatedTenantMemberData;
 
 const referenceIdLens = R.lensPath(['referenceId']);
 
 describe('tenantMemberCtrl.updateTenantMember', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantMembers.csv'), (err, data) => {
-
       KNOWN_TEST_TENANT_MEMBER_DATA                        = R.compose(R.omit(COMMON_PRIVATE_FIELDS), R.head, commonMocks.transformDbColsToJsProps)(data);
-      KNOWN_TEST_TENANT_MEMBER_ID                          = KNOWN_TEST_TENANT_MEMBER_DATA.id;
+      KNOWN_TEST_TENANT_MEMBER_UUID                        = KNOWN_TEST_TENANT_MEMBER_DATA.uuid;
       KNOWN_TEST_EXISTING_REFERENCE_ID                     = R.compose(R.prop('referenceId'), R.last, commonMocks.transformDbColsToJsProps)(data);
-      FAKE_TENANT_MEMBER_UPDATE_DATA_EXISTING_REFERENCE_ID = R.set(referenceIdLens, KNOWN_TEST_EXISTING_REFERENCE_ID, R.omit(['id'], KNOWN_TEST_TENANT_MEMBER_DATA));
+      FAKE_TENANT_MEMBER_UPDATE_DATA_EXISTING_REFERENCE_ID = R.set(referenceIdLens, KNOWN_TEST_EXISTING_REFERENCE_ID, R.omit(['id', 'uuid'], KNOWN_TEST_TENANT_MEMBER_DATA));
 
       updatedTenantMemberData = R.omit(COMMON_PRIVATE_FIELDS, R.mergeDeepRight(KNOWN_TEST_TENANT_MEMBER_DATA, FAKE_TENANT_MEMBER_UPDATE_DATA));
 
@@ -41,16 +39,18 @@ describe('tenantMemberCtrl.updateTenantMember', () => {
   });
 
   it('updates an tenantMember when provided an id and new properties to update', done => {
-    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA, KNOWN_TEST_TENANT_MEMBER_ID)
+    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA, KNOWN_TEST_TENANT_MEMBER_UUID)
       .then(res => {
         expect(res.referenceId)
           .toEqual(updatedTenantMemberData.referenceId);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when updating an tenantMember that does not exist', done => {
-    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA, FAKE_UNKNOWN_TENANT_MEMBER_ID)
+    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA, FAKE_UNKNOWN_TENANT_MEMBER_UUID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -58,11 +58,11 @@ describe('tenantMemberCtrl.updateTenantMember', () => {
   });
 
   it('throws an error when updating with an existing referenceId for a mapped tenant', done => {
-    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA_EXISTING_REFERENCE_ID, KNOWN_TEST_TENANT_MEMBER_ID)
+    updateTenantMember(FAKE_TENANT_MEMBER_UPDATE_DATA_EXISTING_REFERENCE_ID, KNOWN_TEST_TENANT_MEMBER_UUID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.duplicateRecordErr.message);
         done();
       });
   });
-
 });

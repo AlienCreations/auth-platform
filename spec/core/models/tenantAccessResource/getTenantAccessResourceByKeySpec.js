@@ -14,7 +14,6 @@ const FAKE_UNKNOWN_KEY   = 'foo',
 let KNOWN_TEST_KEY;
 
 describe('getTenantAccessResourceByKey', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessResources.csv'), (err, data) => {
       KNOWN_TEST_KEY = R.compose(R.prop('key'), R.head)(data);
@@ -23,10 +22,12 @@ describe('getTenantAccessResourceByKey', () => {
   });
 
   it('gets a tenantAccessResource when given a known key', done => {
-    getTenantAccessResourceByKey(KNOWN_TEST_KEY).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      done();
-    });
+    getTenantAccessResourceByKey(KNOWN_TEST_KEY)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown key', done => {
@@ -52,7 +53,7 @@ describe('getTenantAccessResourceByKey', () => {
   it('throws an error when key is set to null', () => {
     expect(() => {
       getTenantAccessResourceByKey(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
 });

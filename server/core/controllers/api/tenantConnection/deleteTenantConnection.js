@@ -6,15 +6,11 @@ const R      = require('ramda'),
 const COMMON_SQL_RETURNABLE_PROPERTIES = R.path(['api', 'COMMON_SQL_RETURNABLE_PROPERTIES'], config);
 
 const _deleteTenantConnection = require('../../../models/tenantConnection/methods/deleteTenantConnection'),
-      getTenantConnectionById = require('../../../models/tenantConnection/methods/getTenantConnectionById');
+      getTenantConnectionByUuid = require('../../../models/tenantConnection/methods/getTenantConnectionByUuid');
 
-/**
- * Delete a tenantConnection record
- * @param {Number} id
- */
-const deleteTenantConnection = id => Promise.resolve(id)
-  .then(getTenantConnectionById)
-  .then(R.always(id))
+const deleteTenantConnection = uuid => Promise.resolve(uuid)
+  .then(getTenantConnectionByUuid)
+  .then(R.always(uuid))
   .then(_deleteTenantConnection)
   .then(R.pick(COMMON_SQL_RETURNABLE_PROPERTIES));
 

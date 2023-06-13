@@ -2,39 +2,35 @@
 
 const R = require('ramda');
 
-const DB                                 = require('../../../utils/db'),
-      validateTenantAccessPermissionData = require('../helpers/validateTenantAccessPermissionData');
+const DB = require('../../../utils/db'),
+      {
+        validateUuid,
+        validateForUpdate
+      }  = require('../helpers/validateTenantAccessPermissionData');
 
 const decorateDataForDbInsertion = R.identity;
 
-const createAndExecuteQuery = (id, _tenantAccessPermissionData) => {
+const createAndExecuteQuery = (uuid, _tenantAccessPermissionData) => {
   const tenantAccessPermissionData = decorateDataForDbInsertion(_tenantAccessPermissionData);
 
   const query = `UPDATE ${DB.coreDbName}.tenant_access_permissions
-                 SET  ${DB.prepareProvidedFieldsForSet(tenantAccessPermissionData)}
-                 WHERE id = ?`;
+                 SET ${DB.prepareProvidedFieldsForSet(tenantAccessPermissionData)}
+                 WHERE uuid = ?`;
 
-  const values         = R.append(id, DB.prepareValues(tenantAccessPermissionData));
+  const values         = R.append(uuid, DB.prepareValues(tenantAccessPermissionData));
   const queryStatement = [query, values];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Update a tenantAccessPermission record.
- * @param {Number} id
- * @param {Object} tenantAccessPermissionData
- * @throws {Error}
- * @returns {Promise}
- */
-const updateTenantAccessPermission = (id, tenantAccessPermissionData) => {
+const updateTenantAccessPermission = (uuid, tenantAccessPermissionData) => {
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(tenantAccessPermissionData)) {
     return Promise.resolve(false);
   }
 
-  validateTenantAccessPermissionData.validateId({ id });
-  validateTenantAccessPermissionData.validateForUpdate(tenantAccessPermissionData);
-  return createAndExecuteQuery(id, tenantAccessPermissionData);
+  validateUuid({ uuid });
+  validateForUpdate(tenantAccessPermissionData);
+  return createAndExecuteQuery(uuid, tenantAccessPermissionData);
 };
 
 module.exports = R.curry(updateTenantAccessPermission);

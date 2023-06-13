@@ -2,40 +2,37 @@
 
 const R = require('ramda');
 
-const DB                       = require('../../../utils/db'),
-      validateProspectUserData = require('../helpers/validateProspectUserData');
+const DB = require('../../../utils/db'),
+      {
+        validateUuid,
+        validateForUpdate
+      }  = require('../helpers/validateProspectUserData');
 
 const decorateDataForDbInsertion = R.identity;
 
-const createAndExecuteQuery = R.curry((id, _prospectUserData) => {
+const createAndExecuteQuery = R.curry((uuid, _prospectUserData) => {
   const prospectUserData = decorateDataForDbInsertion(_prospectUserData);
 
   const query = `UPDATE ${DB.coreDbName}.prospect_users
                  SET ${DB.prepareProvidedFieldsForSet(prospectUserData)}
-                 WHERE id = ?`;
+                 WHERE uuid = ?`;
 
-  const values         = R.append(id, DB.prepareValues(prospectUserData));
+  const values         = R.append(uuid, DB.prepareValues(prospectUserData));
   const queryStatement = [query, values];
 
   return DB.query(queryStatement);
 });
 
-/**
- * Update a prospect user record.
- * @param {Number} id The affected record id.
- * @param {Object} prospectUserData
- * @returns {Promise}
- */
-const updateProspectUser = R.curry((id, prospectUserData) => {
+const updateProspectUser = R.curry((uuid, prospectUserData) => {
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(prospectUserData)) {
     return Promise.resolve(false);
   }
 
-  validateProspectUserData.validateId({ id });
-  validateProspectUserData.validateForUpdate(prospectUserData);
+  validateUuid({ uuid });
+  validateForUpdate(prospectUserData);
 
   return Promise.resolve(prospectUserData)
-    .then(createAndExecuteQuery(id));
+    .then(createAndExecuteQuery(uuid));
 });
 
 module.exports = updateProspectUser;

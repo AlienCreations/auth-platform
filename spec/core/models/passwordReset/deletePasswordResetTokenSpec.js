@@ -9,19 +9,22 @@ const KNOWN_TEST_TOKEN     = '$2a$10$JKPLCeIZ8jCF36Q/vRWth.NVO.wnpPNJXD7Upq5uCUS
       A_POSITIVE_NUMBER    = 1000;
 
 describe('deletePasswordResetToken', () => {
-
   it('deletes a reset token when given a known token', done => {
-    deletePasswordResetToken(KNOWN_TEST_TOKEN).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    deletePasswordResetToken(KNOWN_TEST_TOKEN)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('fails gracefully when given an unknown reset token', done => {
-    deletePasswordResetToken(FAKE_UNKNOWN_TOKEN).then(data => {
-      expect(data.affectedRows).toBe(0);
-      done();
-    });
+    deletePasswordResetToken(FAKE_UNKNOWN_TOKEN)
+      .then(data => {
+        expect(data.affectedRows).toBe(0);
+        done();
+      })
+      .catch(done.fail);
   });
 
   // TOKEN
@@ -42,5 +45,4 @@ describe('deletePasswordResetToken', () => {
       deletePasswordResetToken(FAKE_MALFORMED_TOKEN);
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
-
 });

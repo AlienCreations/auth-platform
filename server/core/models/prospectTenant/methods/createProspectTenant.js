@@ -8,6 +8,7 @@ const DB                         = require('../../../utils/db'),
 
 const decorateDataForDbInsertion = prospectTenantData => {
   return R.compose(
+    R.assoc('uuid', uuid()),
     R.unless(R.prop('token'), R.assoc('token', uuid()))
   )(prospectTenantData);
 };
@@ -22,11 +23,6 @@ const createAndExecuteQuery = _prospectTenantData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create a prospect tenant record.
- * @param {Object} prospectTenantData
- * @returns {Promise}
- */
 const createProspectTenant = prospectTenantData => {
   validateProspectTenantData(R.defaultTo({}, prospectTenantData));
   return createAndExecuteQuery(prospectTenantData);

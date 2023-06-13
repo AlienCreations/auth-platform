@@ -41,12 +41,6 @@ const sendPasswordResetEmail = (MailSvc, rootUrl) => resetData => {
 
 };
 
-/**
- * Create a new password_reset record
- * @param {Object} MailSvc
- * @param {String} rootUrl
- * @param {String} email
- */
 const createTokenAndSendResetEmail = (MailSvc, rootUrl, email) => {
   return Promise.resolve({ cloudUserEmail : email })
     .then(PasswordReset.createPasswordResetToken)

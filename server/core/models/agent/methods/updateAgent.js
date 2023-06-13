@@ -2,40 +2,37 @@
 
 const R = require('ramda');
 
-const DB                = require('../../../utils/db'),
-      validateAgentData = require('../helpers/validateAgentData');
+const DB = require('../../../utils/db');
+
+const {
+  validateUuid,
+  validateForUpdate
+} = require('../helpers/validateAgentData');
 
 const decorateDataForDbInsertion = R.identity;
 
-const createAndExecuteQuery = (key, _agentData) => {
+const createAndExecuteQuery = (uuid, _agentData) => {
   const agentData = decorateDataForDbInsertion(_agentData);
 
   const query = `UPDATE ${DB.coreDbName}.agents
                  SET ${DB.prepareProvidedFieldsForSet(agentData)}
-                 WHERE \`key\` = ?`;
+                 WHERE uuid = ?`;
 
-  const values = R.append(key, DB.prepareValues(agentData));
+  const values = R.append(uuid, DB.prepareValues(agentData));
 
   const queryStatement = [query, values];
   return DB.query(queryStatement);
 };
 
-/**
- * Update a agent record.
- * @param {String} key
- * @param {Object} agentData
- * @throws {Error}
- * @returns {Promise}
- */
-const updateAgent = (key, agentData) => {
+const updateAgent = (uuid, agentData) => {
 
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(agentData)) {
     return Promise.resolve(false);
   }
 
-  validateAgentData.validateKey({ key });
-  validateAgentData.validateForUpdate(agentData);
-  return createAndExecuteQuery(key, agentData);
+  validateUuid({ uuid });
+  validateForUpdate(agentData);
+  return createAndExecuteQuery(uuid, agentData);
 };
 
 module.exports = R.curry(updateAgent);

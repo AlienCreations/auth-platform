@@ -18,7 +18,6 @@ let KNOWN_TEST_TENANT_ACCESS_PERMISSION_DATA,
     KNOWN_TEST_TENANT_ACCESS_PERMISSION_ID;
 
 describe('tenantAccessPermissionCtrl.getTenantAccessPermissionById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessPermissions.csv'), (err, data) => {
       KNOWN_TEST_TENANT_ACCESS_PERMISSION_DATA = R.compose(R.omit(COMMON_PRIVATE_FIELDS), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -33,11 +32,13 @@ describe('tenantAccessPermissionCtrl.getTenantAccessPermissionById', () => {
         expect(res.tenantAccessResourceId)
           .toEqual(KNOWN_TEST_TENANT_ACCESS_PERMISSION_DATA.tenantAccessResourceId);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for an tenantAccessPermission that does not exist', done => {
     getTenantAccessPermissionById(FAKE_UNKNOWN_TENANT_ACCESS_PERMISSION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -46,6 +47,7 @@ describe('tenantAccessPermissionCtrl.getTenantAccessPermissionById', () => {
 
   it('throws an error when given a malformed id', done => {
     getTenantAccessPermissionById(FAKE_MALFORMED_TENANT_ACCESS_PERMISSION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -54,6 +56,7 @@ describe('tenantAccessPermissionCtrl.getTenantAccessPermissionById', () => {
 
   it('throws an error when looking for an tenantAccessPermission without an id', done => {
     getTenantAccessPermissionById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -62,8 +65,9 @@ describe('tenantAccessPermissionCtrl.getTenantAccessPermissionById', () => {
 
   it('throws an error when given null params', done => {
     getTenantAccessPermissionById(null)
+      .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

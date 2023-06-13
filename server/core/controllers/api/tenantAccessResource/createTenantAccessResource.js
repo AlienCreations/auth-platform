@@ -8,10 +8,6 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 const _createTenantAccessResource = require('../../../models/tenantAccessResource/methods/createTenantAccessResource'),
       getTenantAccessResourceById = require('../../../models/tenantAccessResource/methods/getTenantAccessResourceById');
 
-/**
- * Create a new tenantAccessResource record
- * @param {Object} tenantAccessResourceData
- */
 const createTenantAccessResource = tenantAccessResourceData => {
   return Promise.resolve(tenantAccessResourceData)
     .then(_createTenantAccessResource)

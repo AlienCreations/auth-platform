@@ -11,23 +11,23 @@ const {
 } = require('@aliencreations/node-validator');
 
 const validateForInsert = label('createAgent', isObjectOf({
-  key      : isRequired(prr.isStringOfLengthAtMost(60)),
-  tenantId : isRequired(prr.isPositiveNumber),
-  secret   : isRequired(prr.isStringOfLength(60)),
-  name     : isRequired(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
-  status   : isOptional(prr.isAtLeastZero)
+  key        : isRequired(prr.isStringOfLengthAtMost(60)),
+  tenantUuid : isRequired(prr.isUuid),
+  secret     : isRequired(prr.isStringOfLength(60)),
+  name       : isRequired(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
+  status     : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForUpdate = label('updateAgent', isObjectOf({
-  key      : isOptional(prr.isStringOfLengthAtMost(60)),
-  tenantId : isOptional(prr.isPositiveNumber),
-  secret   : isOptional(prr.isStringOfLength(60)),
-  name     : isOptional(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
-  status   : isOptional(prr.isAtLeastZero)
+  key        : isOptional(prr.isStringOfLengthAtMost(60)),
+  tenantUuid : isOptional(prr.isUuid),
+  secret     : isOptional(prr.isStringOfLength(60)),
+  name       : isOptional(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
+  status     : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForDelete = label('deleteAgent', isObjectOf({
-  key : isRequired(prr.isStringOfLengthAtMost(60))
+  uuid : isRequired(prr.isUuid)
 }));
 
 const validateKey = label('getAgentByKey', isObjectOf({
@@ -38,11 +38,18 @@ const validateId = label('getAgentById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
+const validateUuid = label('getAgentByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
 module.exports = {
-  validateForGetByKey : validateKey,
-  validateForGetById  : validateId,
+  validateForGetByKey  : validateKey,
+  validateForGetById   : validateId,
+  validateForGetByUuid : validateUuid,
   validateForInsert,
   validateForUpdate,
   validateForDelete,
-  validateKey
+  validateId,
+  validateKey,
+  validateUuid
 };

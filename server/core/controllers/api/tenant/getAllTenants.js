@@ -10,9 +10,6 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_PRIVATE_FIELDS);
 
 const _getAllTenants = require('../../../models/tenant/methods/getAllTenants');
 
-/**
- * Get all tenants from the database
- */
 const getAllTenants = () => Promise.resolve()
   .then(_getAllTenants)
   .then(R.map(R.omit(privateFields)));

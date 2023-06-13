@@ -13,47 +13,42 @@ const createAndExecutePlatformTenantQuery = () => {
   return DB.querySafe(queryStatement);
 };
 
-const createAndExecuteTenantQuery = tenantId => {
+const createAndExecuteTenantQuery = tenantUuid => {
   const query          = `SELECT * 
                           FROM ${DB.coreDbName}.tenant_access_resources 
-                          WHERE (tenant_id = ? OR tenant_id IS NULL)
-                          AND status = 1
+                          WHERE (tenant_uuid = ? OR tenant_uuid IS NULL)
+                            AND status > 0
                           ORDER BY uri ASC`;
-  const queryStatement = [query, [tenantId]];
+  const queryStatement = [query, [tenantUuid]];
   return DB.querySafe(queryStatement);
 };
 
-const createAndExecuteTenantOrganizationQuery = (tenantId, tenantOrganizationId) => {
+const createAndExecuteTenantOrganizationQuery = (tenantUuid, tenantOrganizationUuid) => {
   const query          = `SELECT * 
                           FROM ${DB.coreDbName}.tenant_access_resources 
-                          WHERE ((tenant_id = ? AND tenant_organization_id = ?)
-                          OR (tenant_id IS NULL AND tenant_organization_id IS NULL))
-                          AND status = 1
+                          WHERE (
+                            (tenant_uuid = ? AND tenant_organization_uuid = ?)
+                              OR (tenant_uuid IS NULL AND tenant_organization_uuid IS NULL)
+                          )
+                            AND status > 0
                           ORDER BY uri ASC`;
-  const queryStatement = [query, [tenantId, tenantOrganizationId, tenantId]];
+  const queryStatement = [query, [tenantUuid, tenantOrganizationUuid, tenantUuid]];
   return DB.querySafe(queryStatement);
 };
 
-const createAndExecuteAppropriateQuery = (tenantId, tenantOrganizationId) => {
-  if (tenantId === config.tenancy.platformTenantId) {
+const createAndExecuteAppropriateQuery = (tenantUuid, tenantOrganizationUuid) => {
+  if (tenantUuid === config.tenancy.platformTenantUuid) {
     return createAndExecutePlatformTenantQuery();
   }
-  if (tenantOrganizationId) {
-    return createAndExecuteTenantOrganizationQuery(tenantId, tenantOrganizationId);
+  if (tenantOrganizationUuid) {
+    return createAndExecuteTenantOrganizationQuery(tenantUuid, tenantOrganizationUuid);
   }
-  return createAndExecuteTenantQuery(tenantId);
+  return createAndExecuteTenantQuery(tenantUuid);
 };
 
-/**
- * Query all tenantAccessResources for a tenant or tenant organization
- * @param {Number} tenantId
- * @param {Number} tenantOrganizationId
- * @throws {Error}
- * @returns {Promise}
- */
-const getAllowedTenantAccessResources = (tenantId, tenantOrganizationId) => {
-  validateTenantAccessResourceData({ tenantId, tenantOrganizationId });
-  return createAndExecuteAppropriateQuery(tenantId, tenantOrganizationId);
+const getAllowedTenantAccessResources = (tenantUuid, tenantOrganizationUuid) => {
+  validateTenantAccessResourceData({ tenantUuid, tenantOrganizationUuid });
+  return createAndExecuteAppropriateQuery(tenantUuid, tenantOrganizationUuid);
 };
 
 module.exports = getAllowedTenantAccessResources;

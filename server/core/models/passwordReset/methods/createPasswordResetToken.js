@@ -24,12 +24,6 @@ const createAndExecuteQuery = _passwordResetData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Insert a password reset record.
- * @param {Object} passwordResetData
- * @throws {Error}
- * @returns {Promise}
- */
 const createPasswordResetToken = passwordResetData => {
   validatePasswordResetData(R.defaultTo({}, passwordResetData));
   return createAndExecuteQuery(passwordResetData);

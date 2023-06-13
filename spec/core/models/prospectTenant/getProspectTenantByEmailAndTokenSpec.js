@@ -15,7 +15,7 @@ const FAKE_UNKNOWN_EMAIL   = 'zxc@zxzxc.com',
       FAKE_MALFORMED_TOKEN = '*'.repeat(300);
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config),
-      TENANT_PRIVATE_FIELDS   = R.path(['api', 'TENANT_PRIVATE_FIELDS'],   config);
+      TENANT_PRIVATE_FIELDS = R.path(['api', 'TENANT_PRIVATE_FIELDS'], config);
 
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_PRIVATE_FIELDS);
 
@@ -24,7 +24,6 @@ let KNOWN_TEST_PROSPECT_TENANT_DATA,
     KNOWN_TEST_TOKEN;
 
 describe('getProspectTenantByEmailAndToken', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
       KNOWN_TEST_PROSPECT_TENANT_DATA = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -41,11 +40,13 @@ describe('getProspectTenantByEmailAndToken', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(R.omit(privateFields, KNOWN_TEST_PROSPECT_TENANT_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for a prospectTenant that does not exist', done => {
     getProspectTenantByEmailAndToken(FAKE_UNKNOWN_EMAIL, KNOWN_TEST_TOKEN)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -54,6 +55,7 @@ describe('getProspectTenantByEmailAndToken', () => {
 
   it('throws an error when looking for a prospectTenant given an incorrect token', done => {
     getProspectTenantByEmailAndToken(KNOWN_TEST_EMAIL, FAKE_UNKNOWN_TOKEN)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -81,6 +83,6 @@ describe('getProspectTenantByEmailAndToken', () => {
   it('throws an error when given a null email', () => {
     expect(() => {
       getProspectTenantByEmailAndToken(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

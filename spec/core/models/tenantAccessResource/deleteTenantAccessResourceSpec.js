@@ -8,29 +8,28 @@ const R            = require('ramda'),
 const deleteTenantAccessResource = require('../../../../server/core/models/tenantAccessResource/methods/deleteTenantAccessResource'),
       commonMocks                = require('../../../_helpers/commonMocks');
 
-const FAKE_UNKNOWN_ID   = 99999,
-      FAKE_MALFORMED_ID = 'asd';
+const FAKE_UNKNOWN_UUID   = commonMocks.COMMON_UUID,
+      FAKE_MALFORMED_UUID = 'asd';
 
-let KNOWN_TEST_ID;
+let KNOWN_TEST_TENANT_ACCESS_RESOURCE_UUID;
 
 describe('deleteTenantAccessResource', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessResources.csv'), (err, data) => {
-      KNOWN_TEST_ID = R.compose(R.prop('id'), R.head)(data);
+      KNOWN_TEST_TENANT_ACCESS_RESOURCE_UUID = R.compose(R.prop('uuid'), R.head)(data);
       done();
     });
   });
 
-  it('deletes a tenantAccessResource record when given a known tenantAccessResource id', done => {
-    deleteTenantAccessResource(KNOWN_TEST_ID).then(data => {
+  it('deletes a tenantAccessResource record when given a known tenantAccessResource uuid', done => {
+    deleteTenantAccessResource(KNOWN_TEST_TENANT_ACCESS_RESOURCE_UUID).then(data => {
       expect(data.affectedRows).toBe(1);
       done();
     });
   });
 
-  it('fails gracefully when given an unknown tenantAccessResource id', done => {
-    deleteTenantAccessResource(FAKE_UNKNOWN_ID).then(data => {
+  it('fails gracefully when given an unknown tenantAccessResource uuid', done => {
+    deleteTenantAccessResource(FAKE_UNKNOWN_UUID).then(data => {
       expect(data.affectedRows).toBe(0);
       done();
     });
@@ -43,9 +42,9 @@ describe('deleteTenantAccessResource', () => {
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when given a malformed id', () => {
+  it('throws an error when given a malformed uuid', () => {
     expect(() => {
-      deleteTenantAccessResource(FAKE_MALFORMED_ID);
+      deleteTenantAccessResource(FAKE_MALFORMED_UUID);
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 

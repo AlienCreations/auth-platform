@@ -11,10 +11,6 @@ const _getCloudUserById = require('../../../models/cloudUser/methods/getCloudUse
 
 const maybeParseJson = maybeJsonParse(['strategyRefs', 'authConfig', 'metaJson']);
 
-/**
- * Get a cloudUser by his/her id from the database
- * @param {Number} id
- */
 const getCloudUserById = id => {
   const privateFields = R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS);
 

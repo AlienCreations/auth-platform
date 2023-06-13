@@ -3,16 +3,16 @@
 const R      = require('ramda'),
       config = require('config');
 
-const DB                    = require('../../../utils/db'),
-      passwords             = require('../../../utils/password'),
-      getCloudUserById      = require('../methods/getCloudUserById'),
-      PasswordReset         = require('../../passwordReset/PasswordReset'),
-      validateCloudUserData = require('../helpers/validateCloudUserData');
+const DB                                  = require('../../../utils/db'),
+      passwords                           = require('../../../utils/password'),
+      getCloudUserByUuid                  = require('../methods/getCloudUserByUuid'),
+      PasswordReset                       = require('../../passwordReset/PasswordReset'),
+      { validateUuid, validateForUpdate } = require('../helpers/validateCloudUserData');
 
 const maybeClearStalePasswordReset = R.curry((id, cloudUserData) => {
   if (R.has('email', cloudUserData)) {
     return Promise.resolve(id)
-      .then(getCloudUserById)
+      .then(getCloudUserByUuid)
       .then(R.prop('email'))
       .then(PasswordReset.getPasswordResetByEmail)
       .then(R.prop('token'))
@@ -41,7 +41,7 @@ const createAndExecuteQuery = R.curry((id, _cloudUserData) => {
 
   const query = `UPDATE ${DB.coreDbName}.cloud_users
                  SET ${DB.prepareProvidedFieldsForSet(cloudUserData)}
-                 WHERE id = ?`;
+                 WHERE uuid = ?`;
 
   const values         = R.append(id, DB.prepareValues(cloudUserData));
   const queryStatement = [query, values];
@@ -49,23 +49,17 @@ const createAndExecuteQuery = R.curry((id, _cloudUserData) => {
   return DB.query(queryStatement);
 });
 
-/**
- * Update a cloud user record.
- * @param {Number} id The affected record id.
- * @param {Object} cloudUserData
- * @returns {Promise}
- */
-const updateCloudUser = R.curry((id, cloudUserData) => {
+const updateCloudUser = R.curry((uuid, cloudUserData) => {
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(cloudUserData)) {
     return Promise.resolve(false);
   }
 
-  validateCloudUserData.validateId({ id });
-  validateCloudUserData.validateForUpdate(cloudUserData);
+  validateUuid({ uuid });
+  validateForUpdate(cloudUserData);
 
   return Promise.resolve(cloudUserData)
-    .then(maybeClearStalePasswordReset(id))
-    .then(createAndExecuteQuery(id));
+    .then(maybeClearStalePasswordReset(uuid))
+    .then(createAndExecuteQuery(uuid));
 });
 
 module.exports = updateCloudUser;

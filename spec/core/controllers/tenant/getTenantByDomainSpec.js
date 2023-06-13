@@ -17,7 +17,7 @@ let KNOWN_TEST_TENANT_DATA;
 describe('tenantCtrl.getTenantByDomain', () => {
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
-      KNOWN_TEST_TENANT_DATA = R.compose(R.omit(['secret']), R.find(R.propEq('domain', KNOWN_TEST_DOMAIN)), commonMocks.transformDbColsToJsProps)(data);
+      KNOWN_TEST_TENANT_DATA = R.compose(R.omit(['secret']), R.find(R.propEq(KNOWN_TEST_DOMAIN, 'domain')), commonMocks.transformDbColsToJsProps)(data);
       done();
     });
   });
@@ -63,7 +63,7 @@ describe('tenantCtrl.getTenantByDomain', () => {
     getTenantByDomain(null)
       .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

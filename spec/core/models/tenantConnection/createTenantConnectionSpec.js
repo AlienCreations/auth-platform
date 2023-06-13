@@ -1,41 +1,49 @@
 'use strict';
 
-const R = require('ramda');
+const R            = require('ramda'),
+      path         = require('path'),
+      CSVConverter = require('csvtojson').Converter,
+      converter    = new CSVConverter({});
 
 const createTenantConnection = require('../../../../server/core/models/tenantConnection/methods/createTenantConnection'),
       commonMocks            = require('../../../_helpers/commonMocks');
 
-const KNOWN_TEST_TENANT_ID              = 1,
-      KNOWN_TEST_TENANT_ORGANIZATION_ID = 1,
-      FAKE_TITLE                        = 'Test TenantConnection',
-      FAKE_DESCRIPTION                  = 'A good test tenantConnection',
-      FAKE_PROTOCOL                     = 'https',
-      FAKE_HOST                         = 'test.com',
-      FAKE_USER                         = 'testuser',
-      FAKE_PASSWORD                     = 'testpassword',
-      FAKE_PORT                         = 80,
-      FAKE_CONNECTION_TYPE              = 1,
-      FAKE_STRATEGY                     = 'common/mongodb',
-      FAKE_META_JSON                    = JSON.stringify({ foo : 'bar' }),
-      FAKE_MALFORMED_JSON               = 'foo';
+const FAKE_TITLE           = 'Test TenantConnection',
+      FAKE_DESCRIPTION     = 'A good test tenantConnection',
+      FAKE_PROTOCOL        = 'https',
+      FAKE_HOST            = 'test.com',
+      FAKE_USER            = 'testuser',
+      FAKE_PASSWORD        = 'testpassword',
+      FAKE_PORT            = 80,
+      FAKE_CONNECTION_TYPE = 1,
+      FAKE_STRATEGY        = 'common/mongodb',
+      FAKE_META_JSON       = JSON.stringify({ foo : 'bar' }),
+      FAKE_MALFORMED_JSON  = 'foo';
 
 const A_NUMBER          = 1337,
       A_NEGATIVE_NUMBER = -10,
       A_STRING          = 'foo';
 
+let KNOWN_TEST_TENANT_UUID,
+    KNOWN_TEST_TENANT_ORGANIZATION_UUID;
+
+let fullTenantConnectionDataForQuery,
+    requiredTenantConnectionDataForQuery,
+    fullTenantConnectionDataSwapIn;
+
 const makeFakeTenantConnectionData = includeOptional => {
   const fakeRequiredTenantConnectionData = {
-    tenantId             : KNOWN_TEST_TENANT_ID,
-    tenantOrganizationId : KNOWN_TEST_TENANT_ORGANIZATION_ID,
-    title                : FAKE_TITLE,
-    protocol             : FAKE_PROTOCOL,
-    host                 : FAKE_HOST,
-    user                 : FAKE_USER,
-    password             : FAKE_PASSWORD,
-    port                 : FAKE_PORT,
-    type                 : FAKE_CONNECTION_TYPE,
-    strategy             : FAKE_STRATEGY,
-    metaJson             : FAKE_META_JSON
+    tenantUuid             : KNOWN_TEST_TENANT_UUID,
+    tenantOrganizationUuid : KNOWN_TEST_TENANT_ORGANIZATION_UUID,
+    title                  : FAKE_TITLE,
+    protocol               : FAKE_PROTOCOL,
+    host                   : FAKE_HOST,
+    user                   : FAKE_USER,
+    password               : FAKE_PASSWORD,
+    port                   : FAKE_PORT,
+    type                   : FAKE_CONNECTION_TYPE,
+    strategy               : FAKE_STRATEGY,
+    metaJson               : FAKE_META_JSON
   };
 
   const fakeOptionalTenantConnectionData = {
@@ -45,24 +53,43 @@ const makeFakeTenantConnectionData = includeOptional => {
   return includeOptional ? R.mergeDeepRight(fakeOptionalTenantConnectionData, fakeRequiredTenantConnectionData) : fakeRequiredTenantConnectionData;
 };
 
-const fullTenantConnectionDataForQuery     = makeFakeTenantConnectionData(true),
-      requiredTenantConnectionDataForQuery = makeFakeTenantConnectionData(false);
-
-const fullTenantConnectionDataSwapIn = commonMocks.override(fullTenantConnectionDataForQuery);
 
 describe('createTenantConnection', () => {
-  it('creates a tenantConnection record when given expected data for all fields', done => {
-    createTenantConnection(fullTenantConnectionDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
+  beforeAll(done => {
+    converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantOrganizations.csv'), (err, _data) => {
+      const data = R.compose(
+        R.last,
+        R.reject(R.propEq(0, 'status')),
+        commonMocks.transformDbColsToJsProps
+      )(_data);
+
+      KNOWN_TEST_TENANT_UUID              = data.tenantUuid;
+      KNOWN_TEST_TENANT_ORGANIZATION_UUID = data.uuid;
+
+      fullTenantConnectionDataForQuery     = makeFakeTenantConnectionData(true);
+      requiredTenantConnectionDataForQuery = makeFakeTenantConnectionData(false);
+      fullTenantConnectionDataSwapIn       = commonMocks.override(fullTenantConnectionDataForQuery);
+
       done();
     });
   });
 
+  it('creates a tenantConnection record when given expected data for all fields', done => {
+    createTenantConnection(fullTenantConnectionDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('creates a tenantConnection record when given expected data for only required fields', done => {
-    createTenantConnection(requiredTenantConnectionDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantConnection(requiredTenantConnectionDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given no data', () => {
@@ -196,5 +223,4 @@ describe('createTenantConnection', () => {
       createTenantConnection(fullTenantConnectionDataSwapIn('status', A_NEGATIVE_NUMBER));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
-
 });

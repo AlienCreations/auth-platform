@@ -13,9 +13,9 @@ const createTenant      = require('../../controllers/api/tenant/createTenant'),
       updateTenant      = require('../../controllers/api/tenant/updateTenant'),
       getAllTenants     = require('../../controllers/api/tenant/getAllTenants'),
       getTenantByDomain = require('../../controllers/api/tenant/getTenantByDomain'),
-      getTenantById     = require('../../controllers/api/tenant/getTenantById');
+      getTenantByUuid   = require('../../controllers/api/tenant/getTenantByUuid');
 
-const _getTenantById = require('../../models/tenant/methods/getTenantById');
+const _getTenantByUuid = require('../../models/tenant/methods/getTenantByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -34,7 +34,7 @@ router.post('/', ensureAuthorized, (req, res, next) => {
 
 // https://platform.aliencreations.com/api/v1/tenant/domain/lifetimefitness
 router.get('/domain/:domain', (req, res, next) => {
-  const domain = req.params.domain;
+  const { domain } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
@@ -49,7 +49,7 @@ router.get('/domain/:domain', (req, res, next) => {
 
 // https://platform.aliencreations.com/api/v1/tenant/public/domain/lifetimefitness
 router.get('/public/domain/:domain', (req, res, next) => {
-  const domain = req.params.domain;
+  const { domain } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
@@ -61,26 +61,26 @@ router.get('/public/domain/:domain', (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenant/id/666
+// https://platform.aliencreations.com/api/v1/tenant/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getTenantById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['id'],
-    identityPath    : ['tenant', 'id']
+    getDataById     : _getTenantByUuid,
+    dataIdPath      : ['params', 'uuid'],
+    dataOwnerIdPath : ['uuid'],
+    identityPath    : ['tenant', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateTenant',
-      () => updateTenant(req.body, id)
+      () => updateTenant(req.body, uuid)
     );
   }
 );
@@ -96,17 +96,17 @@ router.get('/', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenant/id/3
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenant/uuid/3
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantById',
-    () => getTenantById(id)
+    req.logger.child({ uuid }),
+    'getTenantByUuid',
+    () => getTenantByUuid(uuid)
   );
 });
 

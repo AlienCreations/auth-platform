@@ -8,10 +8,6 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 const _createTenantAccessRoleAssignment = require('../../../models/tenantAccessRoleAssignment/methods/createTenantAccessRoleAssignment'),
       getTenantAccessRoleAssignmentById = require('../../../models/tenantAccessRoleAssignment/methods/getTenantAccessRoleAssignmentById');
 
-/**
- * Create a new tenantAccessRoleAssignment record
- * @param {Object} tenantAccessRoleAssignmentData
- */
 const createTenantAccessRoleAssignment = tenantAccessRoleAssignmentData => {
   return Promise.resolve(tenantAccessRoleAssignmentData)
     .then(_createTenantAccessRoleAssignment)

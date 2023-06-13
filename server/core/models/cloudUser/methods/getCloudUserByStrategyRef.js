@@ -10,7 +10,10 @@ const createAndExecuteQuery = (strategy, id) => {
   if (!R.includes(strategy, config.auth.userStrategies)) {
     throw new Error(`User strategy ${JSON.stringify(strategy)} is not supported.`);
   } else {
-    const query          = `SELECT * FROM ${DB.coreDbName}.cloud_users WHERE strategy_refs->>'$.${strategy}' = ?`,
+    const query          = `SELECT * 
+                            FROM ${DB.coreDbName}.cloud_users 
+                            WHERE strategy_refs->>'$.${strategy}' = ?
+                             AND status > 0`,
           queryStatement = [query, [id]];
 
     return DB.lookup(queryStatement);

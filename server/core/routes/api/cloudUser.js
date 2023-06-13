@@ -4,18 +4,19 @@ const express  = require('express'),
       R        = require('ramda'),
       config   = require('config'),
       router   = express.Router(),
+      atob     = require('btoa'),
       apiUtils = require('../../utils/api');
 
 const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
       ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
-const createCloudUser     = require('../../controllers/api/cloudUser/createCloudUser'),
-      updateCloudUser     = require('../../controllers/api/cloudUser/updateCloudUser'),
-      getCloudUserByEmail = require('../../controllers/api/cloudUser/getCloudUserByEmail'),
-      getCloudUserById    = require('../../controllers/api/cloudUser/getCloudUserById'),
-      getCloudUsersByIds  = require('../../controllers/api/cloudUser/getCloudUsersByIds');
+const createCloudUser      = require('../../controllers/api/cloudUser/createCloudUser'),
+      updateCloudUser      = require('../../controllers/api/cloudUser/updateCloudUser'),
+      getCloudUserByEmail  = require('../../controllers/api/cloudUser/getCloudUserByEmail'),
+      getCloudUserByUuid   = require('../../controllers/api/cloudUser/getCloudUserByUuid'),
+      getCloudUsersByUuids = require('../../controllers/api/cloudUser/getCloudUsersByUuids');
 
-const _getCloudUserById = require('../../models/cloudUser/methods/getCloudUserById');
+const _getCloudUserByUuid = require('../../models/cloudUser/methods/getCloudUserByUuid');
 
 const ensureServiceJwt = require('../../middleware/ensureServiceJwt');
 
@@ -47,26 +48,26 @@ router.get('/email/:email', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/cloudUser/id/666
+// https://platform.aliencreations.com/api/v1/cloudUser/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getCloudUserById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['id'],
-    identityPath    : ['user', 'id']
+    getDataById     : _getCloudUserByUuid,
+    dataIdPath      : ['params', 'uuid'],
+    dataOwnerIdPath : ['uuid'],
+    identityPath    : ['user', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateCloudUser',
-      () => updateCloudUser(req.body, id)
+      () => updateCloudUser(req.body, uuid)
     );
   }
 );
@@ -76,73 +77,70 @@ router.put(
   '/',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getCloudUserById,
-    dataIdPath      : ['user', 'id'],
-    dataOwnerIdPath : ['id'],
-    identityPath    : ['user', 'id']
+    getDataById     : _getCloudUserByUuid,
+    dataIdPath      : ['user', 'uuid'],
+    dataOwnerIdPath : ['uuid'],
+    identityPath    : ['user', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['user', 'id'], req);
+    const { uuid } = req.user;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateCloudUser',
-      () => updateCloudUser(req.body, id)
+      () => updateCloudUser(req.body, uuid)
     );
   }
 );
 
-// https://platform.aliencreations.com/api/v1/cloudUser/id/3
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/cloudUser/uuid/3
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getCloudUserById',
-    () => getCloudUserById(id)
+    req.logger.child({ uuid }),
+    'getCloudUserByUuid',
+    () => getCloudUserByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/cloudUser/id/3
+// https://platform.aliencreations.com/api/v1/cloudUser
 router.get('/', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['user', 'id'], req);
+  const { uuid } = req.user;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getCloudUserById',
-    () => getCloudUserById(id)
+    req.logger.child({ uuid }),
+    'getCloudUserByUuid',
+    () => getCloudUserByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/cloudUser/ids/[1,2,3,4]
-router.get('/ids/:ids', ensureAuthorized, ensureServiceJwt, (req, res, next) => {
-  const cloudUserIds = R.compose(
-    R.map(R.partialRight(parseInt, [10])),
-    JSON.parse,
-    R.pathOr('', ['params', 'ids'])
-  )(req);
+// https://platform.aliencreations.com/api/v1/cloudUser/uuids/WyIzYWVlMjAyZC0wZTU0LTRhMGMtYTdkMi1hMGQ5OTc2YTAzNzgiLCJjZmMwM2FmYi1iZTkxLTRkZDgtYTRlZi0wOGUyNGI0ZTE1MDEiLCI3MTAxN2ZmMS03MjQxLTRlNDMtOTIxZi1kZWQ4MzZkMDMxNTEiLCJlZWEzZWIyYi1lNGYwLTQ0MTItODZhZS05NjRiZTA3MTUxNWUiXQ==
+router.get('/uuids/:base64Uuids', ensureAuthorized, ensureServiceJwt, (req, res, next) => {
+  const { base64Uuids } = req.params;
+  const cloudUserUuids  = R.compose(JSON.parse, atob)(base64Uuids);
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ cloudUserIds }),
-    'getCloudUsersByIds',
-    () => getCloudUsersByIds(cloudUserIds)
+    req.logger.child({ base64Uuids, cloudUserUuids }),
+    'getCloudUsersByUuids',
+    () => getCloudUsersByUuids(cloudUserUuids)
   );
 });
 
-router.get('/check-session/:id', ensureAuthorized, (req, res) => {
-  const status = (req.user && parseInt(req.user.id, 10) === parseInt(req.params.id, 10)) ? 200 : 401;
+router.get('/check-session/:uuid', ensureAuthorized, (req, res) => {
+  const status = (req.user && req.user.uuid === req.params.uuid) ? 200 : 401;
   res.status(status).send({});
 });
 

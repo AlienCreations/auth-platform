@@ -49,7 +49,8 @@ describe('cloudUserCtrl.getCloudUsersByIds', () => {
         expect(R.map(commonMocks.recursivelyOmitProps(['timestamp', 'created']))(res))
           .toEqual(R.map(R.omit(privateFields))(KNOWN_TEST_CLOUD_USER_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('returns an empty array when looking for cloudUsers that does not exist', done => {
@@ -57,11 +58,13 @@ describe('cloudUserCtrl.getCloudUsersByIds', () => {
       .then(res => {
         expect(res).toEqual([]);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given a malformed ids', done => {
     getCloudUsersByIds(FAKE_MALFORMED_IDS)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -70,6 +73,7 @@ describe('cloudUserCtrl.getCloudUsersByIds', () => {
 
   it('throws an error when looking for cloudUsers without ids', done => {
     getCloudUsersByIds()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();

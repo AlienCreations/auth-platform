@@ -11,7 +11,6 @@ const getTenantOrganizationById = require('../../../../server/core/models/tenant
 let KNOWN_TEST_TENANT_ORGANIZATION_ID;
 
 describe('getTenantOrganizationById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantOrganizations.csv'), (err, data) => {
       KNOWN_TEST_TENANT_ORGANIZATION_ID = R.compose(R.prop('id'), R.head)(data);
@@ -20,11 +19,13 @@ describe('getTenantOrganizationById', () => {
   });
 
   it('gets a tenantOrganization when given an id of type Number', done => {
-    getTenantOrganizationById(KNOWN_TEST_TENANT_ORGANIZATION_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      expect(data.id).toBe(KNOWN_TEST_TENANT_ORGANIZATION_ID);
-      done();
-    });
+    getTenantOrganizationById(KNOWN_TEST_TENANT_ORGANIZATION_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        expect(data.id).toBe(KNOWN_TEST_TENANT_ORGANIZATION_ID);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an id of type String', () => {
@@ -54,6 +55,6 @@ describe('getTenantOrganizationById', () => {
   it('throws an error when given a null id', () => {
     expect(() => {
       getTenantOrganizationById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

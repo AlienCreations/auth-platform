@@ -1,13 +1,15 @@
 'use strict';
 
-const R = require('ramda');
+const R            = require('ramda'),
+      path         = require('path'),
+      CSVConverter = require('csvtojson').Converter,
+      converter    = new CSVConverter({});
 
-const updateProspectTenant  = require('../../../../server/core/models/prospectTenant/methods/updateProspectTenant'),
-      getProspectTenantById = require('../../../../server/core/models/prospectTenant/methods/getProspectTenantById'),
-      commonMocks           = require('../../../_helpers/commonMocks');
+const updateProspectTenant    = require('../../../../server/core/models/prospectTenant/methods/updateProspectTenant'),
+      getProspectTenantByUuid = require('../../../../server/core/models/prospectTenant/methods/getProspectTenantByUuid'),
+      commonMocks             = require('../../../_helpers/commonMocks');
 
-const KNOWN_TEST_ID            = 1,
-      FAKE_UNKNOWN_ID          = 1337,
+const FAKE_UNKNOWN_UUID        = commonMocks.COMMON_UUID,
       FAKE_UPDATE_FIRST_NAME   = 'newfoo',
       FAKE_UPDATE_LAST_NAME    = 'newbar',
       FAKE_UPDATE_EMAIL        = 'newfoo@newbar.com',
@@ -18,37 +20,52 @@ const KNOWN_TEST_ID            = 1,
 const A_POSITIVE_NUMBER = 1337,
       A_STRING          = 'foo';
 
+let KNOWN_TEST_PROSPECT_TENANT_UUID;
+
 const assertUpdatesIfValid = (field, value) => {
   it('updates a prospectTenant when given a valid ' + field, done => {
-    updateProspectTenant(KNOWN_TEST_ID, {
+    updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
       [field] : value
-    }).then(data => {
-      expect(data.affectedRows).toBe(1);
-      getProspectTenantById(KNOWN_TEST_ID)
-        .then((prospectTenant) => {
-          expect(R.prop(field, prospectTenant)).toBe(value);
-          done();
-        });
-    });
+    })
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        getProspectTenantByUuid(KNOWN_TEST_PROSPECT_TENANT_UUID)
+          .then((prospectTenant) => {
+            expect(R.prop(field, prospectTenant)).toBe(value);
+            done();
+          })
+          .catch(done.fail);
+      })
+      .catch(done.fail);
   });
 };
 
 describe('updateProspectTenant', () => {
-
-  it('fails gracefully when given an unknown prospectTenant id to update', done => {
-    updateProspectTenant(FAKE_UNKNOWN_ID, {
-      firstName : FAKE_UPDATE_FIRST_NAME
-    }).then(data => {
-      expect(data.affectedRows).toBe(0);
+  beforeAll(done => {
+    converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, data) => {
+      KNOWN_TEST_PROSPECT_TENANT_UUID = R.compose(R.prop('uuid'), R.head)(data);
       done();
     });
   });
 
+  it('fails gracefully when given an unknown prospectTenant id to update', done => {
+    updateProspectTenant(FAKE_UNKNOWN_UUID, {
+      firstName : FAKE_UPDATE_FIRST_NAME
+    })
+      .then(data => {
+        expect(data.affectedRows).toBe(0);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('fails gracefully when given no data', done => {
-    updateProspectTenant(KNOWN_TEST_ID, null).then(data => {
-      expect(data).toBe(false);
-      done();
-    });
+    updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, null)
+      .then(data => {
+        expect(data).toBe(false);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when updating a prospectTenant with null id', () => {
@@ -56,7 +73,7 @@ describe('updateProspectTenant', () => {
       updateProspectTenant(null, {
         firstName : FAKE_UPDATE_FIRST_NAME
       });
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
   it('throws an error when updating by an id of type other than Number', () => {
@@ -69,7 +86,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given an unsupported parameter', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         foo : 'bar'
       });
     }).toThrowError(commonMocks.unsupportedParamErrRegex);
@@ -77,7 +94,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a firstName of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         firstName : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
@@ -87,7 +104,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a lastName of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         lastName : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
@@ -97,7 +114,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a email of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         email : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
@@ -107,7 +124,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a phone of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         phone : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
@@ -117,7 +134,7 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a zip of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         zip : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
@@ -127,12 +144,11 @@ describe('updateProspectTenant', () => {
 
   it('throws an error when given a tenantTitle of type other than String', () => {
     expect(() => {
-      updateProspectTenant(KNOWN_TEST_ID, {
+      updateProspectTenant(KNOWN_TEST_PROSPECT_TENANT_UUID, {
         tenantTitle : A_POSITIVE_NUMBER
       });
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
   assertUpdatesIfValid('tenantTitle', FAKE_UPDATE_TENANT_TITLE);
-
 });

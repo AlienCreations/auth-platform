@@ -5,21 +5,16 @@ const R      = require('ramda'),
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
-const _updateAgent   = require('../../../models/agent/methods/updateAgent'),
-      _getAgentByKey = require('../../../models/agent/methods/getAgentByKey');
+const _updateAgent    = require('../../../models/agent/methods/updateAgent'),
+      _getAgentByUuid = require('../../../models/agent/methods/getAgentByUuid');
 
-/**
- * Update an agent record
- * @param {Object} agentData
- * @param {String} key
- */
-const updateAgent = R.curry((agentData, key) => {
+const updateAgent = R.curry((agentData, uuid) => {
   const privateFields = R.concat(COMMON_PRIVATE_FIELDS, ['secret']);
 
   return Promise.resolve(agentData)
-    .then(_updateAgent(key))
-    .then(R.always(key))
-    .then(_getAgentByKey)
+    .then(_updateAgent(uuid))
+    .then(R.always(uuid))
+    .then(_getAgentByUuid)
     .then(R.omit(privateFields));
 });
 

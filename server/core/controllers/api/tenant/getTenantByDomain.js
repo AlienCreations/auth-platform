@@ -10,10 +10,6 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_PRIVATE_FIELDS);
 
 const _getTenantByDomain = require('../../../models/tenant/methods/getTenantByDomain');
 
-/**
- * Get a tenant by domain from the database
- * @param {String} domain
- */
 const getTenantByDomain = domain => Promise.resolve(domain)
   .then(_getTenantByDomain)
   .then(R.omit(privateFields));

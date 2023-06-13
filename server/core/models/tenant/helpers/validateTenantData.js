@@ -1,12 +1,12 @@
 'use strict';
 
 const {
-  isObjectOf,
-  isOptional,
-  isRequired,
-  label,
-  prr
-} = require('@aliencreations/node-validator');
+        isObjectOf,
+        isOptional,
+        isRequired,
+        label,
+        prr
+      } = require('@aliencreations/node-validator');
 
 const validateForInsert = label('createTenant', isObjectOf({
   domain      : isRequired(prr.isStringOfLengthAtMost(30)),
@@ -52,10 +52,16 @@ const validateId = label('getTenantById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
+const validateUuid = label('getTenantByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
 module.exports = {
   validateForInsert,
   validateForUpdate,
+  validateId,
+  validateUuid,
   validateForGetByDomain : validateForGetByTenantDomain,
   validateForGetById     : validateId,
-  validateId             : validateId
+  validateForGetByUuid   : validateUuid
 };

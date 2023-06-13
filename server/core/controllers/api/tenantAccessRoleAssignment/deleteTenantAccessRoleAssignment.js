@@ -5,16 +5,12 @@ const R      = require('ramda'),
 
 const COMMON_SQL_RETURNABLE_PROPERTIES = R.path(['api', 'COMMON_SQL_RETURNABLE_PROPERTIES'], config);
 
-const _deleteTenantAccessRoleAssignment = require('../../../models/tenantAccessRoleAssignment/methods/deleteTenantAccessRoleAssignment'),
-      getTenantAccessRoleAssignmentById = require('../../../models/tenantAccessRoleAssignment/methods/getTenantAccessRoleAssignmentById');
+const _deleteTenantAccessRoleAssignment   = require('../../../models/tenantAccessRoleAssignment/methods/deleteTenantAccessRoleAssignment'),
+      getTenantAccessRoleAssignmentByUuid = require('../../../models/tenantAccessRoleAssignment/methods/getTenantAccessRoleAssignmentByUuid');
 
-/**
- * Delete a tenantAccessRoleAssignment record
- * @param {Number} id
- */
-const deleteTenantAccessRoleAssignment = id => Promise.resolve(id)
-  .then(getTenantAccessRoleAssignmentById)
-  .then(R.always(id))
+const deleteTenantAccessRoleAssignment = uuid => Promise.resolve(uuid)
+  .then(getTenantAccessRoleAssignmentByUuid)
+  .then(R.always(uuid))
   .then(_deleteTenantAccessRoleAssignment)
   .then(R.pick(COMMON_SQL_RETURNABLE_PROPERTIES));
 

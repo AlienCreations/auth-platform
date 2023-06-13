@@ -13,10 +13,6 @@ const maybeParseJson = maybeJsonParse(['strategyRefs', 'authConfig', 'metaJson']
 
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS);
 
-/**
- * Get a cloudUser by his/her email from the database
- * @param {String} email
- */
 const getCloudUserByEmail = email => Promise.resolve(R.defaultTo(undefined, email))
   .then(_getCloudUserByEmail)
   .then(R.omit(privateFields))

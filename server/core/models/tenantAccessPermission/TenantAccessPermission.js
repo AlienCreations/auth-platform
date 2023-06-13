@@ -1,12 +1,13 @@
 'use strict';
 
 module.exports = {
-  createTenantAccessPermission                       : require('./methods/createTenantAccessPermission'),
-  deleteTenantAccessPermission                       : require('./methods/deleteTenantAccessPermission'),
-  getTenantAccessPermissionById                      : require('./methods/getTenantAccessPermissionById'),
-  getTenantAccessPermissionsByTenantAccessRoleId     : require('./methods/getTenantAccessPermissionsByTenantAccessRoleId'),
-  getTenantAccessPermissionsByTenantAccessResourceId : require('./methods/getTenantAccessPermissionsByTenantAccessResourceId'),
-  getTenantAccessPermissionsByTenantOrganizationId   : require('./methods/getTenantAccessPermissionsByTenantOrganizationId'),
-  updateTenantAccessPermission                       : require('./methods/updateTenantAccessPermission'),
-  checkTenantAccessPermission                        : require('./methods/checkTenantAccessPermission')
+  createTenantAccessPermission                         : require('./methods/createTenantAccessPermission'),
+  deleteTenantAccessPermission                         : require('./methods/deleteTenantAccessPermission'),
+  getTenantAccessPermissionById                        : require('./methods/getTenantAccessPermissionById'),
+  getTenantAccessPermissionByUuid                      : require('./methods/getTenantAccessPermissionByUuid'),
+  getTenantAccessPermissionsByTenantAccessRoleUuid     : require('./methods/getTenantAccessPermissionsByTenantAccessRoleUuid'),
+  getTenantAccessPermissionsByTenantAccessResourceUuid : require('./methods/getTenantAccessPermissionsByTenantAccessResourceUuid'),
+  getTenantAccessPermissionsByTenantOrganizationUuid   : require('./methods/getTenantAccessPermissionsByTenantOrganizationUuid'),
+  updateTenantAccessPermission                         : require('./methods/updateTenantAccessPermission'),
+  checkTenantAccessPermission                          : require('./methods/checkTenantAccessPermission')
 };

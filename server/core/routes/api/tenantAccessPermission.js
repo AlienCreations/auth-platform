@@ -10,16 +10,16 @@ const R        = require('ramda'),
 const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
       ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
-const createTenantAccessPermission                       = require('../../controllers/api/tenantAccessPermission/createTenantAccessPermission'),
-      updateTenantAccessPermission                       = require('../../controllers/api/tenantAccessPermission/updateTenantAccessPermission'),
-      deleteTenantAccessPermission                       = require('../../controllers/api/tenantAccessPermission/deleteTenantAccessPermission'),
-      getTenantAccessPermissionById                      = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionById'),
-      getTenantAccessPermissionsByTenantAccessResourceId = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantAccessResourceId'),
-      getTenantAccessPermissionsByTenantAccessRoleId     = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantAccessRoleId'),
-      getTenantAccessPermissionsByTenantOrganizationId   = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantOrganizationId'),
-      checkTenantAccessPermission                        = require('../../controllers/api/tenantAccessPermission/checkTenantAccessPermission');
+const createTenantAccessPermission                         = require('../../controllers/api/tenantAccessPermission/createTenantAccessPermission'),
+      updateTenantAccessPermission                         = require('../../controllers/api/tenantAccessPermission/updateTenantAccessPermission'),
+      deleteTenantAccessPermission                         = require('../../controllers/api/tenantAccessPermission/deleteTenantAccessPermission'),
+      getTenantAccessPermissionByUuid                      = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionByUuid'),
+      getTenantAccessPermissionsByTenantAccessResourceUuid = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantAccessResourceUuid'),
+      getTenantAccessPermissionsByTenantAccessRoleUuid     = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantAccessRoleUuid'),
+      getTenantAccessPermissionsByTenantOrganizationUuid   = require('../../controllers/api/tenantAccessPermission/getTenantAccessPermissionsByTenantOrganizationUuid'),
+      checkTenantAccessPermission                          = require('../../controllers/api/tenantAccessPermission/checkTenantAccessPermission');
 
-const _getTenantAccessPermissionById = require('../../models/tenantAccessPermission/methods/getTenantAccessPermissionById');
+const _getTenantAccessPermissionByUuid = require('../../models/tenantAccessPermission/methods/getTenantAccessPermissionByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -35,116 +35,119 @@ router.post('/', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/id/123
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getTenantAccessPermissionById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['tenantId'],
-    identityPath    : ['tenant', 'id']
+    getDataByUuid     : _getTenantAccessPermissionByUuid,
+    dataUuidPath      : ['params', 'uuid'],
+    dataOwnerUuidPath : ['tenantUuid'],
+    identityPath      : ['tenant', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateTenantAccessPermission',
-      () => updateTenantAccessPermission(req.body, id)
+      () => updateTenantAccessPermission(req.body, uuid)
     );
   }
 );
 
 // https://platform.aliencreations.com/api/v1/tenantAccessPermission
 router.get('/', ensureAuthorized, (req, res, next) => {
-  const tenantOrganizationId = R.path(['tenantOrganization', 'id'], req);
+  const tenantOrganizationUuid = R.path(['tenantOrganization', 'uuid'], req);
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantOrganizationId }),
-    'getTenantAccessPermissionsByTenantOrganizationId',
-    () => getTenantAccessPermissionsByTenantOrganizationId(tenantOrganizationId)
+    req.logger.child({ tenantOrganizationUuid }),
+    'getTenantAccessPermissionsByTenantOrganizationUuid',
+    () => getTenantAccessPermissionsByTenantOrganizationUuid(tenantOrganizationUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/id/123
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantAccessPermissionById',
-    () => getTenantAccessPermissionById(id)
+    req.logger.child({ uuid }),
+    'getTenantAccessPermissionByUuid',
+    () => getTenantAccessPermissionByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/tenantAccessResourceId/123
-router.get('/tenantAccessResourceId/:tenantAccessResourceId', ensureAuthorized, (req, res, next) => {
-  const tenantAccessResourceId = maybeParseIntFromPath(['params', 'tenantAccessResourceId'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/tenantAccessResourceUuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/tenantAccessResourceUuid/:tenantAccessResourceUuid', ensureAuthorized, (req, res, next) => {
+  const { tenantAccessResourceUuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantAccessResourceId }),
-    'getTenantAccessPermissionsByTenantAccessResourceId',
-    () => getTenantAccessPermissionsByTenantAccessResourceId(tenantAccessResourceId)
+    req.logger.child({ tenantAccessResourceUuid }),
+    'getTenantAccessPermissionsByTenantAccessResourceUuid',
+    () => getTenantAccessPermissionsByTenantAccessResourceUuid(tenantAccessResourceUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/tenantAccessRoleId/123
-router.get('/tenantAccessRoleId/:tenantAccessRoleId', ensureAuthorized, (req, res, next) => {
-  const tenantAccessRoleId = maybeParseIntFromPath(['params', 'tenantAccessRoleId'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/tenantAccessRoleUuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/tenantAccessRoleUuid/:tenantAccessRoleUuid', ensureAuthorized, (req, res, next) => {
+  const { tenantAccessRoleUuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantAccessRoleId }),
-    'getTenantAccessPermissionsByTenantAccessRoleId',
-    () => getTenantAccessPermissionsByTenantAccessRoleId(tenantAccessRoleId)
+    req.logger.child({ tenantAccessRoleUuid }),
+    'getTenantAccessPermissionsByTenantAccessRoleUuid',
+    () => getTenantAccessPermissionsByTenantAccessRoleUuid(tenantAccessRoleUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/public/check/some-uri/GET/123/123/123
-router.get('/public/check/:uri/:method/:cloudUserId/:tenantId/:tenantOrganizationId', (req, res, next) => {
-  const uri                  = atob(req.params.uri),
-        method               = req.params.method,
-        cloudUserId          = maybeParseIntFromPath(['params', 'cloudUserId'], req),
-        tenantId             = maybeParseIntFromPath(['params', 'tenantId'], req),
-        tenantOrganizationId = maybeParseIntFromPath(['params', 'tenantOrganizationId'], req),
-        idOrNull             = R.when(R.anyPass([R.isNil, isNaN, R.equals('undefined')]), R.always(null));
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/public/check/some-uri/GET/3aee202d-0e54-4a0c-a7d2-a0d9976a0378/cfc03afb-be91-4dd8-a4ef-08e24b4e1501/71017ff1-7241-4e43-921f-ded836d03151
+router.get('/public/check/:uri/:method/:cloudUserUuid/:tenantUuid/:tenantOrganizationUuid', (req, res, next) => {
+  const uri = atob(req.params.uri),
+        {
+          method,
+          cloudUserUuid,
+          tenantUuid,
+          tenantOrganizationUuid
+        }   = req.params;
+
+  const idOrNull = R.when(R.anyPass([R.isNil, isNaN, R.equals('undefined')]), R.always(null));
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ uri, method, cloudUserId, tenantId, tenantOrganizationId }),
+    req.logger.child({ uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid }),
     'checkTenantAccessPermission',
-    () => checkTenantAccessPermission(uri, method, cloudUserId, idOrNull(tenantId), idOrNull(tenantOrganizationId))
+    () => checkTenantAccessPermission(uri, method, cloudUserUuid, idOrNull(tenantUuid), idOrNull(tenantOrganizationUuid))
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantAccessPermission/id/123
-router.delete('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantAccessPermission/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.delete('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'deleteTenantAccessPermission',
-    () => deleteTenantAccessPermission(id)
+    () => deleteTenantAccessPermission(uuid)
   );
 });
 

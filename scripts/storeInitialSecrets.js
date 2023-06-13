@@ -2,9 +2,9 @@
 
 const Secret = require('../server/core/services/secret/Secret')(process.env.SECRET_STRATEGY);
 
-const services   = JSON.parse(process.env.SERVICES);
+const platforms = JSON.parse(process.env.PLATFORMS);
 
-const storePrivateKeys = () => Promise.all(services.map(
+const storePrivateKeys = () => Promise.all(platforms.map(
   service => Secret.setItem(`secret/data/services/${service}/privateKey`, process.env.PRIVATE_KEY)
 ));
 

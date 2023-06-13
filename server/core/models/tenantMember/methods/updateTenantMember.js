@@ -2,39 +2,36 @@
 
 const R = require('ramda');
 
-const DB                       = require('../../../utils/db'),
-      validateTenantMemberData = require('../helpers/validateTenantMemberData');
+const DB = require('../../../utils/db');
+
+const {
+  validateUuid,
+  validateForUpdate
+}  = require('../helpers/validateTenantMemberData');
 
 const decorateDataForDbInsertion = R.identity;
 
-const createAndExecuteQuery = (id, _tenantMemberData) => {
+const createAndExecuteQuery = (uuid, _tenantMemberData) => {
   const tenantMemberData = decorateDataForDbInsertion(_tenantMemberData);
 
   const query = `UPDATE ${DB.coreDbName}.tenant_members
                  SET ${DB.prepareProvidedFieldsForSet(tenantMemberData)}
-                 WHERE id = ?`;
+                 WHERE uuid = ?`;
 
-  const values         = R.append(id, DB.prepareValues(tenantMemberData));
+  const values         = R.append(uuid, DB.prepareValues(tenantMemberData));
   const queryStatement = [query, values];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Update a tenantMember record.
- * @param {Number} id
- * @param {Object} tenantMemberData
- * @throws {Error}
- * @returns {Promise}
- */
-const updateTenantMember = (id, tenantMemberData) => {
+const updateTenantMember = (uuid, tenantMemberData) => {
   if (R.either(R.isNil, R.compose(R.identical(JSON.stringify({})), JSON.stringify))(tenantMemberData)) {
     return Promise.resolve(false);
   }
 
-  validateTenantMemberData.validateId({ id });
-  validateTenantMemberData.validateForUpdate(tenantMemberData);
-  return createAndExecuteQuery(id, tenantMemberData);
+  validateUuid({ uuid });
+  validateForUpdate(tenantMemberData);
+  return createAndExecuteQuery(uuid, tenantMemberData);
 };
 
 module.exports = R.curry(updateTenantMember);

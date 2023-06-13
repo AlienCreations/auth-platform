@@ -7,13 +7,13 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
 const _createTenantMember = require('../../../models/tenantMember/methods/createTenantMember'),
       getTenantMemberById = require('../../../controllers/api/tenantMember/getTenantMemberById'),
-      getCloudUserById    = require('../cloudUser/getCloudUserById');
+      getCloudUserByUuid  = require('../cloudUser/getCloudUserByUuid');
 
 const inferFullName = R.compose(R.join(' '), R.props(['firstName', 'lastName']));
 
-const sendConfirmationEmail = (tenancy, MailSvc) => ({ cloudUserId }) => {
-  return Promise.resolve(cloudUserId)
-    .then(getCloudUserById)
+const sendConfirmationEmail = (tenancy, MailSvc) => ({ cloudUserUuid }) => {
+  return Promise.resolve(cloudUserUuid)
+    .then(getCloudUserByUuid)
     .then(cloudUser => {
       const data = R.prop(R.__, cloudUser);
 
@@ -52,13 +52,7 @@ const sendConfirmationEmail = (tenancy, MailSvc) => ({ cloudUserId }) => {
     });
 };
 
-/**
- * Create a new tenantMember record
- * @param {Object} tenancy
- * @param {Object} MailSvc
- * @param {Object} tenantMemberData
- */
-const createTenantMember = (tenancy, MailSvc, tenantMemberData) => {
+const createTenantMember = ({ MailSvc }) => (tenancy, tenantMemberData) => {
   return Promise.resolve(tenantMemberData)
     .then(_createTenantMember)
     .then(R.prop('insertId'))

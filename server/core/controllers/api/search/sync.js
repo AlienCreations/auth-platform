@@ -11,9 +11,6 @@ const { protocol, host, port, user, password } = config.search,
 
 const getAllCloudUsers = require('../cloudUser/getAllCloudUsers');
 
-/**
- * Delete current elastic search contents and re-seed.
- */
 const sync = () => {
   let processedCount = 0;
 
@@ -21,7 +18,7 @@ const sync = () => {
     processedCount += R.length(arr);
   };
 
-  const omitSystemUser = R.reject(R.propEq('id', 1));
+  const omitSystemUser = R.reject(R.propEq(1, 'id'));
 
   return new Promise((resolve, reject) => {
     axios.delete(elasticUrl + '/_all')
@@ -40,7 +37,6 @@ const sync = () => {
       .then(resolve)
       .catch(reject);
   });
-
 };
 
 module.exports = sync;

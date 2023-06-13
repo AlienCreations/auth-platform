@@ -3,22 +3,17 @@
 const DB                                     = require('../../../utils/db'),
       validateTenantAccessRoleAssignmentData = require('../helpers/validateTenantAccessRoleAssignmentData').validateForDelete;
 
-const createAndExecuteQuery = id => {
-  const query          = 'DELETE FROM ' + DB.coreDbName + '.tenant_access_role_assignments WHERE id = ?',
-        queryStatement = [query, [id]];
+const createAndExecuteQuery = uuid => {
+  const query          = `DELETE FROM ${DB.coreDbName}.tenant_access_role_assignments 
+                          WHERE uuid = ?`,
+        queryStatement = [query, [uuid]];
 
   return DB.query(queryStatement);
 };
 
-/**
- * Delete a tenantAccessRoleAssignment record
- * @param {Number} id
- * @throws {Error}
- * @returns {Promise}
- */
-const deleteTenantAccessRoleAssignment = id => {
-  validateTenantAccessRoleAssignmentData({ id });
-  return createAndExecuteQuery(id);
+const deleteTenantAccessRoleAssignment = uuid => {
+  validateTenantAccessRoleAssignmentData({ uuid });
+  return createAndExecuteQuery(uuid);
 };
 
 module.exports = deleteTenantAccessRoleAssignment;

@@ -11,80 +11,80 @@ const createAndExecutePlatformRootUserQuery = () => {
   return DB.lookupSafe(queryStatement);
 };
 
-const createAndExecuteTenantQuery = (uri, method, cloudUserId, tenantId) => {
+const createAndExecuteTenantQuery = (uri, method, cloudUserUuid, tenantUuid) => {
   const query = `
-      SELECT COUNT(permissions.tenant_access_resource_id) > 0 AS has_permission 
+      SELECT COUNT(permissions.tenant_access_resource_uuid) > 0 AS has_permission 
       FROM ${DB.coreDbName}.tenant_access_permissions permissions
       RIGHT JOIN ${DB.coreDbName}.tenant_access_resources resources
-        ON resources.id = permissions.tenant_access_resource_id
+        ON resources.uuid = permissions.tenant_access_resource_uuid
       RIGHT JOIN ${DB.coreDbName}.tenant_access_role_assignments assignments
-        ON assignments.tenant_access_role_id = permissions.tenant_access_role_id
+        ON assignments.tenant_access_role_uuid = permissions.tenant_access_role_uuid
       RIGHT JOIN ${DB.coreDbName}.tenant_access_roles roles
-        ON roles.id = permissions.tenant_access_role_id
-      WHERE assignments.cloud_user_id = ?
-        AND ( resources.uri       = ? OR resources.uri    = '*' )
-        AND ( resources.method    = ? OR resources.method = '*' )
-        AND ( resources.tenant_id = ? OR resources.tenant_id IS NULL )
-        AND resources.status      = 1
+        ON roles.uuid = permissions.tenant_access_role_uuid
+      WHERE assignments.cloud_user_uuid = ?
+        AND ( resources.uri         = ? OR resources.uri    = '*' )
+        AND ( resources.method      = ? OR resources.method = '*' )
+        AND ( resources.tenant_uuid = ? OR resources.tenant_uuid IS NULL )
+        AND resources.status        = 1
   `;
 
-  const queryStatement = [query, [cloudUserId, uri, method, tenantId]];
+  const queryStatement = [query, [cloudUserUuid, uri, method, tenantUuid]];
   return DB.lookupSafe(queryStatement);
 };
 
-const createAndExecuteTenantOrganizationQuery = (uri, method, cloudUserId, tenantId, tenantOrganizationId) => {
+const createAndExecuteTenantOrganizationQuery = (uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid) => {
   const query = `
-      SELECT COUNT(permissions.tenant_access_resource_id) > 0 AS has_permission 
+      SELECT COUNT(permissions.tenant_access_resource_uuid) > 0 AS has_permission 
       FROM ${DB.coreDbName}.tenant_access_permissions permissions
       RIGHT JOIN ${DB.coreDbName}.tenant_access_resources resources
-        ON resources.id = permissions.tenant_access_resource_id
+        ON resources.uuid = permissions.tenant_access_resource_uuid
       RIGHT JOIN ${DB.coreDbName}.tenant_access_role_assignments assignments
-        ON assignments.tenant_access_role_id = permissions.tenant_access_role_id
+        ON assignments.tenant_access_role_uuid = permissions.tenant_access_role_uuid
       RIGHT JOIN ${DB.coreDbName}.tenant_access_roles roles
-        ON roles.id = permissions.tenant_access_role_id
-      WHERE assignments.cloud_user_id    = ?
-        AND resources.uri                = ?
-        AND resources.method             = ?
-        AND roles.tenant_id              = ? 
-        AND roles.tenant_organization_id = ?
-        AND resources.status             = 1
+        ON roles.uuid = permissions.tenant_access_role_uuid
+      WHERE assignments.cloud_user_uuid    = ?
+        AND resources.uri                  = ?
+        AND resources.method               = ?
+        AND roles.tenant_uuid              = ? 
+        AND roles.tenant_organization_uuid = ?
+        AND resources.status               = 1
   `;
 
-  const queryStatement = [query, [cloudUserId, uri, method, tenantId, tenantOrganizationId]];
+  const queryStatement = [query, [cloudUserUuid, uri, method, tenantUuid, tenantOrganizationUuid]];
   return DB.lookupSafe(queryStatement);
 };
 
-const createAndExecuteAppropriateQuery = (uri, method, cloudUserId, tenantId, tenantOrganizationId) => {
-  if (cloudUserId === config.tenancy.platformRootUserId) {
-    return createAndExecutePlatformRootUserQuery(uri, method, cloudUserId);
+const createAndExecuteAppropriateQuery = (uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid) => {
+  if (cloudUserUuid === config.tenancy.platformRootUserUuid) {
+    return createAndExecutePlatformRootUserQuery(uri, method, cloudUserUuid);
   }
-  if (tenantOrganizationId) {
-    return createAndExecuteTenantOrganizationQuery(uri, method, cloudUserId, tenantId, tenantOrganizationId);
+  if (tenantOrganizationUuid) {
+    return createAndExecuteTenantOrganizationQuery(uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid);
   }
-  return createAndExecuteTenantQuery(uri, method, cloudUserId, tenantId);
+  return createAndExecuteTenantQuery(uri, method, cloudUserUuid, tenantUuid);
 };
 
 /**
- * Look check permissions for a cloud user against a resource uri and method
+ * Check permissions for a cloud user against a resource uri and method
  * Wildcards are supported for both uri and method.
  * User could be allowed to [GET *] or [* /api/v1/reward]
  * @param {String} uri
  * @param {String} method - One of GET, POST, PUT, DELETE
- * @param {Number} cloudUserId
- * @param {Number} tenantId
- * @param {Number} tenantOrganizationId
+ * @param {String} cloudUserUuid
+ * @param {String} tenantUuid
+ * @param {String} tenantOrganizationUuid
  * @throws {Error}
  * @returns {Promise}
  */
-const checkTenantAccessPermission = (uri, method, cloudUserId, tenantId, tenantOrganizationId) => {
+const checkTenantAccessPermission = (uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid) => {
   validateTenantAccessPermissionData({
     tenantAccessResourceUri    : uri,
     tenantAccessResourceMethod : method,
-    cloudUserId,
-    tenantId,
-    tenantOrganizationId
+    cloudUserUuid,
+    tenantUuid,
+    tenantOrganizationUuid
   });
-  return createAndExecuteAppropriateQuery(uri, method, cloudUserId, tenantId, tenantOrganizationId);
+  return createAndExecuteAppropriateQuery(uri, method, cloudUserUuid, tenantUuid, tenantOrganizationUuid);
 };
 
 module.exports = checkTenantAccessPermission;

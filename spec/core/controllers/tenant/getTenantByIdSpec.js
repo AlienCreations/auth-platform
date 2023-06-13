@@ -18,7 +18,7 @@ describe('tenantCtrl.getTenantById', () => {
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
       KNOWN_TEST_TENANT_DATA = R.compose(R.head, commonMocks.transformDbColsToJsProps)(data);
-      KNOWN_TEST_TENANT_ID   = R.prop('id', KNOWN_TEST_TENANT_DATA);
+      KNOWN_TEST_TENANT_ID   = KNOWN_TEST_TENANT_DATA.id;
       done();
     });
   });
@@ -64,7 +64,7 @@ describe('tenantCtrl.getTenantById', () => {
     getTenantById(null)
       .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

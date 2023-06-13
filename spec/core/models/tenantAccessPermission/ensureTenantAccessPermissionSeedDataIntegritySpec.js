@@ -28,7 +28,13 @@ describe('ensureTenantAccessPermissionsSeedDataIntegrity', () => {
     const count = data => data.reduce((a, b) => ({ ...a, [b] : (a[b] || 0) + 1 }), {});
     const duplicates = dict => Object.keys(dict).filter(a => dict[a] > 1);
 
-    expect(duplicates(count(R.map(({ tenant_access_role_id, tenant_access_resource_id }) => `${tenant_access_role_id}:${tenant_access_resource_id}`)(data)))).toEqual([]);
+    expect(
+      duplicates(
+        count(
+          R.map(({ tenant_access_role_uuid, tenant_access_resource_uuid }) => `${tenant_access_role_uuid}:${tenant_access_resource_uuid}`)(data)
+        )
+      )
+    ).toEqual([]);
   };
 
   describe('demo', () => {

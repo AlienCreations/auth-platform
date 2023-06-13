@@ -25,6 +25,7 @@ describe('cloudUserCtrl.getAllCloudUsers', () => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/cloudUsers.csv'), (err, data) => {
 
       KNOWN_TEST_CLOUD_USER_DATA = R.compose(
+        R.filter(R.propEq(1, 'status')),
         R.sortWith([
           R.ascend(R.prop('lastName')),
           R.ascend(R.prop('firstName'))

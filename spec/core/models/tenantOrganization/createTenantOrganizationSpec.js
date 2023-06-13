@@ -5,7 +5,7 @@ const R = require('ramda');
 const createTenantOrganization = require('../../../../server/core/models/tenantOrganization/methods/createTenantOrganization'),
       commonMocks              = require('../../../_helpers/commonMocks');
 
-const KNOWN_TEST_TENANT_ID    = 1,
+const KNOWN_TEST_TENANT_UUID  = process.env.PLATFORM_TENANT_UUID,
       FAKE_TITLE              = 'Test TenantOrganization',
       FAKE_EMAIL              = 'test@user.com',
       FAKE_MALFORMED_EMAIL    = 'test',
@@ -36,18 +36,18 @@ const A_NUMBER          = 1337,
 
 const makeFakeTenantOrganizationData = includeOptional => {
   const fakeRequiredTenantOrganizationData = {
-    tenantId  : KNOWN_TEST_TENANT_ID,
-    title     : FAKE_TITLE,
-    email     : FAKE_EMAIL,
-    password  : FAKE_PLAINTEXT_PASSWORD,
-    phone     : FAKE_PHONE,
-    address1  : FAKE_ADDRESS_1,
-    city      : FAKE_CITY,
-    state     : FAKE_STATE,
-    zip       : FAKE_ZIP,
-    country   : FAKE_COUNTRY,
-    taxRate   : FAKE_TAX_RATE,
-    subdomain : FAKE_SUBDOMAIN
+    tenantUuid : KNOWN_TEST_TENANT_UUID,
+    title      : FAKE_TITLE,
+    email      : FAKE_EMAIL,
+    password   : FAKE_PLAINTEXT_PASSWORD,
+    phone      : FAKE_PHONE,
+    address1   : FAKE_ADDRESS_1,
+    city       : FAKE_CITY,
+    state      : FAKE_STATE,
+    zip        : FAKE_ZIP,
+    country    : FAKE_COUNTRY,
+    taxRate    : FAKE_TAX_RATE,
+    subdomain  : FAKE_SUBDOMAIN
   };
 
   const fakeOptionalTenantOrganizationData = {
@@ -67,17 +67,21 @@ const fullTenantOrganizationDataSwapIn = commonMocks.override(fullTenantOrganiza
 
 describe('createTenantOrganization', () => {
   it('creates a tenantOrganization record when given expected data for all fields', done => {
-    createTenantOrganization(fullTenantOrganizationDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantOrganization(fullTenantOrganizationDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('creates a tenantOrganization record when given expected data for only required fields', done => {
-    createTenantOrganization(requiredTenantOrganizationDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantOrganization(requiredTenantOrganizationDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given no data', () => {
@@ -259,5 +263,4 @@ describe('createTenantOrganization', () => {
       createTenantOrganization(fullTenantOrganizationDataSwapIn('status', A_NEGATIVE_NUMBER));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
-
 });

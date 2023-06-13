@@ -20,19 +20,22 @@ const fullPasswordResetDataForQuery = {
 const fullPasswordResetDataSwapIn = commonMocks.override(fullPasswordResetDataForQuery);
 
 describe('createPasswordResetToken', () => {
-
   it('creates password reset token and inserts record when given a known email', done => {
-    createPasswordResetToken(fullPasswordResetDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createPasswordResetToken(fullPasswordResetDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('re-creates a token when given an email which already has a valid token', done => {
-    createPasswordResetToken(fullPasswordResetDataSwapIn('cloudUserEmail', KNOWN_TEST_USER_EMAIL_HAS_RESET_TOKEN)).then(data => {
-      expect(data.affectedRows).toBe(MYSQL_REPLACE_INTO_AFFECTED_ROWS);
-      done();
-    });
+    createPasswordResetToken(fullPasswordResetDataSwapIn('cloudUserEmail', KNOWN_TEST_USER_EMAIL_HAS_RESET_TOKEN))
+      .then(data => {
+        expect(data.affectedRows).toBe(MYSQL_REPLACE_INTO_AFFECTED_ROWS);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -55,10 +58,11 @@ describe('createPasswordResetToken', () => {
   });
 
   it('throws an error when given an unknown cloudUserEmail', done => {
-    createPasswordResetToken(fullPasswordResetDataSwapIn('cloudUserEmail', FAKE_UNKNOWN_USER_EMAIL)).catch(err => {
-      expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
-      done();
-    });
+    createPasswordResetToken(fullPasswordResetDataSwapIn('cloudUserEmail', FAKE_UNKNOWN_USER_EMAIL))
+      .then(done.fail)
+      .catch(err => {
+        expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+        done();
+      });
   });
-
 });

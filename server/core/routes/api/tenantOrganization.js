@@ -9,14 +9,14 @@ const R        = require('ramda'),
 const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
       ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
-const createTenantOrganization                    = require('../../controllers/api/tenantOrganization/createTenantOrganization'),
-      updateTenantOrganization                    = require('../../controllers/api/tenantOrganization/updateTenantOrganization'),
-      deleteTenantOrganization                    = require('../../controllers/api/tenantOrganization/deleteTenantOrganization'),
-      getTenantOrganizationById                   = require('../../controllers/api/tenantOrganization/getTenantOrganizationById'),
-      getTenantOrganizationsByTenantId            = require('../../controllers/api/tenantOrganization/getTenantOrganizationsByTenantId'),
-      getTenantOrganizationByTenantIdAndSubdomain = require('../../controllers/api/tenantOrganization/getTenantOrganizationByTenantIdAndSubdomain');
+const createTenantOrganization                      = require('../../controllers/api/tenantOrganization/createTenantOrganization'),
+      updateTenantOrganization                      = require('../../controllers/api/tenantOrganization/updateTenantOrganization'),
+      deleteTenantOrganization                      = require('../../controllers/api/tenantOrganization/deleteTenantOrganization'),
+      getTenantOrganizationByUuid                   = require('../../controllers/api/tenantOrganization/getTenantOrganizationByUuid'),
+      getTenantOrganizationsByTenantUuid            = require('../../controllers/api/tenantOrganization/getTenantOrganizationsByTenantUuid'),
+      getTenantOrganizationByTenantUuidAndSubdomain = require('../../controllers/api/tenantOrganization/getTenantOrganizationByTenantUuidAndSubdomain');
 
-const _getTenantOrganizationById = require('../../models/tenantOrganization/methods/getTenantOrganizationById');
+const _getTenantOrganizationByUuid = require('../../models/tenantOrganization/methods/getTenantOrganizationByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -32,113 +32,97 @@ router.post('/', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantOrganization/id/123
+// https://platform.aliencreations.com/api/v1/tenantOrganization/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getTenantOrganizationById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['tenantId'],
-    identityPath    : ['tenant', 'id']
+    getDataByUuid     : _getTenantOrganizationByUuid,
+    dataUuidPath      : ['params', 'uuid'],
+    dataOwnerUuidPath : ['tenantUuid'],
+    identityPath      : ['tenant', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateTenantOrganization',
-      () => updateTenantOrganization(req.body, id)
+      () => updateTenantOrganization(req.body, uuid)
     );
   }
 );
 
-// https://platform.aliencreations.com/api/v1/tenantOrganization/id/123
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantOrganization/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
+
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantOrganizationById',
-    () => getTenantOrganizationById(id)
+    req.logger.child({ uuid }),
+    'getTenantOrganizationByUuid',
+    () => getTenantOrganizationByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantOrganization/tenantId/123
-router.get('/tenantId/:tenantId', ensureAuthorized, (req, res, next) => {
-  const tenantId = maybeParseIntFromPath(['params', 'tenantId'], req);
+// https://platform.aliencreations.com/api/v1/tenantOrganization/tenantUuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/tenantUuid/:tenantUuid', ensureAuthorized, (req, res, next) => {
+  const { tenantUuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantId }),
-    'getTenantOrganizationsByTenantId',
-    () => getTenantOrganizationsByTenantId(tenantId)
-  );
-});
-
-// https://platform.aliencreations.com/api/v1/tenant/domain/lifetimefitness
-router.get('/public/tenantId/:tenantId/subdomain/:subdomain', (req, res, next) => {
-  const tenantId  = maybeParseIntFromPath(['params', 'tenantId'], req),
-        subdomain = req.params.subdomain;
-
-  apiUtils.respondWithErrorHandling(
-    req,
-    res,
-    next,
-    req.logger.child({ tenantId, subdomain }),
-    'getTenantOrganizationByTenantIdAndSubdomain',
-    () => getTenantOrganizationByTenantIdAndSubdomain(tenantId, subdomain).then(R.pick(config.api.TENANT_ORGANIZATION_PUBLIC_FIELDS))
+    req.logger.child({ tenantUuid }),
+    'getTenantOrganizationsByTenantUuid',
+    () => getTenantOrganizationsByTenantUuid(tenantUuid)
   );
 });
 
 // https://platform.aliencreations.com/api/v1/tenant/domain/lifetimefitness
-router.get('/tenantId/:tenantId/subdomain/:subdomain', ensureAuthorized, (req, res, next) => {
-  const tenantId  = maybeParseIntFromPath(['params', 'tenantId'], req),
-        subdomain = req.params.subdomain;
+router.get('/public/tenantUuid/:tenantUuid/subdomain/:subdomain', (req, res, next) => {
+  const { tenantUuid, subdomain } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantId, subdomain }),
-    'getTenantOrganizationByTenantIdAndSubdomain',
-    () => getTenantOrganizationByTenantIdAndSubdomain(tenantId, subdomain)
+    req.logger.child({ tenantUuid, subdomain }),
+    'getTenantOrganizationByTenantUuidAndSubdomain',
+    () => getTenantOrganizationByTenantUuidAndSubdomain(tenantUuid, subdomain).then(R.pick(config.api.TENANT_ORGANIZATION_PUBLIC_FIELDS))
   );
 });
 
-// https://platform.aliencreations.com/api/v1/public/tenant/domain/lifetimefitness
-router.get('/public/tenantId/:tenantId/subdomain/:subdomain', (req, res, next) => {
-  const tenantId  = maybeParseIntFromPath(['params', 'tenantId'], req),
-        subdomain = req.params.subdomain;
+// https://platform.aliencreations.com/api/v1/tenant/domain/lifetimefitness
+router.get('/tenantUuid/:tenantUuid/subdomain/:subdomain', ensureAuthorized, (req, res, next) => {
+  const { tenantUuid, subdomain } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantId, subdomain }),
-    'getTenantOrganizationByTenantIdAndSubdomain',
-    () => getTenantOrganizationByTenantIdAndSubdomain(tenantId, subdomain).then(R.pick(config.api.TENANT_ORGANIZATION_PUBLIC_FIELDS))
+    req.logger.child({ tenantUuid, subdomain }),
+    'getTenantOrganizationByTenantUuidAndSubdomain',
+    () => getTenantOrganizationByTenantUuidAndSubdomain(tenantUuid, subdomain)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantOrganization/id/123
-router.delete('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantOrganization/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.delete('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'deleteTenantOrganization',
-    () => deleteTenantOrganization(id)
+    () => deleteTenantOrganization(uuid)
   );
 });
 

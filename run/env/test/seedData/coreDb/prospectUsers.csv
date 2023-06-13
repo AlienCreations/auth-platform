@@ -1,3 +1,3 @@
-id,first_name,last_name,email,string#!zip,token,status
-1,john,doe,john@doe.com,94513,$2a$10$5G0vWl958VJRcVRGK2/hy.GjGNf0X1A4z04yvUyHWHQUuwtxMQJH6,1
-2,jane,smith,jane@smith.com,90210,$2a$10$0EQiivcNSnj28C4ymNy13.mqTuzp8eTtmsxqkSMZVy/XNgnW5R88O,1
+id,uuid,first_name,last_name,email,string#!zip,token,status
+1,021f83a1-7dfa-4e34-bdcc-9ae69a41c767,john,doe,john@doe.com,94513,$2a$10$5G0vWl958VJRcVRGK2/hy.GjGNf0X1A4z04yvUyHWHQUuwtxMQJH6,1
+2,22df304c-3334-44aa-979f-8d887740786e,jane,smith,jane@smith.com,90210,$2a$10$0EQiivcNSnj28C4ymNy13.mqTuzp8eTtmsxqkSMZVy/XNgnW5R88O,1

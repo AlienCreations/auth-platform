@@ -12,20 +12,20 @@ const A_POSITIVE_NUMBER  = 1337,
       STRING_ONE_CHAR    = 'a',
       STRING_FORTY_CHARS = '*'.repeat(40);
 
-const FAKE_NAME             = 'Test Agent 3',
-      FAKE_KEY              = cuid(),
-      KNOWN_TEST_TENANT_ID  = 1,
-      FAKE_SECRET           = passwordUtils.makePasswordHash(FAKE_KEY, 1),
-      FAKE_STATUS           = 1,
-      FAKE_MALFORMED_KEY    = 1234,
-      FAKE_MALFORMED_SECRET = 'asd';
+const FAKE_NAME              = 'Test Agent 3',
+      FAKE_KEY               = cuid(),
+      KNOWN_TEST_TENANT_UUID = process.env.PLATFORM_TENANT_UUID,
+      FAKE_SECRET            = passwordUtils.makePasswordHash(FAKE_KEY, 1),
+      FAKE_STATUS            = 1,
+      FAKE_MALFORMED_KEY     = 1234,
+      FAKE_MALFORMED_SECRET  = 'asd';
 
 const makeFakeAgentData = (includeOptional) => {
   const fakeRequiredAgentData = {
-    name     : FAKE_NAME,
-    tenantId : KNOWN_TEST_TENANT_ID,
-    key      : FAKE_KEY,
-    secret   : FAKE_SECRET
+    name       : FAKE_NAME,
+    tenantUuid : KNOWN_TEST_TENANT_UUID,
+    key        : FAKE_KEY,
+    secret     : FAKE_SECRET
   };
 
   const fakeOptionalAgentData = {
@@ -42,17 +42,21 @@ const fullAgentDataSwapIn = commonMocks.override(fullAgentDataForQuery);
 
 describe('createAgent', () => {
   it('creates a agent record when given expected data for all fields', done => {
-    createAgent(fullAgentDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createAgent(fullAgentDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('creates a agent record when given expected data for only required fields', done => {
-    createAgent(requiredAgentDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createAgent(requiredAgentDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -80,22 +84,16 @@ describe('createAgent', () => {
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  // TENANT_ID
-  it('throws an error when tenantId is missing', () => {
+  // TENANT_UUID
+  it('throws an error when tenantUuid is missing', () => {
     expect(() => {
-      createAgent(fullAgentDataSwapIn('tenantId', undefined));
+      createAgent(fullAgentDataSwapIn('tenantUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when given an tenantId of type other than Number', () => {
+  it('throws an error when given a malformed tenantUuid', () => {
     expect(() => {
-      createAgent(fullAgentDataSwapIn('tenantId', STRING_FORTY_CHARS));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when tenantId is malformed', () => {
-    expect(() => {
-      createAgent(fullAgentDataSwapIn('tenantId', A_NEGATIVE_NUMBER));
+      createAgent(fullAgentDataSwapIn('tenantUuid', STRING_FORTY_CHARS));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 

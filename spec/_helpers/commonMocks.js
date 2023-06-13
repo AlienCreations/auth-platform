@@ -9,6 +9,7 @@ const APPLICATION_ERROR_CODE_DB_DUPLICATE_ENTRY        = 6002,
       APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT = 6999;
 
 const COMMON_TIMESTAMP = new Date('2016-02-01T17:23:30.000Z');
+const COMMON_UUID = '32ff6452-a0f8-45a7-b476-c2f245e27043';
 
 const transformDbColsToJsProps = dbUtils.transformQueryResponse;
 
@@ -155,6 +156,7 @@ module.exports = {
   recursivelyOmitProps,
   ensureTrueNullInCsvData,
   COMMON_TIMESTAMP,
+  COMMON_UUID,
   COMMON_REQUEST_BODY,
   COMMON_EMPTY_REQUEST_ERROR,
   COMMON_RESPONSE_BODY,

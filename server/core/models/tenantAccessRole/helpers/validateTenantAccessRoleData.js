@@ -10,42 +10,54 @@ const {
   prr
 } = require('@aliencreations/node-validator');
 
+const isUuidButNotSuperAdminRole = uuid => prr.isUuid(uuid) && uuid !== process.env.SUPER_ADMIN_ROLE_UUID;
+
 const validateForInsert = label('createTenantAccessRole', isObjectOf({
-  tenantId             : isRequired(prr.isPositiveNumber),
-  tenantOrganizationId : isOptional(R.either(R.isNil, prr.isPositiveNumber)),
-  title                : isRequired(prr.isStringOfLengthAtMost(255)),
-  status               : isOptional(prr.isAtLeastZero)
+  tenantUuid             : isRequired(prr.isUuid),
+  tenantOrganizationUuid : isOptional(R.either(R.isNil, prr.isUuid)),
+  title                  : isRequired(prr.isStringOfLengthAtMost(255)),
+  status                 : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForUpdate = label('updateTenantAccessRole', isObjectOf({
-  tenantId             : isOptional(prr.isPositiveNumber),
-  tenantOrganizationId : isOptional(R.either(R.isNil, prr.isPositiveNumber)),
-  title                : isOptional(prr.isStringOfLengthAtMost(255)),
-  status               : isOptional(prr.isAtLeastZero)
+  tenantUuid             : isOptional(prr.isUuid),
+  tenantOrganizationUuid : isOptional(R.either(R.isNil, prr.isUuid)),
+  title                  : isOptional(prr.isStringOfLengthAtMost(255)),
+  status                 : isOptional(prr.isAtLeastZero)
+}));
+
+const validateForDelete = label('deleteTenantAccessRole', isObjectOf({
+  uuid : isRequired(isUuidButNotSuperAdminRole)
 }));
 
 const validateId = label('getTenantAccessRoleById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
-const validateTenantId = label('getTenantAccessRolesById', isObjectOf({
-  tenantId : isRequired(prr.isPositiveNumber)
+const validateUuid = label('getTenantAccessRoleByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
+const validateTenantUuid = label('getTenantAccessRolesByUuid', isObjectOf({
+  tenantUuid : isRequired(prr.isUuid)
 }));
 
 const validateForGetByTitle = label('getTenantAccessRoleByTitle', isObjectOf({
   title : isRequired(prr.isStringOfLengthAtMost(255))
 }));
 
-const validateTenantOrganizationId = label('getTenantAccessRolesByTenantOrganizationId', isObjectOf({
-  tenantOrganizationId : isRequired(prr.isPositiveNumber)
+const validateTenantOrganizationUuid = label('getTenantAccessRolesByTenantOrganizationUuid', isObjectOf({
+  tenantOrganizationUuid : isRequired(prr.isUuid)
 }));
 
 module.exports = {
-  validateForGetById                   : validateId,
-  validateForGetByTenantId             : validateTenantId,
-  validateForGetByTenantOrganizationId : validateTenantOrganizationId,
-  validateForDelete                    : validateId,
-  validateId                           : validateId,
+  validateForGetById                     : validateId,
+  validateForGetByUuid                   : validateUuid,
+  validateForGetByTenantUuid             : validateTenantUuid,
+  validateForGetByTenantOrganizationUuid : validateTenantOrganizationUuid,
+  validateId,
+  validateUuid,
+  validateForDelete,
   validateForGetByTitle,
   validateForInsert,
   validateForUpdate

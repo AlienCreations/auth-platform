@@ -15,26 +15,25 @@ const COMMON_PRIVATE_FIELDS            = R.path(['api', 'COMMON_PRIVATE_FIELDS']
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_CONNECTION_PRIVATE_FIELDS);
 
 const FAKE_TENANT_CONNECTION_DATA            = {
-        tenantId             : 1,
-        tenantOrganizationId : 1,
-        title                : 'fake title',
-        description          : 'fake description',
-        protocol             : 'https',
-        host                 : 'foo.com',
-        user                 : 'testuser',
-        password             : 'testpassword',
-        port                 : 80,
-        type                 : 1,
-        metaJson             : JSON.stringify({ foo : 'bar' }),
-        strategy             : 'common/mongodb',
-        status               : 1
+        tenantUuid             : process.env.PLATFORM_TENANT_UUID,
+        tenantOrganizationUuid : null,
+        title                  : 'fake title',
+        description            : 'fake description',
+        protocol               : 'https',
+        host                   : 'foo.com',
+        user                   : 'testuser',
+        password               : 'testpassword',
+        port                   : 80,
+        type                   : 1,
+        metaJson               : JSON.stringify({ foo : 'bar' }),
+        strategy               : 'common/mongodb',
+        status                 : 1
       },
       FAKE_TENANT_CONNECTION_DATA_INCOMPLETE = R.omit(['title'], FAKE_TENANT_CONNECTION_DATA);
 
 let mergeInsertId;
 
 describe('tenantConnectionCtrl.createTenantConnection', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantConnections.csv'), (err, data) => {
       mergeInsertId = R.mergeDeepRight(R.compose(R.objOf('id'), R.inc, R.prop('id'), R.last)(data));
@@ -45,22 +44,23 @@ describe('tenantConnectionCtrl.createTenantConnection', () => {
   it('returns FAKE_TENANT_CONNECTION_DATA when creating an tenantConnection with all correct params', done => {
     createTenantConnection(FAKE_TENANT_CONNECTION_DATA)
       .then(res => {
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'uuid'], res))
           .toEqual(R.compose(
             R.omit(privateFields),
             mergeInsertId,
             R.over(R.lensProp('metaJson'), JSON.parse)
           )(FAKE_TENANT_CONNECTION_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when creating an tenantConnection with incomplete params', done => {
     createTenantConnection(FAKE_TENANT_CONNECTION_DATA_INCOMPLETE)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });
-
 });

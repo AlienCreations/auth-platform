@@ -1,5 +1,7 @@
 'use strict';
 
+const R = require('ramda');
+
 const {
   isObjectOf,
   isOptional,
@@ -9,56 +11,62 @@ const {
 } = require('@aliencreations/node-validator');
 
 const validateForInsert = label('createTenantConnection', isObjectOf({
-  tenantId             : isRequired(prr.isPositiveNumber),
-  tenantOrganizationId : isRequired(prr.isPositiveNumber),
-  title                : isRequired(prr.isStringOfLengthAtMost(40)),
-  description          : isOptional(prr.isString),
-  protocol             : isRequired(prr.isStringOfLengthAtMost(8)),
-  host                 : isRequired(prr.isStringOfLengthAtMost(64)),
-  user                 : isRequired(prr.isStringOfLengthAtMost(64)),
-  password             : isRequired(prr.isStringOfLengthAtMost(255)),
-  port                 : isRequired(prr.isPositiveNumber),
-  type                 : isRequired(prr.isPositiveNumber),
-  strategy             : isRequired(prr.isStringOfLengthAtMost(64)),
-  metaJson             : isOptional(prr.isJSON),
-  status               : isOptional(prr.isAtLeastZero)
+  tenantUuid             : isRequired(prr.isUuid),
+  tenantOrganizationUuid : isOptional(R.either(prr.isUuid, prr.isNil)),
+  title                  : isRequired(prr.isStringOfLengthAtMost(40)),
+  description            : isOptional(prr.isString),
+  protocol               : isRequired(prr.isStringOfLengthAtMost(8)),
+  host                   : isRequired(prr.isStringOfLengthAtMost(64)),
+  user                   : isRequired(prr.isStringOfLengthAtMost(64)),
+  password               : isRequired(prr.isStringOfLengthAtMost(255)),
+  port                   : isRequired(prr.isPositiveNumber),
+  type                   : isRequired(prr.isPositiveNumber),
+  strategy               : isRequired(prr.isStringOfLengthAtMost(64)),
+  metaJson               : isOptional(prr.isJSON),
+  status                 : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForUpdate = label('updateTenantConnection', isObjectOf({
-  tenantId             : isOptional(prr.isPositiveNumber),
-  tenantOrganizationId : isOptional(prr.isPositiveNumber),
-  title                : isOptional(prr.isStringOfLengthAtMost(40)),
-  description          : isOptional(prr.isString),
-  protocol             : isOptional(prr.isStringOfLengthAtMost(8)),
-  host                 : isOptional(prr.isStringOfLengthAtMost(64)),
-  user                 : isOptional(prr.isStringOfLengthAtMost(64)),
-  password             : isOptional(prr.isStringOfLengthAtMost(255)),
-  port                 : isOptional(prr.isPositiveNumber),
-  type                 : isOptional(prr.isPositiveNumber),
-  strategy             : isOptional(prr.isStringOfLengthAtMost(64)),
-  metaJson             : isOptional(prr.isJSON),
-  status               : isOptional(prr.isAtLeastZero)
+  tenantUuid             : isOptional(prr.isUuid),
+  tenantOrganizationUuid : isOptional(prr.isUuid),
+  title                  : isOptional(prr.isStringOfLengthAtMost(40)),
+  description            : isOptional(prr.isString),
+  protocol               : isOptional(prr.isStringOfLengthAtMost(8)),
+  host                   : isOptional(prr.isStringOfLengthAtMost(64)),
+  user                   : isOptional(prr.isStringOfLengthAtMost(64)),
+  password               : isOptional(prr.isStringOfLengthAtMost(255)),
+  port                   : isOptional(prr.isPositiveNumber),
+  type                   : isOptional(prr.isPositiveNumber),
+  strategy               : isOptional(prr.isStringOfLengthAtMost(64)),
+  metaJson               : isOptional(prr.isJSON),
+  status                 : isOptional(prr.isAtLeastZero)
 }));
 
-const validateForGetByTenantOrganizationIdAndType = label('getTenantConnectionsForTenantOrganizationByType', isObjectOf({
-  tenantOrganizationId : isRequired(prr.isPositiveNumber),
-  connectionType       : isRequired(prr.isPositiveNumber)
+const validateForGetByTenantOrganizationUuidAndType = label('getTenantConnectionsForTenantOrganizationByType', isObjectOf({
+  tenantOrganizationUuid : isRequired(prr.isUuid),
+  connectionType         : isRequired(prr.isPositiveNumber)
 }));
 
-const validateForGetByTenantId = label('getTenantConnectionsByTenantId', isObjectOf({
-  tenantId : isRequired(prr.isPositiveNumber)
+const validateForGetByTenantUuid = label('getTenantConnectionsByTenantUuid', isObjectOf({
+  tenantUuid : isRequired(prr.isUuid)
 }));
 
 const validateId = label('getTenantConnectionsById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
+const validateUuid = label('getTenantConnectionsByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
 module.exports = {
   validateForInsert,
   validateForUpdate,
-  validateForGetByTenantOrganizationIdAndType,
+  validateForGetByTenantOrganizationUuidAndType,
   validateId,
-  validateForGetByTenantId,
-  validateForGetById : validateId,
-  validateForDelete  : validateId
+  validateUuid,
+  validateForGetByTenantUuid,
+  validateForGetById   : validateId,
+  validateForGetByUuid : validateUuid,
+  validateForDelete    : validateUuid
 };

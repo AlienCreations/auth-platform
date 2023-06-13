@@ -7,15 +7,9 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
 const _getAllowedTenantAccessResources = require('../../../models/tenantAccessResource/methods/getAllowedTenantAccessResources');
 
-/**
- * Get all tenantAccessResource by tenantId, and potentially tenantOrganizationId
- * @param {Number} tenantId
- * @param {Number} tenantOrganizationId
- * @returns {Promise}
- */
-const getAllowedTenantAccessResources = (tenantId, tenantOrganizationId) => {
+const getAllowedTenantAccessResources = (tenantUuid, tenantOrganizationUuid) => {
   return Promise.resolve()
-    .then(() => _getAllowedTenantAccessResources(tenantId, tenantOrganizationId))
+    .then(() => _getAllowedTenantAccessResources(tenantUuid, tenantOrganizationUuid))
     .then(R.map(R.omit(COMMON_PRIVATE_FIELDS)));
 };
 

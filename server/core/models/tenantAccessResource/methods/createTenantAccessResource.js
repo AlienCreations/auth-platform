@@ -1,11 +1,14 @@
 'use strict';
 
-const R = require('ramda');
+const R    = require('ramda'),
+      uuid = require('uuid/v4');
 
 const DB                               = require('../../../utils/db'),
       validateTenantAccessResourceData = require('../helpers/validateTenantAccessResourceData').validateForInsert;
 
-const decorateDataForDbInsertion = R.identity;
+const decorateDataForDbInsertion = data => R.compose(
+  R.assoc('uuid', uuid())
+)(data);
 
 const createAndExecuteQuery = _tenantAccessResourceData => {
   const tenantAccessResourceData = decorateDataForDbInsertion(_tenantAccessResourceData);
@@ -17,12 +20,6 @@ const createAndExecuteQuery = _tenantAccessResourceData => {
   return DB.query(queryStatement);
 };
 
-/**
- * Create a tenantAccessResource record
- * @param {Object} tenantAccessResourceData
- * @throws {Error}
- * @returns {Promise}
- */
 const createTenantAccessResource = tenantAccessResourceData => {
   validateTenantAccessResourceData(R.defaultTo({}, tenantAccessResourceData));
   return createAndExecuteQuery(tenantAccessResourceData);

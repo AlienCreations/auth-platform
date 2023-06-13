@@ -14,15 +14,15 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config),
 
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, AGENT_PRIVATE_FIELDS);
 
-const FAKE_AGENT_UPDATE_DATA = {
+const FAKE_AGENT_UPDATE_DATA  = {
         name   : 'Updated body',
         secret : '$3a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8x'
       },
-      FAKE_UNKNOWN_AGENT_KEY = 'foo';
+      FAKE_UNKNOWN_AGENT_UUID = commonMocks.COMMON_UUID;
 
 let KNOWN_TEST_AGENT_DATA,
-    KNOWN_TEST_KEY,
-    KNOWN_TEST_KEY_2,
+    KNOWN_TEST_AGENT_UUID,
+    KNOWN_TEST_AGENT_KEY,
     FAKE_AGENT_UPDATE_DATA_EXISTING_KEY,
     updatedAgentData;
 
@@ -32,9 +32,9 @@ describe('agentCtrl.updateAgent', () => {
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/agents.csv'), (err, data) => {
       KNOWN_TEST_AGENT_DATA               = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
-      KNOWN_TEST_KEY                      = R.prop('key', KNOWN_TEST_AGENT_DATA);
-      KNOWN_TEST_KEY_2                    = R.compose(R.prop('key'), R.last, commonMocks.transformDbColsToJsProps)(data);
-      FAKE_AGENT_UPDATE_DATA_EXISTING_KEY = R.set(keyLens, KNOWN_TEST_KEY_2, R.omit(['id'], KNOWN_TEST_AGENT_DATA));
+      KNOWN_TEST_AGENT_UUID               = KNOWN_TEST_AGENT_DATA.uuid;
+      KNOWN_TEST_AGENT_KEY                = R.compose(R.prop('key'), R.last, commonMocks.transformDbColsToJsProps)(data);
+      FAKE_AGENT_UPDATE_DATA_EXISTING_KEY = R.set(keyLens, KNOWN_TEST_AGENT_KEY, R.omit(['id', 'uuid'], KNOWN_TEST_AGENT_DATA));
 
       updatedAgentData = R.omit(privateFields, R.mergeDeepRight(KNOWN_TEST_AGENT_DATA, FAKE_AGENT_UPDATE_DATA));
 
@@ -42,8 +42,8 @@ describe('agentCtrl.updateAgent', () => {
     });
   });
 
-  it('updates an agent when provided an key and new properties to update', done => {
-    updateAgent(FAKE_AGENT_UPDATE_DATA, KNOWN_TEST_KEY)
+  it('updates an agent when provided a uuid and new properties to update', done => {
+    updateAgent(FAKE_AGENT_UPDATE_DATA, KNOWN_TEST_AGENT_UUID)
       .then(res => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(updatedAgentData);
@@ -53,7 +53,7 @@ describe('agentCtrl.updateAgent', () => {
   });
 
   it('throws an error when updating an agent that does not exist', done => {
-    updateAgent(FAKE_AGENT_UPDATE_DATA, FAKE_UNKNOWN_AGENT_KEY)
+    updateAgent(FAKE_AGENT_UPDATE_DATA, FAKE_UNKNOWN_AGENT_UUID)
       .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
@@ -62,7 +62,7 @@ describe('agentCtrl.updateAgent', () => {
   });
 
   it('throws an error when updating with an existing key', done => {
-    updateAgent(FAKE_AGENT_UPDATE_DATA_EXISTING_KEY, KNOWN_TEST_KEY)
+    updateAgent(FAKE_AGENT_UPDATE_DATA_EXISTING_KEY, KNOWN_TEST_AGENT_UUID)
       .then(done.fail)
       .catch(err => {
         expect(commonMocks.isDuplicateRecordErr(err)).toBe(true);

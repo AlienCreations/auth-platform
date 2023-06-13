@@ -19,5 +19,5 @@ if [ ${OS} == "WINDOWS" ]; then
 elif [ ${OS} == "LINUX" ]; then
   RUN_TESTS
 elif [ ${OS} == "MAC" ]; then
-  RUN_TESTS && say 'Unit Tests Passed' || say 'Unit Tests Failed'
+  RUN_TESTS # && say 'Unit Tests Passed' || say 'Unit Tests Failed'
 fi

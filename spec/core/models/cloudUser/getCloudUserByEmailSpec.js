@@ -11,7 +11,6 @@ const getCloudUserByEmail = require('../../../../server/core/models/cloudUser/me
 let KNOWN_TEST_EMAIL;
 
 describe('getCloudUserByEmail', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/cloudUsers.csv'), (err, data) => {
       KNOWN_TEST_EMAIL = R.compose(R.prop('email'), R.head)(data);
@@ -20,10 +19,12 @@ describe('getCloudUserByEmail', () => {
   });
 
   it('gets a cloud user when given a valid email', done => {
-    getCloudUserByEmail(KNOWN_TEST_EMAIL).then(data => {
-      expect(R.type(data.id)).toBe('Number');
-      done();
-    });
+    getCloudUserByEmail(KNOWN_TEST_EMAIL)
+      .then(data => {
+        expect(R.type(data.id)).toBe('Number');
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('returns undefined when given an unknown email', done => {
@@ -31,7 +32,8 @@ describe('getCloudUserByEmail', () => {
       .then(res => {
         expect(res).toEqual(undefined);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given a malformed email', () => {
@@ -55,6 +57,6 @@ describe('getCloudUserByEmail', () => {
   it('throws an error when email is set to null', () => {
     expect(() => {
       getCloudUserByEmail(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

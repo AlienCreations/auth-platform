@@ -1,3 +1,3 @@
-id,tenant_id,tenant_organization_id,title,description,protocol,host,port,user,password,type,strategy,meta_json,status
-1,1,1,Punch Fitness Shared Mongo connection,Just a test,mongodb,localhost,27017,,,1,common/mongoDb,"{""schema"" : ""somedb"", ""collection"" : ""sometable""}",1
-2,2,4,Gutfit Shared Mongo connection,Just another test,mongodb,localhost,27017,,,1,common/mongoDb,"{""schema"" : ""somedb"", ""collection"" : ""sometable""}",1
+id,uuid,tenant_uuid,tenant_organization_uuid,title,description,protocol,host,port,user,password,type,strategy,meta_json,status
+1,9e0b6838-0230-4e4f-ad09-d6bd6e954ee8,8a38dc4b-1555-4e4f-8678-2233e57f6d53,bac55671-575f-464b-b422-5e7418b053de,Punch Fitness Shared Mongo connection,Just a test,mongodb,localhost,27017,,,1,common/mongoDb,"{""schema"" : ""somedb"", ""collection"" : ""sometable""}",1
+2,e5b94062-08ee-4822-8f3b-8f944756b2d1,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,189ab6b2-efae-4a0c-b083-ad23929890b6,Gutfit Shared Mongo connection,Just another test,mongodb,localhost,27017,,,1,common/mongoDb,"{""schema"" : ""somedb"", ""collection"" : ""sometable""}",1

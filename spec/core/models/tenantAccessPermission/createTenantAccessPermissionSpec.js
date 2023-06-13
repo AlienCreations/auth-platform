@@ -1,6 +1,10 @@
 'use strict';
 
-const R = require('ramda');
+const R                              = require('ramda'),
+      path                           = require('path'),
+      CSVConverter                   = require('csvtojson').Converter,
+      tenantAccessRolesConverter     = new CSVConverter({}),
+      tenantAccessResourcesConverter = new CSVConverter({});
 
 const createTenantAccessPermission = require('../../../../server/core/models/tenantAccessPermission/methods/createTenantAccessPermission'),
       commonMocks                  = require('../../../_helpers/commonMocks');
@@ -8,15 +12,19 @@ const createTenantAccessPermission = require('../../../../server/core/models/ten
 const A_NEGATIVE_NUMBER = -10,
       STRING_ONE_CHAR   = 'a';
 
-const FAKE_STATUS                                   = 1,
-      FAKE_UNKNOWN_ID                               = 9999,
-      KNOWN_TEST_TENANT_ACCESS_ROLE_ID              = 2,
-      KNOWN_TEST_UNMAPPED_TENANT_ACCESS_RESOURCE_ID = 4;
+const FAKE_STATUS       = 1,
+      FAKE_UNKNOWN_UUID = commonMocks.COMMON_UUID;
+
+let KNOWN_TEST_TENANT_ACCESS_ROLE_UUID,
+    KNOWN_TEST_UNMAPPED_TENANT_ACCESS_RESOURCE_UUID,
+    fullTenantAccessPermissionDataForQuery,
+    requiredTenantAccessPermissionDataForQuery,
+    fullTenantAccessPermissionDataSwapIn;
 
 const makeFakeTenantAccessPermissionData = (includeOptional) => {
   const fakeRequiredTenantAccessPermissionData = {
-    tenantAccessRoleId     : KNOWN_TEST_TENANT_ACCESS_ROLE_ID,
-    tenantAccessResourceId : KNOWN_TEST_UNMAPPED_TENANT_ACCESS_RESOURCE_ID
+    tenantAccessRoleUuid     : KNOWN_TEST_TENANT_ACCESS_ROLE_UUID,
+    tenantAccessResourceUuid : KNOWN_TEST_UNMAPPED_TENANT_ACCESS_RESOURCE_UUID
   };
 
   const fakeOptionalTenantAccessPermissionData = {
@@ -26,25 +34,40 @@ const makeFakeTenantAccessPermissionData = (includeOptional) => {
   return includeOptional ? R.mergeDeepRight(fakeOptionalTenantAccessPermissionData, fakeRequiredTenantAccessPermissionData) : fakeRequiredTenantAccessPermissionData;
 };
 
-const fullTenantAccessPermissionDataForQuery     = makeFakeTenantAccessPermissionData(true),
-      requiredTenantAccessPermissionDataForQuery = makeFakeTenantAccessPermissionData(false);
-
-const fullTenantAccessPermissionDataSwapIn = commonMocks.override(fullTenantAccessPermissionDataForQuery);
 
 describe('createTenantAccessPermission', () => {
+  beforeAll(done => {
+    tenantAccessRolesConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessRoles.csv'), (err, data) => {
+      KNOWN_TEST_TENANT_ACCESS_ROLE_UUID = data[1].uuid;
 
-  it('creates a tenantAccessPermission record when given expected data for all fields', done => {
-    createTenantAccessPermission(fullTenantAccessPermissionDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
+      tenantAccessResourcesConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessResources.csv'), (err, data) => {
+        KNOWN_TEST_UNMAPPED_TENANT_ACCESS_RESOURCE_UUID = R.compose(R.prop('uuid'), R.last)(data);
+
+        fullTenantAccessPermissionDataForQuery     = makeFakeTenantAccessPermissionData(true);
+        requiredTenantAccessPermissionDataForQuery = makeFakeTenantAccessPermissionData(false);
+        fullTenantAccessPermissionDataSwapIn       = commonMocks.override(fullTenantAccessPermissionDataForQuery);
+
+        done();
+      });
     });
   });
 
+  it('creates a tenantAccessPermission record when given expected data for all fields', done => {
+    createTenantAccessPermission(fullTenantAccessPermissionDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('creates a tenantAccessPermission record when given expected data for only required fields', done => {
-    createTenantAccessPermission(requiredTenantAccessPermissionDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantAccessPermission(requiredTenantAccessPermissionDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -53,54 +76,54 @@ describe('createTenantAccessPermission', () => {
     }).toThrowError(commonMocks.unsupportedParamErrRegex);
   });
 
-  // TENANT_ACCESS_ROLE_ID
-  it('throws an error when tenantAccessRoleId is malformed', () => {
+  // TENANT_ACCESS_ROLE_UUID
+  it('throws an error when tenantAccessRoleUuid is malformed', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleId', STRING_ONE_CHAR));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantAccessRoleId is negative', () => {
+  it('throws an error when tenantAccessRoleUuid is negative', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleId', A_NEGATIVE_NUMBER));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleUuid', A_NEGATIVE_NUMBER));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantAccessRoleId is missing', () => {
+  it('throws an error when tenantAccessRoleUuid is missing', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleId', undefined));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when tenantAccessRoleId is not known', done => {
-    createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleId', FAKE_UNKNOWN_ID)).catch(err => {
-      expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+  it('throws an error when tenantAccessRoleUuid is not known', done => {
+    createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessRoleUuid', FAKE_UNKNOWN_UUID)).catch(({ code }) => {
+      expect(code).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
       done();
     });
   });
 
-  // TENANT_ACCESS_RESOURCE_ID
-  it('throws an error when tenantAccessResourceId is malformed', () => {
+  // TENANT_ACCESS_RESOURCE_UUID
+  it('throws an error when tenantAccessResourceUuid is malformed', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceId', STRING_ONE_CHAR));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantAccessResourceId is negative', () => {
+  it('throws an error when tenantAccessResourceUuid is negative', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceId', A_NEGATIVE_NUMBER));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceUuid', A_NEGATIVE_NUMBER));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantAccessResourceId is missing', () => {
+  it('throws an error when tenantAccessResourceUuid is missing', () => {
     expect(() => {
-      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceId', undefined));
+      createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when tenantAccessResourceId is not known', done => {
-    createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceId', FAKE_UNKNOWN_ID)).catch(err => {
-      expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+  it('throws an error when tenantAccessResourceUuid is not known', done => {
+    createTenantAccessPermission(fullTenantAccessPermissionDataSwapIn('tenantAccessResourceUuid', FAKE_UNKNOWN_UUID)).catch(({ code }) => {
+      expect(code).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
       done();
     });
   });

@@ -70,7 +70,7 @@ describe('prospectUserCtrl.getProspectUserById', () => {
     getProspectUserById(null)
       .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

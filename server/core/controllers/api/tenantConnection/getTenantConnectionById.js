@@ -13,10 +13,6 @@ const _getTenantConnectionById = require('../../../models/tenantConnection/metho
 
 const maybeParseJson = maybeJsonParse(['metaJson']);
 
-/**
- * Get a tenantConnection by id from the database
- * @param {Number} id
- */
 const getTenantConnectionById = id => Promise.resolve(id)
   .then(_getTenantConnectionById)
   .then(maybeParseJson)

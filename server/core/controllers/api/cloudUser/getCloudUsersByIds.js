@@ -12,10 +12,6 @@ const _getCloudUsersByIds    = require('../../../models/cloudUser/methods/getClo
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS),
       JSON_FIELDS   = ['strategyRefs', 'authConfig', 'metaJson'];
 
-/**
- * Get an array of cloudUser by ids from the database
- * @param {Array} cloudUserIds
- */
 const getCloudUsersByIds = cloudUserIds => Promise.resolve(cloudUserIds)
   .then(R.unless(R.isEmpty, _getCloudUsersByIds))
   .then(R.map(R.compose(

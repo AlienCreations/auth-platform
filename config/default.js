@@ -55,11 +55,11 @@ const makeQueryPayloadForField = field => query => R.compose(R.assoc('query', {
   }
 }), makeSearchQueryPayload)();
 
-const config             = {
+const config = {
   serviceName : R.pathOr('platform', ['env', 'THIS_SERVICE_NAME'], process),
   tenancy     : {
-    platformTenantId   : R.pathOr(1, ['env', 'PLATFORM_TENANT_ID'], process),
-    platformRootUserId : R.pathOr(1, ['env', 'PLATFORM_ROOT_USER_ID'], process)
+    platformTenantUuid   : R.path(['env', 'PLATFORM_TENANT_UUID'], process),
+    platformRootUserUuid : R.path(['env', 'PLATFORM_ROOT_USER_UUID'], process)
   },
   server : {
     host      : R.pathOr('localhost', ['env', 'HOST'], process),

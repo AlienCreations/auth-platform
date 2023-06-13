@@ -8,44 +8,47 @@ const R            = require('ramda'),
 const deleteTenantAccessRole = require('../../../../server/core/models/tenantAccessRole/methods/deleteTenantAccessRole'),
       commonMocks            = require('../../../_helpers/commonMocks');
 
-const FAKE_UNKNOWN_ID   = 99999,
-      FAKE_MALFORMED_ID = 'asd';
+const FAKE_UNKNOWN_UUID   = commonMocks.COMMON_UUID,
+      FAKE_MALFORMED_UUID = 'asd';
 
-let KNOWN_TEST_ID;
+let KNOWN_TEST_UUID;
 
 describe('deleteTenantAccessRole', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessRoles.csv'), (err, data) => {
-      KNOWN_TEST_ID = R.compose(R.prop('id'), R.head)(data);
+      KNOWN_TEST_UUID = R.compose(R.prop('uuid'), R.head)(data);
       done();
     });
   });
 
-  it('deletes a tenantAccessRole record when given a known tenantAccessRole id', done => {
-    deleteTenantAccessRole(KNOWN_TEST_ID).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+  it('deletes a tenantAccessRole record when given a known tenantAccessRole uuid', done => {
+    deleteTenantAccessRole(KNOWN_TEST_UUID)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
-  it('fails gracefully when given an unknown tenantAccessRole id', done => {
-    deleteTenantAccessRole(FAKE_UNKNOWN_ID).then(data => {
-      expect(data.affectedRows).toBe(0);
-      done();
-    });
+  it('fails gracefully when given an unknown tenantAccessRole uuid', done => {
+    deleteTenantAccessRole(FAKE_UNKNOWN_UUID)
+      .then(data => {
+        expect(data.affectedRows).toBe(0);
+        done();
+      })
+      .catch(done.fail);
   });
 
   // ID
-  it('throws an error when id is missing', () => {
+  it('throws an error when uuid is missing', () => {
     expect(() => {
       deleteTenantAccessRole();
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when given a malformed id', () => {
+  it('throws an error when given a malformed uuid', () => {
     expect(() => {
-      deleteTenantAccessRole(FAKE_MALFORMED_ID);
+      deleteTenantAccessRole(FAKE_MALFORMED_UUID);
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 

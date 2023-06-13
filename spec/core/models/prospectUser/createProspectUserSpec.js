@@ -36,17 +36,21 @@ const fullProspectUserDataSwapIn = commonMocks.override(fakeFullProspectUserData
 
 describe('createProspectUser', () => {
   it('creates a prospect user record when given expected data for all fields', done => {
-    createProspectUser(fakeFullProspectUserDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createProspectUser(fakeFullProspectUserDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('creates a prospect user record when given expected data for required fields', done => {
-    createProspectUser(fakeRequiredProspectUserDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createProspectUser(fakeRequiredProspectUserDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {

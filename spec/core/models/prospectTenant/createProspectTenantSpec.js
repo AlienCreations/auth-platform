@@ -27,10 +27,12 @@ const fullProspectTenantDataSwapIn = commonMocks.override(fakeFullProspectTenant
 
 describe('createProspectTenant', () => {
   it('creates a prospect tenant record when given expected data for all fields', done => {
-    createProspectTenant(fakeFullProspectTenantDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createProspectTenant(fakeFullProspectTenantDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {

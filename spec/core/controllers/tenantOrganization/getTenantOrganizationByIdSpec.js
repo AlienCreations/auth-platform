@@ -21,7 +21,6 @@ let KNOWN_TEST_TENANT_ORGANIZATION_DATA,
     KNOWN_TEST_TENANT_ORGANIZATION_ID;
 
 describe('tenantOrganizationCtrl.getTenantOrganizationById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantOrganizations.csv'), (err, data) => {
       KNOWN_TEST_TENANT_ORGANIZATION_DATA = R.compose(R.omit(privateFields), R.head, commonMocks.transformDbColsToJsProps)(data);
@@ -36,11 +35,13 @@ describe('tenantOrganizationCtrl.getTenantOrganizationById', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(R.omit(privateFields, KNOWN_TEST_TENANT_ORGANIZATION_DATA));
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for a tenantOrganization that does not exist', done => {
     getTenantOrganizationById(FAKE_UNKNOWN_TENANT_ORGANIZATION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -49,6 +50,7 @@ describe('tenantOrganizationCtrl.getTenantOrganizationById', () => {
 
   it('throws an error when given a malformed id', done => {
     getTenantOrganizationById(FAKE_MALFORMED_TENANT_ORGANIZATION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -57,6 +59,7 @@ describe('tenantOrganizationCtrl.getTenantOrganizationById', () => {
 
   it('throws an error when looking for a tenantOrganization without an id', done => {
     getTenantOrganizationById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -65,8 +68,9 @@ describe('tenantOrganizationCtrl.getTenantOrganizationById', () => {
 
   it('throws an error when given null params', done => {
     getTenantOrganizationById(null)
+      .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

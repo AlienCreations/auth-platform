@@ -15,7 +15,6 @@ const FAKE_UNKNOWN_KEY   = 'a9e1f2941aa53ca4563833d9d',
 let KNOWN_TEST_KEY;
 
 describe('getAgentByKey', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/agents.csv'), (err, data) => {
       KNOWN_TEST_KEY = R.compose(R.prop('key'), R.head)(data);
@@ -32,6 +31,7 @@ describe('getAgentByKey', () => {
 
   it('throws an error when given an unknown key', done => {
     getAgentByKey(FAKE_UNKNOWN_KEY)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -59,7 +59,7 @@ describe('getAgentByKey', () => {
   it('throws an error when key is set to null', () => {
     expect(() => {
       getAgentByKey(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
 });

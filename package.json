@@ -45,14 +45,14 @@
     "mongo-mock": "^3.8.1",
     "mongodb": "^3.3.2",
     "mysql": "^2.x.x",
-    "node-vault": "^0.7.1",
+    "node-vault": "^0.9.22",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "passport": "*",
     "passport-local": "*",
     "prettycats": "*",
     "pug": "^2.0.3",
     "ramda": "^0.x.x",
-    "ramda-adjunct": "^2.11.0",
+    "ramda-adjunct": "^4.0.0",
     "redis": "^2.8.x",
     "shortid": "^2.2.8",
     "uuid": "^3.3.2"
@@ -91,7 +91,7 @@
   "homepage": "https://aliencreations.com",
   "author": "Sean Cannon <scannon@aliencreations.com>",
   "engines": {
-    "node": "^12.18.4",
+    "node": "^14.21.3",
     "npm": "^6.14.6"
   }
 }

@@ -5,9 +5,10 @@ const DB                       = require('../../../utils/db'),
 
 const createAndExecuteQuery = id => {
   const query = `SELECT tm.reference_id,     
-                        tm.tenant_id,        
-                        tm.cloud_user_id,    
-                        tm.id,               
+                        tm.tenant_uuid,        
+                        tm.cloud_user_uuid,
+                        tm.id, 
+                        tm.uuid,               
                         tm.status,           
                         cu.first_name,       
                         cu.last_name,        
@@ -25,8 +26,11 @@ const createAndExecuteQuery = id => {
                         cu.created,          
                         cu.timestamp         
                 FROM ${DB.coreDbName}.tenant_members tm  
-                RIGHT JOIN ${DB.coreDbName}.cloud_users cu ON cu.id = tm.cloud_user_id  
-                WHERE tm.id = ?  
+                RIGHT JOIN ${DB.coreDbName}.cloud_users cu 
+                  ON cu.uuid = tm.cloud_user_uuid  
+                WHERE tm.id = ?
+                  AND tm.status > 0
+                  AND cu.status > 0
                 ORDER BY cu.last_name ASC`;
 
   const queryStatement = [query, [id]];
@@ -34,12 +38,6 @@ const createAndExecuteQuery = id => {
   return DB.lookup(queryStatement);
 };
 
-/**
- * Look up an tenantMember by id
- * @param {Number} id
- * @throws {Error}
- * @returns {Promise}
- */
 const getTenantMemberById = id => {
   validateTenantMemberData({ id });
   return createAndExecuteQuery(id);

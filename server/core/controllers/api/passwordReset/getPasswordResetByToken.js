@@ -9,10 +9,6 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
 const _getPasswordResetByToken = require('../../../models/passwordReset/methods/getPasswordResetByToken');
 
-/**
- * Fetch passwordReset by associated token from the database
- * @param {String} token
- */
 const getPasswordResetByToken = token => {
   return Promise.resolve(token)
     .then(authenticator.urlBase64Decode)

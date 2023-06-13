@@ -1,9 +1,11 @@
-id,tenant_id,tenant_organization_id,title,key,uri,method,status
-1,NULL,NULL,All Resources and Methods,all-resources,*,*,1
-2,NULL,NULL,Create Device Type,create-device-type,/api/v1/auth/deviceType,POST,1
-3,NULL,NULL,Delete Device Type,delete-device-type,/api/v1/auth/deviceType/id/:id,DELETE,1
-4,NULL,NULL,Update Device Type,update-device-type,/api/v1/auth/deviceType/id/:id,PUT,1
-5,NULL,NULL,Get All Device Types,get-all-device-types,/api/v1/auth/deviceTypes,GET,1
-6,2,NULL,CNN Login (All),cnn-login,/auth/login/cnn/*,POST,1
-7,2,1,CNN Login (Brentwood),cnn-brentwood-login,/auth/login/cnn/brentwood,POST,1
-8,2,2,CNN Login (Antioch),cnn-antioch-login,/auth/login/cnn/antioch,POST,1
+id,uuid,tenant_uuid,tenant_organization_uuid,title,key,uri,method,status
+1,e865ec30-f8d9-4a40-ae35-ada84fead043,NULL,NULL,All Resources and Methods,all-resources,*,*,1
+2,e20c66c0-fad6-4e96-b0ee-bf4fb7c3858b,NULL,NULL,Create Device Type,create-device-type,/api/v1/auth/deviceType,POST,1
+3,41d926a4-ac10-4030-8e59-917d26a95e68,NULL,NULL,Delete Device Type,delete-device-type,/api/v1/auth/deviceType/id/:id,DELETE,1
+4,243c9dcd-77d1-48f2-bdde-764281ee099a,NULL,NULL,Update Device Type,update-device-type,/api/v1/auth/deviceType/id/:id,PUT,1
+5,6bbd64a8-cc1d-4eb5-8cd2-df76cb3ce0dd,NULL,NULL,Get All Device Types,get-all-device-types,/api/v1/auth/deviceTypes,GET,1
+6,35ba5ac0-cfeb-4cd8-9fb1-62a9d7fcf549,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,NULL,CNN Login (All),cnn-login,/auth/login/cnn/*,POST,1
+7,5eb12dbb-ae7b-46b2-a5af-6a5d1073c242,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,bac55671-575f-464b-b422-5e7418b053de,CNN Login (Brentwood),cnn-brentwood-login,/auth/login/cnn/brentwood,POST,1
+8,ccffb95e-cedb-4fbf-b884-dd78326d0285,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,540ed162-e837-4764-af39-14506b7b317b,CNN Login (Antioch),cnn-antioch-login,/auth/login/cnn/antioch,POST,1
+9,a5f908ba-4f61-4593-b29e-8883338b741a,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,189ab6b2-efae-4a0c-b083-ad23929890b6,Gutfit Login (Brentwood),gutfit-brentwood-login,/auth/login/gutfit/brentwood,POST,1
+10,f2ff9d23-f944-4a74-b9fd-c448b5a93fb7,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,189ab6b2-efae-4a0c-b083-ad23929890b6,Gutfit Login (Antioch),gutfit-antioch-login,/auth/login/gutfit/antioch,POST,1

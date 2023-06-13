@@ -1,0 +1,2 @@
+id,uuid,strategy_refs,auth_config,first_name,last_name,middle_initial,gender,email,password,phone,alternate_phone,address_1,address_2,city,state,string#!zip,country,occupation,language,portrait,status,birthday,meta_json
+1,3a16a792-7cf3-4e10-b3ac-7be4bc82b14b,"{}","{}",Root,Root,,X,platformroot@aliencreations.com,$2a$10$vS1pj.R8RNb3yZ4SUNXLV.drrGAA/Uq0fm1nx2ZtN4rU9Zz/z9aEO,,,,,,,,,,en,,1,1979-12-05,"{}"

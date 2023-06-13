@@ -13,9 +13,6 @@ const _getAllCloudUsers = require('../../../models/cloudUser/methods/getAllCloud
 
 const maybeParseJson = maybeJsonParse(['strategyRefs', 'authConfig', 'metaJson']);
 
-/**
- * Get all cloudUsers from the database
- */
 const getAllCloudUsers = () => Promise.resolve()
   .then(_getAllCloudUsers)
   .then(R.map(R.compose(

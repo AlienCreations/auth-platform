@@ -57,17 +57,21 @@ const fullTenantDataSwapIn = commonMocks.override(fullTenantDataForQuery);
 
 describe('createTenant', () => {
   it('creates a tenant record when given expected data for all fields', done => {
-    createTenant(fullTenantDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenant(fullTenantDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('creates a tenant record when given expected data for only required fields', done => {
-    createTenant(requiredTenantDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenant(requiredTenantDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given no data', () => {

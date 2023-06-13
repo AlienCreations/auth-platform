@@ -41,7 +41,7 @@ describe('tenantCtrl.createTenant', () => {
   it('returns FAKE_TENANT_DATA when creating an tenant with all correct params', done => {
     createTenant(FAKE_TENANT_DATA)
       .then(res => {
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'uuid'], res))
           .toEqual(mergeInsertId(FAKE_TENANT_DATA));
         done();
       })

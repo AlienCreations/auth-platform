@@ -1,8 +1,8 @@
-id,tenant_id,key,secret,name,status
-1,1,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
-2,3,GLH-1-1,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Gutfit Hub 1,1
-3,3,GLH-1-2,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Gutfit Hub 2,1
-4,4,GLH-1-3,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 1,1
-5,4,GLH-1-4,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 2,1
-6,4,alienwebguy@gmail.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Sean Cannon,1
-7,4,chuck@norris.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Chuck Norris,1
+id,uuid,tenant_uuid,key,secret,name,status
+1,e1d1bd2f-b086-4c16-899b-739fb20451e4,6213706a-e5ee-40b1-b1ce-65e36190c7da,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
+2,1673c8a8-0a53-4965-a38b-1885bc3eb8bb,8a38dc4b-1555-4e4f-8678-2233e57f6d53,GLH-1-1,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Gutfit Hub 1,1
+3,31241f4e-bec3-4f18-a912-8bed2452d0f8,8a38dc4b-1555-4e4f-8678-2233e57f6d53,GLH-1-2,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Gutfit Hub 2,1
+4,03e155b9-b69a-430a-9791-5df168e4afd8,85d32867-7b14-4422-9a5a-5dfc46081401,GLH-1-3,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 1,1
+5,ddcd9a0a-1dbe-49bd-9d18-09ddbac90f6b,85d32867-7b14-4422-9a5a-5dfc46081401,GLH-1-4,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,LTF Hub 2,1
+6,d1b14223-3cef-4fb0-8994-4e51f8d3a193,85d32867-7b14-4422-9a5a-5dfc46081401,alienwebguy@gmail.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Sean Cannon,1
+7,35418590-0a12-40f2-9e8a-f334993937a6,85d32867-7b14-4422-9a5a-5dfc46081401,chuck@norris.com,$2a$10$jXFvIcCN1cE0.SjA1u3sKOvTfnctDa.Rg/FgssOWADw8y2syWbKuW,Gutfit Chuck Norris,1

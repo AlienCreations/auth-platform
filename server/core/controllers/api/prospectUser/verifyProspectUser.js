@@ -38,11 +38,6 @@ const sendConfirmationEmail = MailSvc => prospectTenantData => {
   });
 };
 
-/**
- * Verify a prospect user exists, and if so, create a cloudUser and notify said user.
- * @param {Object} MailSvc
- * @returns {function(*, *): Promise<*[]>}
- */
 const verifyProspectUser = MailSvc => (email, token) => {
   return Promise.resolve([email, token])
     .then(R.apply(getProspectUserByEmailAndToken))

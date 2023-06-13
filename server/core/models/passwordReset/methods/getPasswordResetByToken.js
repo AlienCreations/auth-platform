@@ -6,23 +6,16 @@ const DB                        = require('../../../utils/db'),
       validatePasswordResetData = require('../helpers/validatePasswordResetData').validateForGetByToken;
 
 const createAndExecuteQuery = token => {
-  const query          = 'SELECT * FROM ' + DB.coreDbName + '.password_resets WHERE token = ?';
+  const query          = `SELECT * FROM ${DB.coreDbName}.password_resets 
+                          WHERE token = ?
+                           AND status > 0`;
   const queryStatement = [query, [token]];
 
   return DB.lookup(queryStatement);
 };
 
-const decorateResponseData = data => {
-  const dataCopy = R.clone(data);
-  return dataCopy;
-};
+const decorateResponseData = R.identity;
 
-/**
- * Fetch password reset by token
- * @param {String} token
- * @throws {Error}
- * @returns {Promise}
- */
 const getPasswordResetByToken = token => {
   validatePasswordResetData({ token });
   return createAndExecuteQuery(token)

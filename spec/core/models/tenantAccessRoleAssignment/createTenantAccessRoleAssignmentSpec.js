@@ -1,22 +1,31 @@
 'use strict';
 
-const R = require('ramda');
+const R                                    = require('ramda'),
+      path                                 = require('path'),
+      CSVConverter                         = require('csvtojson').Converter,
+      cloudUsersConverter                  = new CSVConverter({}),
+      tenantAccessRoleAssignmentsConverter = new CSVConverter({});
 
 const createTenantAccessRoleAssignment = require('../../../../server/core/models/tenantAccessRoleAssignment/methods/createTenantAccessRoleAssignment'),
-      commonMocks        = require('../../../_helpers/commonMocks');
+      commonMocks                      = require('../../../_helpers/commonMocks');
 
 const A_NEGATIVE_NUMBER = -10,
       STRING_ONE_CHAR   = 'a';
 
-const FAKE_STATUS                       = 1,
-      FAKE_UNKNOWN_ID                   = 9999,
-      KNOWN_TEST_TENANT_ACCESS_ROLE_ID  = 2,
-      KNOWN_TEST_UNMAPPED_CLOUD_USER_ID = 4;
+const FAKE_STATUS       = 1,
+      FAKE_UNKNOWN_UUID = commonMocks.COMMON_UUID;
+
+let KNOWN_TEST_TENANT_ACCESS_ROLE_UUID,
+    KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID;
+
+let fullTenantAccessRoleAssignmentDataForQuery,
+    requiredTenantAccessRoleAssignmentDataForQuery,
+    fullTenantAccessRoleAssignmentDataSwapIn;
 
 const makeFakeTenantAccessRoleAssignmentData = (includeOptional) => {
   const fakeRequiredTenantAccessRoleAssignmentData = {
-    tenantAccessRoleId : KNOWN_TEST_TENANT_ACCESS_ROLE_ID,
-    cloudUserId        : KNOWN_TEST_UNMAPPED_CLOUD_USER_ID
+    tenantAccessRoleUuid : KNOWN_TEST_TENANT_ACCESS_ROLE_UUID,
+    cloudUserUuid        : KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID
   };
 
   const fakeOptionalTenantAccessRoleAssignmentData = {
@@ -26,25 +35,40 @@ const makeFakeTenantAccessRoleAssignmentData = (includeOptional) => {
   return includeOptional ? R.mergeDeepRight(fakeOptionalTenantAccessRoleAssignmentData, fakeRequiredTenantAccessRoleAssignmentData) : fakeRequiredTenantAccessRoleAssignmentData;
 };
 
-const fullTenantAccessRoleAssignmentDataForQuery     = makeFakeTenantAccessRoleAssignmentData(true),
-      requiredTenantAccessRoleAssignmentDataForQuery = makeFakeTenantAccessRoleAssignmentData(false);
-
-const fullTenantAccessRoleAssignmentDataSwapIn = commonMocks.override(fullTenantAccessRoleAssignmentDataForQuery);
 
 describe('createTenantAccessRoleAssignment', () => {
+  beforeAll(done => {
+    cloudUsersConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/cloudUsers.csv'), (err, data) => {
+      KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID = R.compose(R.prop('uuid'), R.last)(data);
 
-  it('creates a tenantAccessRoleAssignment record when given expected data for all fields', done => {
-    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
+      tenantAccessRoleAssignmentsConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessRoleAssignments.csv'), (err, data) => {
+        KNOWN_TEST_TENANT_ACCESS_ROLE_UUID = R.compose(R.prop('tenantAccessRoleUuid'), R.last, commonMocks.transformDbColsToJsProps)(data);
+
+        fullTenantAccessRoleAssignmentDataForQuery     = makeFakeTenantAccessRoleAssignmentData(true);
+        requiredTenantAccessRoleAssignmentDataForQuery = makeFakeTenantAccessRoleAssignmentData(false);
+        fullTenantAccessRoleAssignmentDataSwapIn       = commonMocks.override(fullTenantAccessRoleAssignmentDataForQuery);
+
+        done();
+      });
     });
   });
 
+  it('creates a tenantAccessRoleAssignment record when given expected data for all fields', done => {
+    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('creates a tenantAccessRoleAssignment record when given expected data for only required fields', done => {
-    createTenantAccessRoleAssignment(requiredTenantAccessRoleAssignmentDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantAccessRoleAssignment(requiredTenantAccessRoleAssignmentDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -53,56 +77,48 @@ describe('createTenantAccessRoleAssignment', () => {
     }).toThrowError(commonMocks.unsupportedParamErrRegex);
   });
 
-  // TENANT_ACCESS_ROLE_ID
-  it('throws an error when tenantAccessRoleId is malformed', () => {
+  // TENANT_ACCESS_ROLE_UUID
+  it('throws an error when tenantAccessRoleUuid is malformed', () => {
     expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleId', STRING_ONE_CHAR));
+      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantAccessRoleId is negative', () => {
+  it('throws an error when tenantAccessRoleUuid is missing', () => {
     expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleId', A_NEGATIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when tenantAccessRoleId is missing', () => {
-    expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleId', undefined));
+      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when tenantAccessRoleId is not known', done => {
-    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleId', FAKE_UNKNOWN_ID)).catch(err => {
-      expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
-      done();
-    });
+  it('throws an error when tenantAccessRoleUuid is not known', done => {
+    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('tenantAccessRoleUuid', FAKE_UNKNOWN_UUID))
+      .then(done.fail)
+      .catch(({ code }) => {
+        expect(code).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+        done();
+      });
   });
 
-  // CLOUD_USER_ID
-  it('throws an error when cloudUserId is malformed', () => {
+  // CLOUD_USER_UUID
+  it('throws an error when cloudUserUuid is malformed', () => {
     expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserId', STRING_ONE_CHAR));
+      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when cloudUserId is negative', () => {
+  it('throws an error when cloudUserUuid is missing', () => {
     expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserId', A_NEGATIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when cloudUserId is missing', () => {
-    expect(() => {
-      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserId', undefined));
+      createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when cloudUserId is not known', done => {
-    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserId', FAKE_UNKNOWN_ID)).catch(err => {
-      expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
-      done();
-    });
+  it('throws an error when cloudUserUuid is not known', done => {
+    createTenantAccessRoleAssignment(fullTenantAccessRoleAssignmentDataSwapIn('cloudUserUuid', FAKE_UNKNOWN_UUID))
+      .then(done.fail)
+      .catch(({ code }) => {
+        expect(code).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+        done();
+      });
   });
 
   // STATUS

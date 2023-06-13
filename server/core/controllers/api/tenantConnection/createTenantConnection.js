@@ -11,10 +11,6 @@ const privateFields = R.concat(COMMON_PRIVATE_FIELDS, TENANT_CONNECTION_PRIVATE_
 const _createTenantConnection = require('../../../models/tenantConnection/methods/createTenantConnection'),
       getTenantConnectionById = require('../../../controllers/api/tenantConnection/getTenantConnectionById');
 
-/**
- * Create a new tenantConnection record
- * @param {Object} tenantConnectionData
- */
 const createTenantConnection = tenantConnectionData => {
   return Promise.resolve(tenantConnectionData)
     .then(_createTenantConnection)

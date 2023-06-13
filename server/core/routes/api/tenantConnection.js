@@ -8,13 +8,13 @@ const express  = require('express'),
 const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
       ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
-const createTenantConnection         = require('../../controllers/api/tenantConnection/createTenantConnection'),
-      updateTenantConnection         = require('../../controllers/api/tenantConnection/updateTenantConnection'),
-      deleteTenantConnection         = require('../../controllers/api/tenantConnection/deleteTenantConnection'),
-      getTenantConnectionById        = require('../../controllers/api/tenantConnection/getTenantConnectionById'),
-      getTenantConnectionsByTenantId = require('../../controllers/api/tenantConnection/getTenantConnectionsByTenantId');
+const createTenantConnection           = require('../../controllers/api/tenantConnection/createTenantConnection'),
+      updateTenantConnection           = require('../../controllers/api/tenantConnection/updateTenantConnection'),
+      deleteTenantConnection           = require('../../controllers/api/tenantConnection/deleteTenantConnection'),
+      getTenantConnectionByUuid        = require('../../controllers/api/tenantConnection/getTenantConnectionByUuid'),
+      getTenantConnectionsByTenantUuid = require('../../controllers/api/tenantConnection/getTenantConnectionsByTenantUuid');
 
-const _getTenantConnectionById = require('../../models/tenantConnection/methods/getTenantConnectionById');
+const _getTenantConnectionByUuid = require('../../models/tenantConnection/methods/getTenantConnectionByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -30,69 +30,69 @@ router.post('/', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantConnection/id/123
+// https://platform.aliencreations.com/api/v1/tenantConnection/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
 router.put(
-  '/id/:id',
+  '/uuid/:uuid',
   ensureAuthorized,
   ensureCanActOnBehalfOfOwner({
-    getDataById     : _getTenantConnectionById,
-    dataIdPath      : ['params', 'id'],
-    dataOwnerIdPath : ['tenantId'],
-    identityPath    : ['tenant', 'id']
+    getDataById     : _getTenantConnectionByUuid,
+    dataIdPath      : ['params', 'uuid'],
+    dataOwnerIdPath : ['tenantUuid'],
+    identityPath    : ['tenant', 'uuid']
   }),
   (req, res, next) => {
-    const id = maybeParseIntFromPath(['params', 'id'], req);
+    const { uuid } = req.params;
 
     apiUtils.respondWithErrorHandling(
       req,
       res,
       next,
-      req.logger.child({ id }),
+      req.logger.child({ uuid }),
       'updateTenantConnection',
-      () => updateTenantConnection(req.body, id)
+      () => updateTenantConnection(req.body, uuid)
     );
   }
 );
 
-// https://platform.aliencreations.com/api/v1/tenantConnection/id/123
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantConnection/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getTenantConnectionById',
-    () => getTenantConnectionById(id)
+    req.logger.child({ uuid }),
+    'getTenantConnectionByUuid',
+    () => getTenantConnectionByUuid(uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantConnection/tenantId/123
-router.get('/tenantId/:tenantId', ensureAuthorized, (req, res, next) => {
-  const tenantId = maybeParseIntFromPath(['params', 'tenantId'], req);
+// https://platform.aliencreations.com/api/v1/tenantConnection/tenantUuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.get('/tenantUuid/:tenantUuid', ensureAuthorized, (req, res, next) => {
+  const { tenantUuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ tenantId }),
-    'getTenantConnectionsByTenantId',
-    () => getTenantConnectionsByTenantId(tenantId)
+    req.logger.child({ tenantUuid }),
+    'getTenantConnectionsByTenantUuid',
+    () => getTenantConnectionsByTenantUuid(tenantUuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/tenantConnection/id/123
-router.delete('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/tenantConnection/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.delete('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'deleteTenantConnection',
-    () => deleteTenantConnection(id)
+    () => deleteTenantConnection(uuid)
   );
 });
 

@@ -12,7 +12,7 @@ const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParse
 const createProspectUser     = require('../../controllers/api/prospectUser/createProspectUser'),
       updateProspectUser     = require('../../controllers/api/prospectUser/updateProspectUser'),
       getProspectUserByEmail = require('../../controllers/api/prospectUser/getProspectUserByEmail'),
-      getProspectUserById    = require('../../controllers/api/prospectUser/getProspectUserById');
+      getProspectUserByUuid  = require('../../controllers/api/prospectUser/getProspectUserByUuid');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -30,7 +30,7 @@ router.post('/', (req, res, next) => {
 
 // https://platform.aliencreations.com/api/v1/prospectUser/email/foo@bar.com
 router.get('/email/:email', ensureAuthorized, (req, res, next) => {
-  const email = req.params.email;
+  const { email } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
@@ -42,31 +42,31 @@ router.get('/email/:email', ensureAuthorized, (req, res, next) => {
   );
 });
 
-// https://platform.aliencreations.com/api/v1/prospectUser/id/666
-router.put('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/prospectUser/uuid/3aee202d-0e54-4a0c-a7d2-a0d9976a0378
+router.put('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
+    req.logger.child({ uuid }),
     'updateProspectUser',
-    () => updateProspectUser(req.body, id)
+    () => updateProspectUser(req.body, uuid)
   );
 });
 
-// https://platform.aliencreations.com/api/v1/prospectUser/id/3
-router.get('/id/:id', ensureAuthorized, (req, res, next) => {
-  const id = maybeParseIntFromPath(['params', 'id'], req);
+// https://platform.aliencreations.com/api/v1/prospectUser/uuid/3
+router.get('/uuid/:uuid', ensureAuthorized, (req, res, next) => {
+  const { uuid } = req.params;
 
   apiUtils.respondWithErrorHandling(
     req,
     res,
     next,
-    req.logger.child({ id }),
-    'getProspectUserById',
-    () => getProspectUserById(id)
+    req.logger.child({ uuid }),
+    'getProspectUserByUuid',
+    () => getProspectUserByUuid(uuid)
   );
 });
 

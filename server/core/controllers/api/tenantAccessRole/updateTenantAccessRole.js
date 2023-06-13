@@ -5,19 +5,14 @@ const R      = require('ramda'),
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 
-const _updateTenantAccessRole  = require('../../../models/tenantAccessRole/methods/updateTenantAccessRole'),
-      _getTenantAccessRoleById = require('../../../models/tenantAccessRole/methods/getTenantAccessRoleById');
+const _updateTenantAccessRole    = require('../../../models/tenantAccessRole/methods/updateTenantAccessRole'),
+      _getTenantAccessRoleByUuid = require('../../../models/tenantAccessRole/methods/getTenantAccessRoleByUuid');
 
-/**
- * Update a tenantAccessRole record
- * @param {Object} tenantAccessRoleData
- * @param {Number} id
- */
-const updateTenantAccessRole = (tenantAccessRoleData, id) => {
+const updateTenantAccessRole = (tenantAccessRoleData, uuid) => {
   return Promise.resolve(tenantAccessRoleData)
-    .then(_updateTenantAccessRole(id))
-    .then(R.always(id))
-    .then(_getTenantAccessRoleById)
+    .then(_updateTenantAccessRole(uuid))
+    .then(R.always(uuid))
+    .then(_getTenantAccessRoleByUuid)
     .then(R.omit(COMMON_PRIVATE_FIELDS));
 };
 

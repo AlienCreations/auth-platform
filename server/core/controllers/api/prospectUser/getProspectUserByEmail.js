@@ -8,10 +8,6 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config),
 
 const _getProspectUserByEmail = require('../../../models/prospectUser/methods/getProspectUserByEmail');
 
-/**
- * Get a prospectUser by his/her email from the database
- * @param {String} email
- */
 const getProspectUserByEmail = email => {
   const privateFields = R.concat(COMMON_PRIVATE_FIELDS, USER_PRIVATE_FIELDS);
 

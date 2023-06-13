@@ -1,2 +1,2 @@
-id,tenant_access_role_id,cloud_user_id,status
-1,1,1,1
+id,uuid,tenant_access_role_uuid,cloud_user_uuid,status
+1,c79e1a75-42b1-497d-a717-f681c5674597,db6a1322-bec7-4cef-ab02-36efca3f8e24,2252de8c-07e7-49d2-a657-dfa007e91c98,1

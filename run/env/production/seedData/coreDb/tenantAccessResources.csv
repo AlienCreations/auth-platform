@@ -1,49 +1,9 @@
-id,tenant_id,tenant_location_id,title,key,uri,method,status
-1,NULL,NULL,All Resources and Methods,all-resources,*,*,2
-2,NULL,NULL,Get Cloud User By Email,get-cloud-user-by-email,/api/v1/cloudUser/email/:email,GET,1
-3,NULL,NULL,Update Cloud User,update-cloud-user,/api/v1/cloudUser/id/:id,PUT,1
-4,NULL,NULL,Get Cloud User By Id,get-cloud-user-by-id,/api/v1/cloudUser/id/:id,GET,1
-5,NULL,NULL,Check Cloud User Session,check-cloud-user-session,/api/v1/cloudUser/check-session/:id,GET,1
-6,NULL,NULL,Get Tenant By Domain,get-tenant-by-domain,/api/v1/tenant/domain/:domain,GET,1
-7,NULL,NULL,Update Tenant,update-tenant,/api/v1/tenant/id/:id,PUT,1
-8,NULL,NULL,Get Tenant By Id,get-tenant-by-id,/api/v1/tenant/id/:id,GET,1
-9,NULL,NULL,Create Tenant Connection,create-tenant-connection,/api/v1/tenantConnection/,POST,1
-10,NULL,NULL,Update Tenant Connection,update-tenant-connection,/api/v1/tenantConnection/id/:id,PUT,1
-11,NULL,NULL,Get Tenant Connection By Id,get-tenant-connection-by-id,/api/v1/tenantConnection/id/:id,GET,1
-12,NULL,NULL,Get Tenant Connections By Tenant Id,get-tenant-connections-by-tenant-id,/api/v1/tenantConnection/tenantId/:tenantId,GET,1
-13,NULL,NULL,Delete Tenant Connection,delete-tenant-connection,/api/v1/tenantConnection/id/:id,DELETE,1
-14,NULL,NULL,Create Tenant Location,create-tenant-location,/api/v1/tenantLocation/,POST,1
-15,NULL,NULL,Update Tenant Location,update-tenant-location,/api/v1/tenantLocation/id/:id,PUT,1
-16,NULL,NULL,Get Tenant Location By Id,get-tenant-location-by-id,/api/v1/tenantLocation/id/:id,GET,1
-17,NULL,NULL,Get Tenant Locations By Tenant Id,get-tenant-locations-by-tenant-id,/api/v1/tenantLocation/tenantId/:tenantId,GET,1
-18,NULL,NULL,Get Tenant Location By Tenant Id And Location Subdomain,get-tenant-location-by-tenant-id-and-location-subdomain,/api/v1/tenantLocation/tenantId/:tenantId/subdomain/:subdomain,GET,1
-19,NULL,NULL,Delete Tenant Location,delete-tenant-location,/api/v1/tenantLocation/id/:id,DELETE,1
-20,NULL,NULL,Create Tenant Member,create-tenant-member,/api/v1/tenantMember/,POST,1
-21,NULL,NULL,Update Tenant Member,update-tenant-member,/api/v1/tenantMember/id/:id,PUT,1
-22,NULL,NULL,Get Tenant Member By Id,get-tenant-member-by-id,/api/v1/tenantMember/id/:id,GET,1
-23,NULL,NULL,Get All Tenant Members,get-all-tenant-members,/api/v1/tenantMember/,GET,1
-24,NULL,NULL,Get Tenant Member By Tenant Id And Reference Id,get-tenant-member-by-tenant-id-and-reference-id,/api/v1/tenantMember/tenantId/:tenantId/referenceId/:referenceId,GET,1
-25,NULL,NULL,Delete Tenant Member,delete-tenant-member,/api/v1/tenantMember/id/:id,DELETE,1
-26,NULL,NULL,Create Tenant Access Permission,create-tenant-access-permission,/api/v1/tenantAccessPermission/,POST,1
-27,NULL,NULL,Update Tenant Access Permission,update-tenant-access-permission,/api/v1/tenantAccessPermission/id/:id,PUT,1
-28,NULL,NULL,Get Tenant Access Permission By Id,get-tenant-access-permission-by-id,/api/v1/tenantAccessPermission/id/:id,GET,1
-29,NULL,NULL,Get Tenant Access Permissions By Tenant Access Resource Id,get-tenant-access-permissions-by-tenant-access-resource-id,/api/v1/tenantAccessPermission/tenantAccessResourceId/:tenantAccessResourceId,GET,1
-30,NULL,NULL,Get Tenant Access Permissions By Tenant Access Role Id,get-tenant-access-permissions-by-tenant-access-role-id,/api/v1/tenantAccessPermission/tenantAccessRoleId/:tenantAccessRoleId,GET,1
-31,NULL,NULL,Delete Tenant Access Permission,Delete Tenant Access Permission,/api/v1/tenantAccessPermission/id/:id,DELETE,1
-32,NULL,NULL,Create Tenant Access Role,create-tenant-access-role,/api/v1/tenantAccessRole/,POST,1
-33,NULL,NULL,Update Tenant Access Role,update-tenant-access-role,/api/v1/tenantAccessRole/id/:id,PUT,1
-34,NULL,NULL,Get Tenant Access Role By Id,get-tenant-access-role-by-id,/api/v1/tenantAccessRole/id/:id,GET,1
-35,NULL,NULL,Get Tenant Access Roles By Tenant Id,get-tenant-access-roles-by-tenant-id,/api/v1/tenantAccessRole/tenantId/:tenantId,GET,1
-36,NULL,NULL,Get Tenant Access Roles By Tenant Location Id,get-tenant-access-roles-by-tenant-location-id,/api/v1/tenantAccessRole/,GET,1
-37,NULL,NULL,Delete Tenant Access Role,delete-tenant-access-role,/api/v1/tenantAccessRole/id/:id,DELETE,1
-38,NULL,NULL,Create Tenant Access Role Assignment,create-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/,POST,1
-39,NULL,NULL,Update Tenant Access Role Assignment,update-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/id/:id,PUT,1
-40,NULL,NULL,Get Tenant Access Role Assignment By Id,get-tenant-access-role-assignment-by-id,/api/v1/tenantAccessRoleAssignment/id/:id,GET,1
-41,NULL,NULL,Get Tenant Access Role Assignments By Cloud User Id,get-tenant-access-role-assignments-by-cloud-user-id,/api/v1/tenantAccessRoleAssignment/cloudUserId/:cloudUserId,GET,1
-42,NULL,NULL,Get Tenant Access Role Assignments By Tenant Access Role Id,get-tenant-access-role-assignments-by-tenant-access-role-id,/api/v1/tenantAccessRoleAssignment/tenantAccessRoleId/:tenantAccessRoleId,GET,1
-43,NULL,NULL,Delete Tenant Access Role Assignment,delete-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/id/:id,DELETE,1
-44,NULL,NULL,Get Tenant Access Roles By Ids,get-tenant-access-roles-by-ids,/api/v1/tenantAccessRole/ids/,POST,1
-45,NULL,NULL,Get All Prospect Users,get-all-prospect-users,/api/v1/prospectUser/,GET,1
-46,NULL,NULL,Get All Prospect Tenants,get-all-prospect-tenants,/api/v1/prospectTenant/,GET,1
-47,NULL,NULL,Search (refined),search-refined,/api/v1/search/index/:index/type/:type/field/:field/q/:query,GET,1
-48,NULL,NULL,Search,search,/api/v1/search/index/:index/q/:query,GET,1
+id,uuid,tenant_uuid,tenant_organization_uuid,title,key,uri,method,status
+1,e865ec30-f8d9-4a40-ae35-ada84fead043,NULL,NULL,All Resources and Methods,all-resources,*,*,1
+2,e20c66c0-fad6-4e96-b0ee-bf4fb7c3858b,NULL,NULL,Create Device Type,create-device-type,/api/v1/auth/deviceType,POST,1
+3,41d926a4-ac10-4030-8e59-917d26a95e68,NULL,NULL,Delete Device Type,delete-device-type,/api/v1/auth/deviceType/id/:id,DELETE,1
+4,243c9dcd-77d1-48f2-bdde-764281ee099a,NULL,NULL,Update Device Type,update-device-type,/api/v1/auth/deviceType/id/:id,PUT,1
+5,6bbd64a8-cc1d-4eb5-8cd2-df76cb3ce0dd,NULL,NULL,Get All Device Types,get-all-device-types,/api/v1/auth/deviceTypes,GET,1
+6,35ba5ac0-cfeb-4cd8-9fb1-62a9d7fcf549,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,NULL,CNN Login (All),cnn-login,/auth/login/cnn/*,POST,1
+7,5eb12dbb-ae7b-46b2-a5af-6a5d1073c242,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,bac55671-575f-464b-b422-5e7418b053de,CNN Login (Brentwood),cnn-brentwood-login,/auth/login/cnn/brentwood,POST,1
+8,ccffb95e-cedb-4fbf-b884-dd78326d0285,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,540ed162-e837-4764-af39-14506b7b317b,CNN Login (Antioch),cnn-antioch-login,/auth/login/cnn/antioch,POST,1

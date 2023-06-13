@@ -1,12 +1,12 @@
 'use strict';
 
-const R = require('ramda');
+const R            = require('ramda'),
+      path         = require('path'),
+      CSVConverter = require('csvtojson').Converter,
+      converter    = new CSVConverter({});
 
 const createTenantAccessResource = require('../../../../server/core/models/tenantAccessResource/methods/createTenantAccessResource'),
       commonMocks                = require('../../../_helpers/commonMocks');
-
-const KNOWN_TEST_TENANT_ORGANIZATION_ID = 1,
-      KNOWN_TEST_MAPPED_TENANT_ID       = 2;
 
 const A_POSITIVE_NUMBER          = 1337,
       A_NEGATIVE_NUMBER          = -10,
@@ -20,6 +20,13 @@ const FAKE_STATUS             = 1,
       FAKE_METHOD_SUPPORTED   = 'PUT',
       FAKE_METHOD_UNSUPPORTED = 'FOO';
 
+let KNOWN_TEST_TENANT_ORGANIZATION_UUID,
+    KNOWN_TEST_MAPPED_TENANT_UUID,
+    fullTenantAccessResourceDataForQuery,
+
+    requiredTenantAccessResourceDataForQuery,
+    fullTenantAccessResourceDataSwapIn;
+
 const makeFakeTenantAccessResourceData = (includeOptional) => {
   const fakeRequiredTenantAccessResourceData = {
     title  : FAKE_TITLE,
@@ -29,33 +36,51 @@ const makeFakeTenantAccessResourceData = (includeOptional) => {
   };
 
   const fakeOptionalTenantAccessResourceData = {
-    tenantId             : KNOWN_TEST_MAPPED_TENANT_ID,
-    tenantOrganizationId : KNOWN_TEST_TENANT_ORGANIZATION_ID,
-    status               : FAKE_STATUS
+    tenantUuid             : KNOWN_TEST_MAPPED_TENANT_UUID,
+    tenantOrganizationUuid : KNOWN_TEST_TENANT_ORGANIZATION_UUID,
+    status                 : FAKE_STATUS
   };
 
   return includeOptional ? R.mergeDeepRight(fakeOptionalTenantAccessResourceData, fakeRequiredTenantAccessResourceData) : fakeRequiredTenantAccessResourceData;
 };
 
-const fullTenantAccessResourceDataForQuery     = makeFakeTenantAccessResourceData(true),
-      requiredTenantAccessResourceDataForQuery = makeFakeTenantAccessResourceData(false);
-
-const fullTenantAccessResourceDataSwapIn = commonMocks.override(fullTenantAccessResourceDataForQuery);
 
 describe('createTenantAccessResource', () => {
+  beforeAll(done => {
+    converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/prospectTenants.csv'), (err, _data) => {
+      const data = R.compose(
+        commonMocks.ensureTrueNullInCsvData,
+        commonMocks.transformDbColsToJsProps,
+        R.reject(R.propEq(0, 'status'))
+      )(_data);
 
-  it('creates a tenantAccessResource record when given expected data for all fields', done => {
-    createTenantAccessResource(fullTenantAccessResourceDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
+      KNOWN_TEST_TENANT_ORGANIZATION_UUID = R.compose(R.prop('tenantOrganizationUuid'), R.head)(data);
+      KNOWN_TEST_MAPPED_TENANT_UUID       = R.compose(R.prop('tenantUuid'), R.head)(data);
+
+      fullTenantAccessResourceDataForQuery     = makeFakeTenantAccessResourceData(true);
+      requiredTenantAccessResourceDataForQuery = makeFakeTenantAccessResourceData(false);
+      fullTenantAccessResourceDataSwapIn       = commonMocks.override(fullTenantAccessResourceDataForQuery);
+
       done();
     });
   });
 
+  it('creates a tenantAccessResource record when given expected data for all fields', done => {
+    createTenantAccessResource(fullTenantAccessResourceDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('creates a tenantAccessResource record when given expected data for only required fields', done => {
-    createTenantAccessResource(requiredTenantAccessResourceDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantAccessResource(requiredTenantAccessResourceDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -153,30 +178,17 @@ describe('createTenantAccessResource', () => {
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  // TENANT_ID
-  it('throws an error when tenantId is not a positive number', () => {
+  // TENANT_UUID
+  it('throws an error when tenantUuid is malformed', () => {
     expect(() => {
-      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantId', STRING_ONE_CHAR));
+      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantId is negative', () => {
+  // TENANT_ORGANIZATION_UUID
+  it('throws an error when tenantOrganizationUuid is malformed', () => {
     expect(() => {
-      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantId', A_NEGATIVE_NUMBER));
+      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantOrganizationUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
-
-  // TENANT_ORGANIZATION_ID
-  it('throws an error when tenantOrganizationId is not a positive number', () => {
-    expect(() => {
-      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantOrganizationId', STRING_ONE_CHAR));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when tenantOrganizationId is negative', () => {
-    expect(() => {
-      createTenantAccessResource(fullTenantAccessResourceDataSwapIn('tenantOrganizationId', A_NEGATIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
 });

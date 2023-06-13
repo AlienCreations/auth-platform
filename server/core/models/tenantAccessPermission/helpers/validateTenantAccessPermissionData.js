@@ -13,9 +13,9 @@ const {
 const RECOGNIZED_REQUEST_METHODS = ['POST', 'PUT', 'DELETE', 'GET'];
 
 const validateForInsert = label('createTenantAccessPermission', isObjectOf({
-  tenantAccessRoleId     : isRequired(prr.isPositiveNumber),
-  tenantAccessResourceId : isRequired(prr.isPositiveNumber),
-  status                 : isOptional(prr.isAtLeastZero)
+  tenantAccessRoleUuid     : isRequired(prr.isUuid),
+  tenantAccessResourceUuid : isRequired(prr.isUuid),
+  status                   : isOptional(prr.isAtLeastZero)
 }));
 
 const validateForUpdate = label('updateTenantAccessPermission', isObjectOf({
@@ -26,34 +26,40 @@ const validateId = label('getTenantAccessPermissionById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
-const validateResourceId = label('getTenantAccessPermissionsByTenantAccessResourceId', isObjectOf({
-  tenantAccessResourceId : isRequired(prr.isPositiveNumber)
+const validateUuid = label('getTenantAccessPermissionByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
 }));
 
-const validateTenantAccessRoleId = label('getTenantAccessPermissionsByTenantAccessRoleId', isObjectOf({
-  tenantAccessRoleId : isRequired(prr.isPositiveNumber)
+const validateResourceUuid = label('getTenantAccessPermissionsByTenantAccessResourceUuid', isObjectOf({
+  tenantAccessResourceUuid : isRequired(prr.isUuid)
 }));
 
-const validateTenantOrganizationId = label('getTenantAccessPermissionsByTenantOrganizationId', isObjectOf({
-  tenantOrganizationId : isRequired(prr.isPositiveNumber)
+const validateTenantAccessRoleUuid = label('getTenantAccessPermissionsByTenantAccessRoleUuid', isObjectOf({
+  tenantAccessRoleUuid : isRequired(prr.isUuid)
+}));
+
+const validateTenantOrganizationUuid = label('getTenantAccessPermissionsByTenantOrganizationUuid', isObjectOf({
+  tenantOrganizationUuid : isRequired(prr.isUuid)
 }));
 
 const validateForCheckPermission = label('checkPermission', isObjectOf({
   tenantAccessResourceUri    : isRequired(prr.isStringOfLengthAtMost(255)),
   tenantAccessResourceMethod : isRequired(prr.stringIsOneOf(RECOGNIZED_REQUEST_METHODS)),
-  cloudUserId                : isRequired(prr.isPositiveNumber),
-  tenantId                   : isOptional(R.either(prr.isPositiveNumber, R.isNil)),
-  tenantOrganizationId       : isOptional(R.either(prr.isPositiveNumber, R.isNil))
+  cloudUserUuid              : isRequired(prr.isUuid),
+  tenantUuid                 : isOptional(R.either(prr.isUuid, R.isNil)),
+  tenantOrganizationUuid     : isOptional(R.either(prr.isUuid, R.isNil))
 }));
 
 module.exports = {
-  validateForGetById                     : validateId,
-  validateForGetByTenantAccessRoleId     : validateTenantAccessRoleId,
-  validateForGetByTenantAccessResourceId : validateResourceId,
-  validateForGetByTenantOrganizationId   : validateTenantOrganizationId,
-  validateForDelete                      : validateId,
-  validateId                             : validateId,
+  validateId,
+  validateUuid,
   validateForInsert,
   validateForUpdate,
-  validateForCheckPermission
+  validateForCheckPermission,
+  validateForGetById                       : validateId,
+  validateForGetByUuid                     : validateUuid,
+  validateForGetByTenantAccessRoleUuid     : validateTenantAccessRoleUuid,
+  validateForGetByTenantAccessResourceUuid : validateResourceUuid,
+  validateForGetByTenantOrganizationUuid   : validateTenantOrganizationUuid,
+  validateForDelete                        : validateUuid
 };

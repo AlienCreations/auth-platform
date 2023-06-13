@@ -1,5 +1,5 @@
-id,domain,title,description,logo,email,phone,fax,address_1,address_2,city,state,string#!zip,country,status,url
-1,platform,Gymlens Platform,Tenancy for the gymlens platform API,logos/laurus-logo.png,platform@gymlens.com,,,,,,,,,1,//platform.gymlens.com
-2,punchfitness,Punch Fitness,PunchFit started as a blah blah..,logos/punch-fitness.png,info@punchfit.com,925-240-0000,,1118 Lone Tree Way,,Brentwood,CA,94513,US,1,//www.punchfit.com
-3,gutfit,GutFit,Fit your gut at Gutfit,logos/gutfit-logo.png,train@gutfit.com,925-240-3312,,2255 Shady Willow Lane,,Brentwood,CA,94513,US,1,//www.gutfit.biz
-4,ltf,Lifetime Fitness,A Healthy Way Of Life Company,logos/ltf-logo.png,ltf@gymlens.com,,,,,Plymouth,MN,55429,US,1,//www.lifetimefitness.com
+id,uuid,domain,title,description,logo,email,phone,fax,address_1,address_2,city,state,string#!zip,country,status,url
+1,6213706a-e5ee-40b1-b1ce-65e36190c7da,platform,Gymlens Platform,Tenancy for the gymlens platform API,logos/laurus-logo.png,platform@gymlens.com,,,,,,,,,1,//platform.gymlens.com
+2,30bbdfc5-4d76-4449-b714-6d74d8e12fbb,punchfitness,Punch Fitness,PunchFit started as a blah blah..,logos/punch-fitness.png,info@punchfit.com,925-240-0000,,1118 Lone Tree Way,,Brentwood,CA,94513,US,1,//www.punchfit.com
+3,8a38dc4b-1555-4e4f-8678-2233e57f6d53,gutfit,GutFit,Fit your gut at Gutfit,logos/gutfit-logo.png,train@gutfit.com,925-240-3312,,2255 Shady Willow Lane,,Brentwood,CA,94513,US,1,//www.gutfit.biz
+4,85d32867-7b14-4422-9a5a-5dfc46081401,ltf,Lifetime Fitness,A Healthy Way Of Life Company,logos/ltf-logo.png,ltf@gymlens.com,,,,,Plymouth,MN,55429,US,1,//www.lifetimefitness.com

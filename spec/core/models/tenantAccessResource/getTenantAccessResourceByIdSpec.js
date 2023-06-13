@@ -14,7 +14,6 @@ const FAKE_UNKNOWN_ID   = 99999,
 let KNOWN_TEST_ID;
 
 describe('getTenantAccessResourceById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessResources.csv'), (err, data) => {
       KNOWN_TEST_ID = R.compose(R.prop('id'), R.head)(data);
@@ -23,10 +22,12 @@ describe('getTenantAccessResourceById', () => {
   });
 
   it('gets a tenantAccessResource when given a known id', done => {
-    getTenantAccessResourceById(KNOWN_TEST_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      done();
-    });
+    getTenantAccessResourceById(KNOWN_TEST_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown id', done => {
@@ -52,7 +53,6 @@ describe('getTenantAccessResourceById', () => {
   it('throws an error when id is set to null', () => {
     expect(() => {
       getTenantAccessResourceById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
-
 });

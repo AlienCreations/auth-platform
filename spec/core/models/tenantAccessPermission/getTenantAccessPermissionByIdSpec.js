@@ -52,7 +52,7 @@ describe('getTenantAccessPermissionById', () => {
   it('throws an error when id is set to null', () => {
     expect(() => {
       getTenantAccessPermissionById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
 });

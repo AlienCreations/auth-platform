@@ -13,10 +13,6 @@ const _getTenantOrganizationById = require('../../../models/tenantOrganization/m
 
 const maybeParseJson = maybeJsonParse(['metaJson']);
 
-/**
- * Get a tenantOrganization by id from the database
- * @param {Number} id
- */
 const getTenantOrganizationById = id => Promise.resolve(id)
   .then(_getTenantOrganizationById)
   .then(maybeParseJson)

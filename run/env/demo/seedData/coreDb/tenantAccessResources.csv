@@ -1,51 +1,51 @@
-id,tenant_id,tenant_location_id,title,key,uri,method,status
-1,NULL,NULL,All Resources and Methods,all-resources,*,*,2
-2,NULL,NULL,Get Cloud User By Email,get-cloud-user-by-email,/api/v1/cloudUser/email/:email,GET,1
-3,NULL,NULL,Update Cloud User,update-cloud-user,/api/v1/cloudUser/id/:id,PUT,1
-4,NULL,NULL,Get Cloud User By Id,get-cloud-user-by-id,/api/v1/cloudUser/id/:id,GET,1
-5,NULL,NULL,Check Cloud User Session,check-cloud-user-session,/api/v1/cloudUser/check-session/:id,GET,1
-6,NULL,NULL,Get Tenant By Domain,get-tenant-by-domain,/api/v1/tenant/domain/:domain,GET,1
-7,NULL,NULL,Update Tenant,update-tenant,/api/v1/tenant/id/:id,PUT,1
-8,NULL,NULL,Get Tenant By Id,get-tenant-by-id,/api/v1/tenant/id/:id,GET,1
-9,NULL,NULL,Create Tenant Connection,create-tenant-connection,/api/v1/tenantConnection/,POST,1
-10,NULL,NULL,Update Tenant Connection,update-tenant-connection,/api/v1/tenantConnection/id/:id,PUT,1
-11,NULL,NULL,Get Tenant Connection By Id,get-tenant-connection-by-id,/api/v1/tenantConnection/id/:id,GET,1
-12,NULL,NULL,Get Tenant Connections By Tenant Id,get-tenant-connections-by-tenant-id,/api/v1/tenantConnection/tenantId/:tenantId,GET,1
-13,NULL,NULL,Delete Tenant Connection,delete-tenant-connection,/api/v1/tenantConnection/id/:id,DELETE,1
-14,NULL,NULL,Create Tenant Location,create-tenant-location,/api/v1/tenantLocation/,POST,1
-15,NULL,NULL,Update Tenant Location,update-tenant-location,/api/v1/tenantLocation/id/:id,PUT,1
-16,NULL,NULL,Get Tenant Location By Id,get-tenant-location-by-id,/api/v1/tenantLocation/id/:id,GET,1
-17,NULL,NULL,Get Tenant Locations By Tenant Id,get-tenant-locations-by-tenant-id,/api/v1/tenantLocation/tenantId/:tenantId,GET,1
-18,NULL,NULL,Get Tenant Location By Tenant Id And Location Subdomain,get-tenant-location-by-tenant-id-and-location-subdomain,/api/v1/tenantLocation/tenantId/:tenantId/subdomain/:subdomain,GET,1
-19,NULL,NULL,Delete Tenant Location,delete-tenant-location,/api/v1/tenantLocation/id/:id,DELETE,1
-20,NULL,NULL,Create Tenant Member,create-tenant-member,/api/v1/tenantMember/,POST,1
-21,NULL,NULL,Update Tenant Member,update-tenant-member,/api/v1/tenantMember/id/:id,PUT,1
-22,NULL,NULL,Get Tenant Member By Id,get-tenant-member-by-id,/api/v1/tenantMember/id/:id,GET,1
-23,NULL,NULL,Get All Tenant Members,get-all-tenant-members,/api/v1/tenantMember/,GET,1
-24,NULL,NULL,Get Tenant Member By Tenant Id And Reference Id,get-tenant-member-by-tenant-id-and-reference-id,/api/v1/tenantMember/tenantId/:tenantId/referenceId/:referenceId,GET,1
-25,NULL,NULL,Delete Tenant Member,delete-tenant-member,/api/v1/tenantMember/id/:id,DELETE,1
-26,NULL,NULL,Create Tenant Access Permission,create-tenant-access-permission,/api/v1/tenantAccessPermission/,POST,1
-27,NULL,NULL,Update Tenant Access Permission,update-tenant-access-permission,/api/v1/tenantAccessPermission/id/:id,PUT,1
-28,NULL,NULL,Get Tenant Access Permission By Id,get-tenant-access-permission-by-id,/api/v1/tenantAccessPermission/id/:id,GET,1
-29,NULL,NULL,Get Tenant Access Permissions By Tenant Access Resource Id,get-tenant-access-permissions-by-tenant-access-resource-id,/api/v1/tenantAccessPermission/tenantAccessResourceId/:tenantAccessResourceId,GET,1
-30,NULL,NULL,Get Tenant Access Permissions By Tenant Access Role Id,get-tenant-access-permissions-by-tenant-access-role-id,/api/v1/tenantAccessPermission/tenantAccessRoleId/:tenantAccessRoleId,GET,1
-31,NULL,NULL,Delete Tenant Access Permission,Delete Tenant Access Permission,/api/v1/tenantAccessPermission/id/:id,DELETE,1
-32,NULL,NULL,Create Tenant Access Role,create-tenant-access-role,/api/v1/tenantAccessRole/,POST,1
-33,NULL,NULL,Update Tenant Access Role,update-tenant-access-role,/api/v1/tenantAccessRole/id/:id,PUT,1
-34,NULL,NULL,Get Tenant Access Role By Id,get-tenant-access-role-by-id,/api/v1/tenantAccessRole/id/:id,GET,1
-35,NULL,NULL,Get Tenant Access Roles By Tenant Id,get-tenant-access-roles-by-tenant-id,/api/v1/tenantAccessRole/tenantId/:tenantId,GET,1
-36,NULL,NULL,Get Tenant Access Roles By Tenant Location Id,get-tenant-access-roles-by-tenant-location-id,/api/v1/tenantAccessRole/,GET,1
-37,NULL,NULL,Delete Tenant Access Role,delete-tenant-access-role,/api/v1/tenantAccessRole/id/:id,DELETE,1
-38,NULL,NULL,Create Tenant Access Role Assignment,create-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/,POST,1
-39,NULL,NULL,Update Tenant Access Role Assignment,update-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/id/:id,PUT,1
-40,NULL,NULL,Get Tenant Access Role Assignment By Id,get-tenant-access-role-assignment-by-id,/api/v1/tenantAccessRoleAssignment/id/:id,GET,1
-41,NULL,NULL,Get Tenant Access Role Assignments By Cloud User Id,get-tenant-access-role-assignments-by-cloud-user-id,/api/v1/tenantAccessRoleAssignment/cloudUserId/:cloudUserId,GET,1
-42,NULL,NULL,Get Tenant Access Role Assignments By Tenant Access Role Id,get-tenant-access-role-assignments-by-tenant-access-role-id,/api/v1/tenantAccessRoleAssignment/tenantAccessRoleId/:tenantAccessRoleId,GET,1
-43,NULL,NULL,Delete Tenant Access Role Assignment,delete-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/id/:id,DELETE,1
-44,NULL,NULL,Get Tenant Access Roles By Ids,get-tenant-access-roles-by-ids,/api/v1/tenantAccessRole/ids/,POST,1
-45,NULL,NULL,Get All Prospect Users,get-all-prospect-users,/api/v1/prospectUser/,GET,1
-46,NULL,NULL,Get All Prospect Tenants,get-all-prospect-tenants,/api/v1/prospectTenant/,GET,1
-47,NULL,NULL,Search (refined),search-refined,/api/v1/search/index/:index/type/:type/field/:field/q/:query,GET,1
-48,NULL,NULL,Search,search,/api/v1/search/index/:index/q/:query,GET,1
-49,NULL,NULL,Get Self Cloud User,get-self-cloud-use,/api/v1/cloudUser/,GET,1
-50,NULL,NULL,Update Self Cloud User,update-self-cloud-use,/api/v1/cloudUser/,PUT,1
+id,uuid,tenant_uuid,tenant_organization_uuid,title,key,uri,method,status
+1,88c34469-04bd-4ee4-b7d2-b8bf305eba08,NULL,NULL,All Resources and Methods,all-resources,*,*,2
+2,7494823a-12da-469e-8f5a-f6c187366a70,NULL,NULL,Get Cloud User By Email,get-cloud-user-by-email,/api/v1/cloudUser/email/:email,GET,1
+3,713d913a-2d97-4e47-9eff-677ee2431859,NULL,NULL,Update Cloud User,update-cloud-user,/api/v1/cloudUser/uuid/:uuid,PUT,1
+4,1d2dbc7b-5103-4daf-bd46-444df4faa6db,NULL,NULL,Get Cloud User By Uuid,get-cloud-user-by-uuid,/api/v1/cloudUser/uuid/:uuid,GET,1
+5,e32b2d57-e4db-4fb7-a8f3-4e71ac7ac582,NULL,NULL,Check Cloud User Session,check-cloud-user-session,/api/v1/cloudUser/check-session/:uuid,GET,1
+6,8d8a4b7e-a306-4912-b33f-1f591e6f45fc,NULL,NULL,Get Tenant By Domain,get-tenant-by-domain,/api/v1/tenant/domain/:domain,GET,1
+7,faf8133d-f6e5-432c-b382-68932974f4ff,NULL,NULL,Update Tenant,update-tenant,/api/v1/tenant/uuid/:uuid,PUT,1
+8,bf3befb9-e415-46ac-8679-37f27356102c,NULL,NULL,Get Tenant By Uuid,get-tenant-by-uuid,/api/v1/tenant/uuid/:uuid,GET,1
+9,68306618-a97f-4cdf-ab50-4a4473befd3b,NULL,NULL,Create Tenant Connection,create-tenant-connection,/api/v1/tenantConnection/,POST,1
+10,da44eb09-56dd-4867-a16e-aced893af963,NULL,NULL,Update Tenant Connection,update-tenant-connection,/api/v1/tenantConnection/uuid/:uuid,PUT,1
+11,86597dba-8f0c-406d-9c8f-3daba58adbe8,NULL,NULL,Get Tenant Connection By Uuid,get-tenant-connection-by-uuid,/api/v1/tenantConnection/uuid/:uuid,GET,1
+12,5a523a95-abf2-4cb8-88a2-919e8be96ed1,NULL,NULL,Get Tenant Connections By Tenant Uuid,get-tenant-connections-by-tenant-uuid,/api/v1/tenantConnection/tenantUuid/:tenantUuid,GET,1
+13,7c0a0c45-8883-4224-a3d6-23732d73d69b,NULL,NULL,Delete Tenant Connection,delete-tenant-connection,/api/v1/tenantConnection/uuid/:uuid,DELETE,1
+14,fdb3ffb8-a8a2-4b11-aedc-4422d9e5dbea,NULL,NULL,Create Tenant Location,create-tenant-location,/api/v1/tenantLocation/,POST,1
+15,51a0ef63-4d8f-4526-8d8b-cfcf1ed64551,NULL,NULL,Update Tenant Location,update-tenant-location,/api/v1/tenantLocation/uuid/:uuid,PUT,1
+16,17215ec6-7bd3-4c7b-86d0-1cc0598f1c97,NULL,NULL,Get Tenant Location By Uuid,get-tenant-location-by-uuid,/api/v1/tenantLocation/uuid/:uuid,GET,1
+17,469fcd7c-a0a7-49a8-8e77-3998e0e70e4a,NULL,NULL,Get Tenant Locations By Tenant Uuid,get-tenant-locations-by-tenant-uuid,/api/v1/tenantLocation/tenantUuid/:tenantUuid,GET,1
+18,f4d79c27-f9ac-4815-8009-ec95729caffa,NULL,NULL,Get Tenant Location By Tenant Uuid And Location Subdomain,get-tenant-location-by-tenant-uuid-and-location-subdomain,/api/v1/tenantLocation/tenantUuid/:tenantUuid/subdomain/:subdomain,GET,1
+19,d99e29de-0096-443b-80c0-081ef8029405,NULL,NULL,Delete Tenant Location,delete-tenant-location,/api/v1/tenantLocation/uuid/:uuid,DELETE,1
+20,6a7bdd07-6362-4e72-a273-2cb9e6ff6d7a,NULL,NULL,Create Tenant Member,create-tenant-member,/api/v1/tenantMember/,POST,1
+21,0d423cd2-ae83-4649-b21a-f19617334178,NULL,NULL,Update Tenant Member,update-tenant-member,/api/v1/tenantMember/uuid/:uuid,PUT,1
+22,670664e9-37f7-4d22-ba27-03e265768d36,NULL,NULL,Get Tenant Member By Uuid,get-tenant-member-by-uuid,/api/v1/tenantMember/uuid/:uuid,GET,1
+23,02afd856-89bb-4ed0-b9f1-19270235709a,NULL,NULL,Get All Tenant Members,get-all-tenant-members,/api/v1/tenantMember/,GET,1
+24,d08806d0-9084-477e-8b44-0df5537d0afc,NULL,NULL,Get Tenant Member By Tenant Uuid And Reference Uuid,get-tenant-member-by-tenant-uuid-and-reference-uuid,/api/v1/tenantMember/tenantUuid/:tenantUuid/referenceUuid/:referenceUuid,GET,1
+25,f794a7e8-029a-4350-b4fb-f3f4158bc2b9,NULL,NULL,Delete Tenant Member,delete-tenant-member,/api/v1/tenantMember/uuid/:uuid,DELETE,1
+26,540dadf5-a2de-46ca-9868-61fcca607473,NULL,NULL,Create Tenant Access Permission,create-tenant-access-permission,/api/v1/tenantAccessPermission/,POST,1
+27,cfd95fca-f8e9-4fab-a822-d9ee176e3978,NULL,NULL,Update Tenant Access Permission,update-tenant-access-permission,/api/v1/tenantAccessPermission/uuid/:uuid,PUT,1
+28,0bc00246-d3e1-428f-b2a3-b6c32eb52089,NULL,NULL,Get Tenant Access Permission By Uuid,get-tenant-access-permission-by-uuid,/api/v1/tenantAccessPermission/uuid/:uuid,GET,1
+29,23c16ce8-965a-4eb8-a678-faf915e914c8,NULL,NULL,Get Tenant Access Permissions By Tenant Access Resource Uuid,get-tenant-access-permissions-by-tenant-access-resource-uuid,/api/v1/tenantAccessPermission/tenantAccessResourceUuid/:tenantAccessResourceUuid,GET,1
+30,7d676b00-a3b9-4ef5-ba2a-ee9946959b02,NULL,NULL,Get Tenant Access Permissions By Tenant Access Role Uuid,get-tenant-access-permissions-by-tenant-access-role-uuid,/api/v1/tenantAccessPermission/tenantAccessRoleUuid/:tenantAccessRoleUuid,GET,1
+31,8bf55279-15d4-4e66-a2e8-bcdec381d5c5,NULL,NULL,Delete Tenant Access Permission,Delete Tenant Access Permission,/api/v1/tenantAccessPermission/uuid/:uuid,DELETE,1
+32,91dd5172-5e98-499e-84ae-d9f3d303bd3f,NULL,NULL,Create Tenant Access Role,create-tenant-access-role,/api/v1/tenantAccessRole/,POST,1
+33,1b0109d9-4bd2-436d-bf5d-d215610cff52,NULL,NULL,Update Tenant Access Role,update-tenant-access-role,/api/v1/tenantAccessRole/uuid/:uuid,PUT,1
+34,a0bfd52e-a03f-4dc5-87a7-f309f65e1f59,NULL,NULL,Get Tenant Access Role By Uuid,get-tenant-access-role-by-uuid,/api/v1/tenantAccessRole/uuid/:uuid,GET,1
+35,ffe43111-8045-45bc-b51b-afb8cc4d4a87,NULL,NULL,Get Tenant Access Roles By Tenant Uuid,get-tenant-access-roles-by-tenant-uuid,/api/v1/tenantAccessRole/tenantUuid/:tenantUuid,GET,1
+36,2977b491-0b57-4864-acbd-67a0bddf0d5a,NULL,NULL,Get Tenant Access Roles By Tenant Location Uuid,get-tenant-access-roles-by-tenant-location-uuid,/api/v1/tenantAccessRole/,GET,1
+37,7923dd82-777a-423c-9546-3ddafc7170a7,NULL,NULL,Delete Tenant Access Role,delete-tenant-access-role,/api/v1/tenantAccessRole/uuid/:uuid,DELETE,1
+38,089c5cec-cb64-477f-9c3c-f1a2f0254acf,NULL,NULL,Create Tenant Access Role Assignment,create-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/,POST,1
+39,bb60e039-89e5-473e-b144-3a5a78f70c1b,NULL,NULL,Update Tenant Access Role Assignment,update-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/uuid/:uuid,PUT,1
+40,b58edc2a-b991-43d5-9952-1f5dc411a0c8,NULL,NULL,Get Tenant Access Role Assignment By Uuid,get-tenant-access-role-assignment-by-uuid,/api/v1/tenantAccessRoleAssignment/uuid/:uuid,GET,1
+41,bb2f743f-1c70-49be-b904-30118afff5f5,NULL,NULL,Get Tenant Access Role Assignments By Cloud User Uuid,get-tenant-access-role-assignments-by-cloud-user-uuid,/api/v1/tenantAccessRoleAssignment/cloudUserUuid/:cloudUserUuid,GET,1
+42,3733a44c-a406-4b7b-b302-0a568162edf2,NULL,NULL,Get Tenant Access Role Assignments By Tenant Access Role Uuid,get-tenant-access-role-assignments-by-tenant-access-role-uuid,/api/v1/tenantAccessRoleAssignment/tenantAccessRoleUuid/:tenantAccessRoleUuid,GET,1
+43,0f977e58-7931-48a6-9cc7-7b8e72cf49e6,NULL,NULL,Delete Tenant Access Role Assignment,delete-tenant-access-role-assignment,/api/v1/tenantAccessRoleAssignment/uuid/:uuid,DELETE,1
+44,544a7411-cc8b-4204-8855-793d00f48a4c,NULL,NULL,Get Tenant Access Roles By Uuids,get-tenant-access-roles-by-uuids,/api/v1/tenantAccessRole/ids/,POST,1
+45,c497868b-5592-422f-be47-ef364113c2b4,NULL,NULL,Get All Prospect Users,get-all-prospect-users,/api/v1/prospectUser/,GET,1
+46,7223e6ca-2e25-471b-bed3-7d5dac55ba41,NULL,NULL,Get All Prospect Tenants,get-all-prospect-tenants,/api/v1/prospectTenant/,GET,1
+47,82d545c0-29bb-41c2-9668-59582f727d53,NULL,NULL,Search (refined),search-refined,/api/v1/search/index/:index/type/:type/field/:field/q/:query,GET,1
+48,6e374032-6836-4411-b44b-a450642a9917,NULL,NULL,Search,search,/api/v1/search/index/:index/q/:query,GET,1
+49,825dbb02-3537-4837-9829-35b65efbd98c,NULL,NULL,Get Self Cloud User,get-self-cloud-use,/api/v1/cloudUser/,GET,1
+50,25da2824-599c-423c-965f-f2710be57a12,NULL,NULL,Update Self Cloud User,update-self-cloud-use,/api/v1/cloudUser/,PUT,1

@@ -7,7 +7,7 @@ const { errors } = require('@aliencreations/node-error');
 const scrubErrorForBrowser = (err, req) => {
   let responseError;
 
-  const shouldSeeFullError = R.pathEq(['user', 'strategy'], 'service')(req) || process.env.ALLOW_DEBUG === 'true';
+  const shouldSeeFullError = R.pathEq('service', ['user', 'strategy'])(req) || process.env.ALLOW_DEBUG === 'true';
   const scrubForBrowser    = R.omit(['debug']);
 
   if (err.isInternalError) {

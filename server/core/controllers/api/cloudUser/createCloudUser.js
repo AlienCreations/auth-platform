@@ -13,10 +13,6 @@ const _createCloudUser       = require('../../../models/cloudUser/methods/create
 
 const JSON_FIELDS = ['strategyRefs', 'authConfig', 'metaJson'];
 
-/**
- * Create a new cloudUser record
- * @param {Object} cloudUserData
- */
 const createCloudUser = cloudUserData => {
   return Promise.resolve(cloudUserData)
     .then(_createCloudUser)

@@ -18,7 +18,7 @@ describe('agentCtrl.getAgentByKey', () => {
   beforeAll(done =>  {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/agents.csv'), (err, data) => {
       KNOWN_TEST_AGENT_DATA = R.compose(R.omit(['secret']), R.head, commonMocks.transformDbColsToJsProps)(data);
-      KNOWN_TEST_KEY        = R.prop('key', KNOWN_TEST_AGENT_DATA);
+      KNOWN_TEST_KEY        = KNOWN_TEST_AGENT_DATA.key;
       done();
     });
   });

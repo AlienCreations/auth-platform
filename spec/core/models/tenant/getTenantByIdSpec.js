@@ -11,7 +11,6 @@ const getTenantById = require('../../../../server/core/models/tenant/methods/get
 let KNOWN_TEST_TENANT_ID;
 
 describe('getTenantById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenants.csv'), (err, data) => {
       KNOWN_TEST_TENANT_ID = R.compose(R.prop('id'), R.head)(data);
@@ -20,11 +19,13 @@ describe('getTenantById', () => {
   });
 
   it('gets a tenant when given an id of type Number', done => {
-    getTenantById(KNOWN_TEST_TENANT_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      expect(R.prop('id', data)).toBe(KNOWN_TEST_TENANT_ID);
-      done();
-    });
+    getTenantById(KNOWN_TEST_TENANT_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        expect(R.prop('id', data)).toBe(KNOWN_TEST_TENANT_ID);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an id of type String', () => {
@@ -54,6 +55,6 @@ describe('getTenantById', () => {
   it('throws an error when given a null id', () => {
     expect(() => {
       getTenantById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

@@ -8,10 +8,6 @@ const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config);
 const _createTenantAccessPermission = require('../../../models/tenantAccessPermission/methods/createTenantAccessPermission'),
       getTenantAccessPermissionById = require('../../../models/tenantAccessPermission/methods/getTenantAccessPermissionById');
 
-/**
- * Create a new tenantAccessPermission record
- * @param {Object} tenantAccessPermissionData
- */
 const createTenantAccessPermission = tenantAccessPermissionData => {
   return Promise.resolve(tenantAccessPermissionData)
     .then(_createTenantAccessPermission)

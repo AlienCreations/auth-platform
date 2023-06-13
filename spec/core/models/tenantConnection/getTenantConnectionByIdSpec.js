@@ -11,7 +11,6 @@ const getTenantConnectionById = require('../../../../server/core/models/tenantCo
 let KNOWN_TEST_TENANT_CONNECTION_ID;
 
 describe('getTenantConnectionById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantConnections.csv'), (err, data) => {
       KNOWN_TEST_TENANT_CONNECTION_ID = R.compose(R.prop('id'), R.head)(data);
@@ -20,11 +19,13 @@ describe('getTenantConnectionById', () => {
   });
 
   it('gets a tenantConnection when given an id of type Number', done => {
-    getTenantConnectionById(KNOWN_TEST_TENANT_CONNECTION_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      expect(R.prop('id', data)).toBe(KNOWN_TEST_TENANT_CONNECTION_ID);
-      done();
-    });
+    getTenantConnectionById(KNOWN_TEST_TENANT_CONNECTION_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        expect(R.prop('id', data)).toBe(KNOWN_TEST_TENANT_CONNECTION_ID);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an id of type String', () => {
@@ -54,6 +55,6 @@ describe('getTenantConnectionById', () => {
   it('throws an error when given a null id', () => {
     expect(() => {
       getTenantConnectionById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
 });

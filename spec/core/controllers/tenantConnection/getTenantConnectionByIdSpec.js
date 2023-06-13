@@ -21,12 +21,11 @@ const KNOWN_TEST_TENANT_CONNECTION_ID     = 1,
 let KNOWN_TEST_TENANT_CONNECTION_DATA;
 
 describe('tenantConnectionCtrl.getTenantConnectionById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantConnections.csv'), (err, data) => {
       KNOWN_TEST_TENANT_CONNECTION_DATA = R.compose(
         R.omit(privateFields),
-        R.find(R.propEq('id', KNOWN_TEST_TENANT_CONNECTION_ID)),
+        R.find(R.propEq(KNOWN_TEST_TENANT_CONNECTION_ID, 'id')),
         commonMocks.transformDbColsToJsProps
       )(data);
       done();
@@ -39,11 +38,13 @@ describe('tenantConnectionCtrl.getTenantConnectionById', () => {
         expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
           .toEqual(KNOWN_TEST_TENANT_CONNECTION_DATA);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when looking for a tenantConnection that does not exist', done => {
     getTenantConnectionById(FAKE_UNKNOWN_TENANT_CONNECTION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isNoResultsErr(err)).toBe(true);
         done();
@@ -52,6 +53,7 @@ describe('tenantConnectionCtrl.getTenantConnectionById', () => {
 
   it('throws an error when given a malformed id', done => {
     getTenantConnectionById(FAKE_MALFORMED_TENANT_CONNECTION_ID)
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isIllegalParamErr(err)).toBe(true);
         done();
@@ -60,6 +62,7 @@ describe('tenantConnectionCtrl.getTenantConnectionById', () => {
 
   it('throws an error when looking for a tenantConnection without an id', done => {
     getTenantConnectionById()
+      .then(done.fail)
       .catch(err => {
         expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
@@ -68,8 +71,9 @@ describe('tenantConnectionCtrl.getTenantConnectionById', () => {
 
   it('throws an error when given null params', done => {
     getTenantConnectionById(null)
+      .then(done.fail)
       .catch(err => {
-        expect(commonMocks.isIllegalParamErr(err)).toBe(true);
+        expect(commonMocks.isMissingParamErr(err)).toBe(true);
         done();
       });
   });

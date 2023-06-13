@@ -45,12 +45,6 @@ const sendConfirmationEmail = (tenancy, MailSvc) => tenantMemberData => {
   });
 };
 
-/**
- * Create new cloudUser & tenantMember records with a transaction
- * @param logger
- * @param MailSvc
- * @returns {function(*=, *=, *=): Promise<any>}
- */
 const enrollTenantMember = ({ logger, MailSvc }) => (tenancy, rootUrl, tenantMemberData) => {
   return Promise.resolve(tenantMemberData)
     .then(_enrollTenantMember(logger))

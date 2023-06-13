@@ -10,16 +10,16 @@ const createAgent = require('../../../../server/core/controllers/api/agent/creat
       commonMocks = require('../../../_helpers/commonMocks');
 
 const COMMON_PRIVATE_FIELDS = R.path(['api', 'COMMON_PRIVATE_FIELDS'], config),
-      AGENT_PRIVATE_FIELDS  = R.path(['api', 'AGENT_PRIVATE_FIELDS'],   config);
+      AGENT_PRIVATE_FIELDS  = R.path(['api', 'AGENT_PRIVATE_FIELDS'], config);
 
 const privateFields = R.concat(COMMON_PRIVATE_FIELDS, AGENT_PRIVATE_FIELDS);
 
-const FAKE_AGENT_DATA = {
-        key      : 'ciw59rcxu0000uhp1ygpzzjxx',
-        tenantId : 1,
-        secret   : '$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy',
-        name     : 'Zuora',
-        status   : 1
+const FAKE_AGENT_DATA            = {
+        key        : 'ciw59rcxu0000uhp1ygpzzjxx',
+        tenantUuid : process.env.PLATFORM_TENANT_UUID,
+        secret     : '$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy',
+        name       : 'Zuora',
+        status     : 1
       },
       FAKE_AGENT_DATA_INCOMPLETE = {
         secret : '$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy',
@@ -49,7 +49,7 @@ describe('agentCtrl.createAgent', () => {
   it('returns FAKE_AGENT_DATA when creating an agent with all correct params', done => {
     createAgent(FAKE_AGENT_DATA)
       .then(res => {
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'uuid'], res))
           .toEqual(R.omit(privateFields, mergeInsertId(FAKE_AGENT_DATA)));
         done();
       })

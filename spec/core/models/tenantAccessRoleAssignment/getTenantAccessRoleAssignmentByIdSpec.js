@@ -14,7 +14,6 @@ const FAKE_UNKNOWN_ID   = 99999,
 let KNOWN_TEST_ID;
 
 describe('getTenantAccessRoleAssignmentById', () => {
-
   beforeAll(done => {
     converter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantAccessRoleAssignments.csv'), (err, data) => {
       KNOWN_TEST_ID = R.compose(R.prop('id'), R.head)(data);
@@ -23,14 +22,17 @@ describe('getTenantAccessRoleAssignmentById', () => {
   });
 
   it('gets a tenantAccessRoleAssignment when given a known id', done => {
-    getTenantAccessRoleAssignmentById(KNOWN_TEST_ID).then(data => {
-      expect(R.is(Object, data)).toBe(true);
-      done();
-    });
+    getTenantAccessRoleAssignmentById(KNOWN_TEST_ID)
+      .then(data => {
+        expect(R.is(Object, data)).toBe(true);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown id', done => {
     getTenantAccessRoleAssignmentById(FAKE_UNKNOWN_ID)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -52,7 +54,6 @@ describe('getTenantAccessRoleAssignmentById', () => {
   it('throws an error when id is set to null', () => {
     expect(() => {
       getTenantAccessRoleAssignmentById(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
-
 });

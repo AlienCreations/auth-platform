@@ -1,26 +1,35 @@
 'use strict';
 
-const R = require('ramda');
+const R                      = require('ramda'),
+      path                   = require('path'),
+      CSVConverter           = require('csvtojson').Converter,
+      cloudUsersConverter    = new CSVConverter({}),
+      tenantMembersConverter = new CSVConverter({});
 
 const createTenantMember = require('../../../../server/core/models/tenantMember/methods/createTenantMember'),
-      commonMocks            = require('../../../_helpers/commonMocks');
+      commonMocks        = require('../../../_helpers/commonMocks');
 
 const A_POSITIVE_NUMBER    = 1337,
       A_NEGATIVE_NUMBER    = -10,
       STRING_ONE_CHAR      = 'a',
       STRING_SEVENTY_CHARS = '*'.repeat(70);
 
-const FAKE_STATUS                       = 1,
-      FAKE_UNKNOWN_ID                   = 9999,
-      KNOWN_TEST_TENANT_ID              = 2,
-      KNOWN_TEST_UNMAPPED_CLOUD_USER_ID = 4,
-      FAKE_REFERENCE_ID                 = 'qwerty';
+const FAKE_STATUS       = 1,
+      FAKE_UNKNOWN_UUID = commonMocks.COMMON_UUID,
+      FAKE_REFERENCE_ID = 'qwerty';
+
+let KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID,
+    KNOWN_TEST_TENANT_UUID;
+
+let fullTenantMemberDataForQuery,
+    requiredTenantMemberDataForQuery,
+    fullTenantMemberDataSwapIn;
 
 const makeFakeTenantMemberData = (includeOptional) => {
   const fakeRequiredTenantMemberData = {
-    tenantId    : KNOWN_TEST_TENANT_ID,
-    cloudUserId : KNOWN_TEST_UNMAPPED_CLOUD_USER_ID,
-    referenceId : FAKE_REFERENCE_ID
+    tenantUuid    : KNOWN_TEST_TENANT_UUID,
+    cloudUserUuid : KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID,
+    referenceId   : FAKE_REFERENCE_ID
   };
 
   const fakeOptionalTenantMemberData = {
@@ -30,25 +39,39 @@ const makeFakeTenantMemberData = (includeOptional) => {
   return includeOptional ? R.mergeDeepRight(fakeOptionalTenantMemberData, fakeRequiredTenantMemberData) : fakeRequiredTenantMemberData;
 };
 
-const fullTenantMemberDataForQuery     = makeFakeTenantMemberData(true),
-      requiredTenantMemberDataForQuery = makeFakeTenantMemberData(false);
-
-const fullTenantMemberDataSwapIn = commonMocks.override(fullTenantMemberDataForQuery);
-
 describe('createTenantMember', () => {
+  beforeAll(done => {
+    cloudUsersConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/cloudUsers.csv'), (err, data) => {
+      KNOWN_TEST_UNMAPPED_CLOUD_USER_UUID = R.compose(R.prop('uuid'), R.last)(data);
 
-  it('creates a tenantMember record when given expected data for all fields', done => {
-    createTenantMember(fullTenantMemberDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
+      tenantMembersConverter.fromFile(path.resolve(__dirname, '../../../../run/env/test/seedData/coreDb/tenantMembers.csv'), (err, data) => {
+        KNOWN_TEST_TENANT_UUID = R.compose(R.prop('tenant_uuid'), R.head)(data);
+
+        fullTenantMemberDataForQuery     = makeFakeTenantMemberData(true);
+        requiredTenantMemberDataForQuery = makeFakeTenantMemberData(false);
+        fullTenantMemberDataSwapIn       = commonMocks.override(fullTenantMemberDataForQuery);
+
+        done();
+      });
     });
   });
 
+  it('creates a tenantMember record when given expected data for all fields', done => {
+    createTenantMember(fullTenantMemberDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   it('creates a tenantMember record when given expected data for only required fields', done => {
-    createTenantMember(requiredTenantMemberDataForQuery).then(data => {
-      expect(data.affectedRows).toBe(1);
-      done();
-    });
+    createTenantMember(requiredTenantMemberDataForQuery)
+      .then(data => {
+        expect(data.affectedRows).toBe(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unsupported parameter', () => {
@@ -76,53 +99,41 @@ describe('createTenantMember', () => {
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  // TENANT_ID
-  it('throws an error when tenantId is malformed', () => {
+  // TENANT_UUID
+  it('throws an error when tenantUuid is malformed', () => {
     expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('tenantId', STRING_ONE_CHAR));
+      createTenantMember(fullTenantMemberDataSwapIn('tenantUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when tenantId is negative', () => {
+  it('throws an error when tenantUuid is missing', () => {
     expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('tenantId', A_NEGATIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when tenantId is missing', () => {
-    expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('tenantId', undefined));
+      createTenantMember(fullTenantMemberDataSwapIn('tenantUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when tenantId is not known', done => {
-    createTenantMember(fullTenantMemberDataSwapIn('tenantId', FAKE_UNKNOWN_ID)).catch(err => {
+  it('throws an error when tenantUuid is not known', done => {
+    createTenantMember(fullTenantMemberDataSwapIn('tenantUuid', FAKE_UNKNOWN_UUID)).catch(err => {
       expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
       done();
     });
   });
 
-  // CLOUD_USER_ID
-  it('throws an error when cloudUserId is malformed', () => {
+  // CLOUD_USER_UUID
+  it('throws an error when cloudUserUuid is malformed', () => {
     expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('cloudUserId', STRING_ONE_CHAR));
+      createTenantMember(fullTenantMemberDataSwapIn('cloudUserUuid', STRING_ONE_CHAR));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
-  it('throws an error when cloudUserId is negative', () => {
+  it('throws an error when cloudUserUuid is missing', () => {
     expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('cloudUserId', A_NEGATIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when cloudUserId is missing', () => {
-    expect(() => {
-      createTenantMember(fullTenantMemberDataSwapIn('cloudUserId', undefined));
+      createTenantMember(fullTenantMemberDataSwapIn('cloudUserUuid', undefined));
     }).toThrowError(commonMocks.missingParamErrRegex);
   });
 
-  it('throws an error when cloudUserId is not known', done => {
-    createTenantMember(fullTenantMemberDataSwapIn('cloudUserId', FAKE_UNKNOWN_ID)).catch(err => {
+  it('throws an error when cloudUserUuid is not known', done => {
+    createTenantMember(fullTenantMemberDataSwapIn('cloudUserUuid', FAKE_UNKNOWN_UUID)).catch(err => {
       expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
       done();
     });

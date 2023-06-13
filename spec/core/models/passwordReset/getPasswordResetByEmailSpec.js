@@ -14,19 +14,22 @@ const FAKE_UNKNOWN_EMAIL               = 'foo@bar.com',
       A_STRING                         = 'foo';
 
 describe('getPasswordResetByEmail', () => {
-
   it('gets a passwordReset when given a known email', done => {
-    getPasswordResetByEmail(KNOWN_TEST_USER_EMAIL).then(data => {
-      expect(R.omit(DYNAMICALLY_POPULATED_DB_COLUMNS, data)).toEqual({
-        cloudUserEmail : KNOWN_TEST_USER_EMAIL,
-        token          : KNOWN_TEST_TOKEN
-      });
-      done();
-    });
+    getPasswordResetByEmail(KNOWN_TEST_USER_EMAIL)
+      .then(data => {
+        expect(R.omit(DYNAMICALLY_POPULATED_DB_COLUMNS, data)).toEqual({
+          cloudUserEmail : KNOWN_TEST_USER_EMAIL,
+          token          : KNOWN_TEST_TOKEN,
+          status         : 1
+        });
+        done();
+      })
+      .catch(done.fail);
   });
 
   it('throws an error when given an unknown email', done => {
     getPasswordResetByEmail(FAKE_UNKNOWN_EMAIL)
+      .then(done.fail)
       .catch(err => {
         expect(err.message).toEqual(commonMocks.noResultsErr.message);
         done();
@@ -54,7 +57,6 @@ describe('getPasswordResetByEmail', () => {
   it('throws an error when given a null email', () => {
     expect(() => {
       getPasswordResetByEmail(null);
-    }).toThrowError(commonMocks.illegalParamErrRegex);
+    }).toThrowError(commonMocks.missingParamErrRegex);
   });
-
 });

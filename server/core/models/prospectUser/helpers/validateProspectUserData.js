@@ -28,6 +28,10 @@ const validateId = label('getProspectUserById', isObjectOf({
   id : isRequired(prr.isPositiveNumber)
 }));
 
+const validateUuid = label('getProspectUserByUuid', isObjectOf({
+  uuid : isRequired(prr.isUuid)
+}));
+
 const validateForInsert = label('createProspectUser', isObjectOf({
   firstName : isRequired(prr.isStringOfLengthAtMost(40)),
   lastName  : isRequired(prr.isStringOfLengthAtMost(40)),
@@ -48,10 +52,12 @@ const validateForUpdate = label('updateProspectUser', isObjectOf({
 
 module.exports = {
   validateId,
-  validateForGetById : validateId,
+  validateUuid,
   validateForGetByEmailAndToken,
   validateForGetByEmail,
   validateForInsert,
   validateForUpdate,
-  validateForSearch
+  validateForSearch,
+  validateForGetById   : validateId,
+  validateForGetByUuid : validateUuid
 };

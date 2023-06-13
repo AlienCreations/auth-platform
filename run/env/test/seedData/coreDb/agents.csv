@@ -1,4 +1,4 @@
-id,tenant_id,key,secret,name,status
-1,1,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
-2,2,ciw59rcxu0000uhp1ygpzzjpr,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Test Agent 1,1
-3,2,ciw59recy0001uhp1m7svifm9,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Test Agent 2,1
+id,uuid,tenant_uuid,key,secret,name,status
+1,1c06f492-2255-482c-8c09-bb24ed264bd7,8a38dc4b-1555-4e4f-8678-2233e57f6d53,platformroot@aliencreations.com,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Root,1
+2,7d2db0bc-c9a8-4d02-b5bc-71889a022f76,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,ciw59rcxu0000uhp1ygpzzjpr,$2a$04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQFwzy,Test Agent 1,1
+3,922609c4-0b97-4d80-b96f-8c9ef4ab32d2,7fd8ce45-2523-4d42-bd66-81c1ec3820dd,ciw59recy0001uhp1m7svifm9,$2a$04$krjrytXfZOz00CjYanRaFO9Ut51N21yO6/YfR2rZXU2Bs4ThCPX8a,Test Agent 2,1

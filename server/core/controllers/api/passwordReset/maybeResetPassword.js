@@ -43,11 +43,6 @@ const sendConfirmationEmail = R.curry((MailSvc, cloudUserData) => {
   });
 });
 
-/**
- * Maybe reset a cloudUser's password
- * @param {Object} MailSvc
- * @param {Object} data
- */
 const maybeResetPassword = (MailSvc, data) => {
   const cloudUserEmail = atob(data.emailHash),
         password       = data.password,
@@ -55,7 +50,7 @@ const maybeResetPassword = (MailSvc, data) => {
 
   return Promise.resolve(token)
     .then(PasswordReset.getPasswordResetByToken)
-    .then(R.unless(R.propEq('cloudUserEmail', cloudUserEmail), emailMismatchErr))
+    .then(R.unless(R.propEq(cloudUserEmail, 'cloudUserEmail'), emailMismatchErr))
     .then(R.always(cloudUserEmail))
     .then(CloudUser.getCloudUserByEmail)
     .then(cloudUser => {

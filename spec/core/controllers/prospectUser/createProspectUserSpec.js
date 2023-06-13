@@ -54,7 +54,7 @@ describe('prospectUserCtrl.createProspectUser', () => {
     createProspectUser(FakeMailSvc)(FAKE_PROSPECT_USER_DATA)
       .then(res => {
         expect(FakeMailSvc.send).toHaveBeenCalled();
-        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created'], res))
+        expect(commonMocks.recursivelyOmitProps(['timestamp', 'created', 'uuid'], res))
           .toEqual(R.compose(
             R.omit(privateFields),
             mergeInsertId

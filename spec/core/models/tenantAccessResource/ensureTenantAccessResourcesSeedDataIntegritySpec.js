@@ -12,7 +12,6 @@ let DEMO_RESOURCES,
     PROD_RESOURCES;
 
 describe('ensureTenantAccessResourcesSeedDataIntegrity', () => {
-
   beforeAll(done => {
     demoConverter.fromFile(path.resolve(__dirname, '../../../../run/env/demo/seedData/coreDb/tenantAccessResources.csv'), (err, data) => {
       DEMO_RESOURCES = R.map(commonMocks.ensureTrueNullInCsvData, data);
