@@ -3,13 +3,13 @@
 const R = require('ramda');
 
 const {
-        isObjectOf,
-        isArrayOf,
-        isOptional,
-        isRequired,
-        label,
-        prr
-      } = require('@aliencreations/node-validator');
+  isObjectOf,
+  isArrayOf,
+  isOptional,
+  isRequired,
+  label,
+  prr
+} = require('@aliencreations/node-validator');
 
 const FORMATTED_DATE_PATTERN = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
 const ALLOWED_SEARCH_FIELDS  = ['id', 'first_name', 'last_name', 'email', 'phone'];

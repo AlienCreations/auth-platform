@@ -13,7 +13,7 @@ const {
 const validateForInsert = label('createAgent', isObjectOf({
   key        : isRequired(prr.isStringOfLengthAtMost(60)),
   tenantUuid : isRequired(prr.isUuid),
-  secret     : isRequired(prr.isStringOfLength(60)),
+  secret     : isRequired(prr.isStringOfLengthAtMost(64)),
   name       : isRequired(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
   status     : isOptional(prr.isAtLeastZero)
 }));
@@ -21,7 +21,7 @@ const validateForInsert = label('createAgent', isObjectOf({
 const validateForUpdate = label('updateAgent', isObjectOf({
   key        : isOptional(prr.isStringOfLengthAtMost(60)),
   tenantUuid : isOptional(prr.isUuid),
-  secret     : isOptional(prr.isStringOfLength(60)),
+  secret     : isOptional(prr.isStringOfLengthAtMost(64)),
   name       : isOptional(R.both(prr.isStringOfLengthAtLeast(3), prr.isStringOfLengthAtMost(30))),
   status     : isOptional(prr.isAtLeastZero)
 }));

@@ -31,7 +31,7 @@ const maybeReturnProfileToPassport = (req, done, password) => cloudUser => {
         R.assoc('tenant', R.pick(TENANCY_PROFILE_FIELDS)(req.tenant)),
         R.assoc('tenantOrganization', R.pick(TENANCY_PROFILE_FIELDS)(req.tenantOrganization))
       )(cloudUser),
-      secret  : cloudUser.password
+      secret : cloudUser.password
     }, { strategyCallback : () => req.logger.info({ msg : 'Logged in as ' + cloudUser.email }) });
 
   } else {

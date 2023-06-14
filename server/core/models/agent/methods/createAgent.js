@@ -1,12 +1,17 @@
 'use strict';
 
-const R    = require('ramda'),
-      uuid = require('uuid/v4');
+const R      = require('ramda'),
+      config = require('config'),
+      uuid   = require('uuid/v4');
 
 const DB                = require('../../../utils/db'),
+      passwords         = require('../../../utils/password'),
       validateAgentData = require('../helpers/validateAgentData').validateForInsert;
 
+const saltRoundsExponent = R.path(['auth', 'SALT_ROUNDS_EXPONENT'], config);
+
 const decorateDataForDbInsertion = data => R.compose(
+  R.over(R.lensProp('secret'), R.partialRight(passwords.makePasswordHash, [saltRoundsExponent])),
   R.assoc('uuid', uuid())
 )(data);
 
