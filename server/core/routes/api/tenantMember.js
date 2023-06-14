@@ -10,13 +10,13 @@ const MailSvc = require('../../services/mail/Mail')(config.mail.strategy);
 
 const maybeMergeTenantUuidFromReq = require('../../controllers/api/_helpers/maybeMergeTenantUuidFromReq');
 
-const createTenantMember                          = require('../../controllers/api/tenantMember/createTenantMember'),
-      enrollTenantMember                          = require('../../controllers/api/tenantMember/enrollTenantMember'),
-      updateTenantMember                          = require('../../controllers/api/tenantMember/updateTenantMember'),
-      deleteTenantMember                          = require('../../controllers/api/tenantMember/deleteTenantMember'),
-      getTenantMemberByUuid                       = require('../../controllers/api/tenantMember/getTenantMemberByUuid'),
-      getTenantMembersByTenantUuid                = require('../../controllers/api/tenantMember/getTenantMembersByTenantUuid'),
-      getTenantMemberByTenantUuidAndReferenceUuid = require('../../controllers/api/tenantMember/getTenantMemberByTenantUuidAndReferenceUuid');
+const createTenantMember                        = require('../../controllers/api/tenantMember/createTenantMember'),
+      enrollTenantMember                        = require('../../controllers/api/tenantMember/enrollTenantMember'),
+      updateTenantMember                        = require('../../controllers/api/tenantMember/updateTenantMember'),
+      deleteTenantMember                        = require('../../controllers/api/tenantMember/deleteTenantMember'),
+      getTenantMemberByUuid                     = require('../../controllers/api/tenantMember/getTenantMemberByUuid'),
+      getTenantMembersByTenantUuid              = require('../../controllers/api/tenantMember/getTenantMembersByTenantUuid'),
+      getTenantMemberByTenantUuidAndReferenceId = require('../../controllers/api/tenantMember/getTenantMemberByTenantUuidAndReferenceId');
 
 const { ensureAuthorized } = require('@aliencreations/node-authenticator')(config.auth.strategy);
 
@@ -105,8 +105,8 @@ router.get('/tenantUuid/:tenantUuid/referenceId/:referenceId', ensureAuthorized,
     res,
     next,
     req.logger.child({ referenceId, tenantUuid }),
-    'getTenantMemberByTenantUuidAndReferenceUuid',
-    () => getTenantMemberByTenantUuidAndReferenceUuid(tenantUuid, referenceId)
+    'getTenantMemberByTenantUuidAndReferenceId',
+    () => getTenantMemberByTenantUuidAndReferenceId(tenantUuid, referenceId)
   );
 });
 
