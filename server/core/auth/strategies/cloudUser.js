@@ -6,16 +6,16 @@ const R             = require('ramda'),
 
 const passwords = require('../../utils/password');
 
-const getCloudUserByEmail                         = require('../../models/cloudUser/methods/getCloudUserByEmail'),
-      getTenantAccessRoleAssignmentsByCloudUserId = require('../../controllers/api/tenantAccessRoleAssignment/getTenantAccessRoleAssignmentsByCloudUserUuid');
+const getCloudUserByEmail                           = require('../../models/cloudUser/methods/getCloudUserByEmail'),
+      getTenantAccessRoleAssignmentsByCloudUserUuid = require('../../controllers/api/tenantAccessRoleAssignment/getTenantAccessRoleAssignmentsByCloudUserUuid');
 
 const CLOUD_USER_PROFILE_FIELDS = R.path(['auth', 'tokenProfileFields'], config),
-      TENANCY_PROFILE_FIELDS    = ['id', 'domain', 'title', 'logo'];
+      TENANCY_PROFILE_FIELDS    = ['uuid', 'domain', 'title', 'logo'];
 
 const associateAssignedTenantAccessRoles = cloudUser => Promise.resolve(cloudUser)
-  .then(R.prop('id'))
-  .then(getTenantAccessRoleAssignmentsByCloudUserId)
-  .then(R.pluck('tenantAccessRoleId'))
+  .then(R.prop('uuid'))
+  .then(getTenantAccessRoleAssignmentsByCloudUserUuid)
+  .then(R.pluck('tenantAccessRoleUuid'))
   .then(R.objOf('roles'))
   .then(R.mergeRight(cloudUser));
 
@@ -29,9 +29,9 @@ const maybeReturnProfileToPassport = (req, done, password) => cloudUser => {
         R.pick(CLOUD_USER_PROFILE_FIELDS),
         R.assoc('strategy', strategy),
         R.assoc('tenant', R.pick(TENANCY_PROFILE_FIELDS)(req.tenant)),
-        R.assoc('tenantOrganization', R.pick(TENANCY_PROFILE_FIELDS)(req.tenantOrganization)),
+        R.assoc('tenantOrganization', R.pick(TENANCY_PROFILE_FIELDS)(req.tenantOrganization))
       )(cloudUser),
-      secret : cloudUser.password
+      secret  : cloudUser.password
     }, { strategyCallback : () => req.logger.info({ msg : 'Logged in as ' + cloudUser.email }) });
 
   } else {
@@ -50,5 +50,3 @@ module.exports = new LocalStrategy({
   passwordField     : 'password',
   passReqToCallback : true
 }, login);
-
-
