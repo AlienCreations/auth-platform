@@ -4,8 +4,7 @@ const R    = require('ramda'),
       cuid = require('cuid');
 
 const createAgent   = require('../../../../server/core/models/agent/methods/createAgent'),
-      commonMocks   = require('../../../_helpers/commonMocks'),
-      passwordUtils = require('../../../../server/core/utils/password');
+      commonMocks   = require('../../../_helpers/commonMocks');
 
 const A_POSITIVE_NUMBER  = 1337,
       A_NEGATIVE_NUMBER  = -10,
@@ -15,10 +14,9 @@ const A_POSITIVE_NUMBER  = 1337,
 const FAKE_NAME              = 'Test Agent 3',
       FAKE_KEY               = cuid(),
       KNOWN_TEST_TENANT_UUID = process.env.PLATFORM_TENANT_UUID,
-      FAKE_SECRET            = passwordUtils.makePasswordHash(FAKE_KEY, 1),
+      FAKE_SECRET            = 'foo',
       FAKE_STATUS            = 1,
-      FAKE_MALFORMED_KEY     = 1234,
-      FAKE_MALFORMED_SECRET  = 'asd';
+      FAKE_MALFORMED_KEY     = 1234;
 
 const makeFakeAgentData = (includeOptional) => {
   const fakeRequiredAgentData = {
@@ -107,12 +105,6 @@ describe('createAgent', () => {
   it('throws an error when given an secret of type other than String', () => {
     expect(() => {
       createAgent(fullAgentDataSwapIn('secret', A_POSITIVE_NUMBER));
-    }).toThrowError(commonMocks.illegalParamErrRegex);
-  });
-
-  it('throws an error when secret is malformed', () => {
-    expect(() => {
-      createAgent(fullAgentDataSwapIn('secret', FAKE_MALFORMED_SECRET));
     }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 

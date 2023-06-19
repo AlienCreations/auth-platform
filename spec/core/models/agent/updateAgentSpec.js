@@ -19,10 +19,9 @@ const FAKE_UNKNOWN_KEY         = 'x41d8cd98f00b204e9800998e',
       FAKE_UPDATE_TENANT_UUID  = process.env.PLATFORM_TENANT_UUID,
       FAKE_UNKNOWN_TENANT_UUID = commonMocks.COMMON_UUID,
       FAKE_UPDATE_NAME         = 'Updated agent name',
-      FAKE_UPDATE_SECRET       = 'xxxx04$zvS.d9hNJ.PoX/vr9JFOaOkiyPXb6dOcoSsy58U1jSq40wMgQxxxx',
+      FAKE_UPDATE_SECRET       = 'foobar',
       FAKE_UPDATE_STATUS       = 2,
-      FAKE_MALFORMED_KEY       = 1234,
-      FAKE_MALFORMED_SECRET    = 'def';
+      FAKE_MALFORMED_KEY       = 1234;
 
 let KNOWN_TEST_KEY,
     KNOWN_TEST_UUID,
@@ -89,8 +88,8 @@ describe('updateAgent', () => {
       .then(data => {
         expect(data.affectedRows).toBe(1);
         getAgentByKey(FAKE_UNKNOWN_KEY)
-          .then((agent) => {
-            expect(R.prop('key', agent)).toBe(FAKE_UNKNOWN_KEY);
+          .then(({ key }) => {
+            expect(key).toBe(FAKE_UNKNOWN_KEY);
             done();
           })
           .catch(done.fail);
@@ -112,8 +111,8 @@ describe('updateAgent', () => {
       tenantUuid : FAKE_UNKNOWN_TENANT_UUID
     })
       .then(done.fail)
-      .catch(err => {
-        expect(R.prop('code', err)).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
+      .catch(({ code }) => {
+        expect(code).toBe(commonMocks.APPLICATION_ERROR_CODE_DB_FOREIGN_KEY_CONSTRAINT);
         done();
       });
   });
@@ -166,21 +165,13 @@ describe('updateAgent', () => {
       .then(data => {
         expect(data.affectedRows).toBe(1);
         getAgentByKey(KNOWN_TEST_KEY)
-          .then((agent) => {
-            expect(R.prop('secret', agent)).toBe(FAKE_UPDATE_SECRET);
+          .then(({ secret }) => {
+            expect(secret.length).toBe(60);
             done();
           })
           .catch(done.fail);
       })
       .catch(done.fail);
-  });
-
-  it('throws an error when given a malformed secret', () => {
-    expect(() => {
-      updateAgent(KNOWN_TEST_UUID, {
-        secret : FAKE_MALFORMED_SECRET
-      });
-    }).toThrowError(commonMocks.illegalParamErrRegex);
   });
 
   // NAME IN BODY
