@@ -6,8 +6,7 @@ const R        = require('ramda'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
+const ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantAccessRole                       = require('../../controllers/api/tenantAccessRole/createTenantAccessRole'),
       updateTenantAccessRole                       = require('../../controllers/api/tenantAccessRole/updateTenantAccessRole'),

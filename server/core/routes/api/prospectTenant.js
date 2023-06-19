@@ -7,8 +7,6 @@ const config   = require('config'),
 
 const MailSvc = require('../../services/mail/Mail')(config.mail.strategy);
 
-const maybeParseIntFromPath = require('../../controllers/api/_helpers/maybeParseIntFromPath');
-
 const createProspectTenant     = require('../../controllers/api/prospectTenant/createProspectTenant'),
       updateProspectTenant     = require('../../controllers/api/prospectTenant/updateProspectTenant'),
       getProspectTenantByEmail = require('../../controllers/api/prospectTenant/getProspectTenantByEmail'),

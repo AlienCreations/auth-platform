@@ -5,8 +5,7 @@ const express  = require('express'),
       router   = express.Router(),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
+const ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createTenantConnection           = require('../../controllers/api/tenantConnection/createTenantConnection'),
       updateTenantConnection           = require('../../controllers/api/tenantConnection/updateTenantConnection'),

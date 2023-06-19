@@ -7,8 +7,7 @@ const express  = require('express'),
       atob     = require('btoa'),
       apiUtils = require('../../utils/api');
 
-const maybeParseIntFromPath       = require('../../controllers/api/_helpers/maybeParseIntFromPath'),
-      ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
+const ensureCanActOnBehalfOfOwner = require('../../middleware/ensureCanActOnBehalfOfOwner');
 
 const createCloudUser      = require('../../controllers/api/cloudUser/createCloudUser'),
       updateCloudUser      = require('../../controllers/api/cloudUser/updateCloudUser'),
